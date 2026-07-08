@@ -14,7 +14,7 @@ from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack.package import *
 
 
-class NetcdfC(CMakePackage, AutotoolsPackage):
+class NetcdfC(AutotoolsPackage):
     """NetCDF (network Common Data Form) is a set of software libraries and
     machine-independent data formats that support the creation, access, and
     sharing of array-oriented scientific data. This is the C distribution."""
@@ -39,26 +39,6 @@ class NetcdfC(CMakePackage, AutotoolsPackage):
     version("4.7.2", sha256="7648db7bd75fdd198f7be64625af7b276067de48a49dcdfd160f1c2ddff8189c")
     version("4.7.1", sha256="583e6b89c57037293fc3878c9181bb89151da8c6015ecea404dd426fea219b2c")
     version("4.7.0", sha256="26d03164074363b3911ed79b7cddd045c22adf5ebaf978943db11a1d9f15e9d3")
-
-    with default_args(deprecated=True):
-        version("4.6.3", sha256="734a629cdaed907201084d003cfa091806d6080eeffbd4204e7c7f73ff9d3564")
-        version("4.6.2", sha256="673936c76ae0c496f6dde7e077f5be480afc1e300adb2c200bf56fbe22e5a82a")
-        version("4.6.1", sha256="a2fabf27c72a5ee746e3843e1debbaad37cd035767eaede2045371322211eebb")
-        version("4.6.0", sha256="6d740356399aac12290650325a05aec2fe92c1905df10761b2b0100994197725")
-        version("4.5.0", sha256="f7d1cb2a82100b9bf9a1130a50bc5c7baf0de5b5022860ac3e09a0a32f83cf4a")
-        # Version 4.4.1.1 is having problems in tests
-        #    https://github.com/Unidata/netcdf-c/issues/343
-        version(
-            "4.4.1.1", sha256="7f040a0542ed3f6d27f3002b074e509614e18d6c515b2005d1537fec01b24909"
-        )
-        # Version 4.4.1 can crash on you (in real life and in tests).  See:
-        #    https://github.com/Unidata/netcdf-c/issues/282
-        version("4.4.1", sha256="17599385fd76ccdced368f448f654de2ed000fece44dece9fb5d598798b4c9d6")
-        version("4.4.0", sha256="09b78b152d3fd373bee4b5738dc05c7b2f5315fe34aa2d94ee9256661119112f")
-        version(
-            "4.3.3.1", sha256="f2ee78eb310637c007f001e7c18e2d773d23f3455242bde89647137b7344c2e2"
-        )
-        version("4.3.3", sha256="3f16e21bc3dfeb3973252b9addf5defb48994f84fc9c9356081f871526a680e7")
 
     with when("build_system=cmake"):
         # TODO: document why we need to revert https://github.com/Unidata/netcdf-c/pull/1731
@@ -181,15 +161,15 @@ class NetcdfC(CMakePackage, AutotoolsPackage):
             )
 
     variant("mpi", default=True, description="Enable parallel I/O for netcdf-4")
-    variant("parallel-netcdf", default=False, description="Enable parallel I/O for classic files")
-    variant("hdf4", default=False, description="Enable HDF4 support")
+    variant("parallel-netcdf", default=True, description="Enable parallel I/O for classic files")
+    variant("hdf4", default=True, description="Enable HDF4 support")
     variant("pic", default=True, description="Produce position-independent code (for shared libs)")
     variant("shared", default=True, description="Enable shared library")
-    variant("dap", default=False, description="Enable DAP support")
-    variant("byterange", default=False, description="Enable byte-range I/O")
-    variant("jna", default=False, description="Enable JNA support")
-    variant("fsync", default=False, description="Enable fsync support")
-    variant("nczarr_zip", default=False, description="Enable NCZarr zipfile format storage")
+    variant("dap", default=True, description="Enable DAP support")
+    variant("byterange", default=True, description="Enable byte-range I/O")
+    variant("jna", default=True, description="Enable JNA support")
+    variant("fsync", default=True, description="Enable fsync support")
+    variant("nczarr_zip", default=True, description="Enable NCZarr zipfile format storage")
     variant("optimize", default=True, description="Enable -O2 for a more optimized lib")
     variant("logging", default=False, description="Enable logging")
     variant("utilities", default=True, description="Build command-line utilities")
@@ -201,62 +181,8 @@ class NetcdfC(CMakePackage, AutotoolsPackage):
     variant("zstd", default=True, description="Enable Zstandard compression plugin")
 
     depends_on("c", type="build")
-    depends_on("cxx", type="build", when="build_system=cmake")
-
-    with when("build_system=cmake"):
-        # Based on the versions required by the root CMakeLists.txt:
-        depends_on("cmake@2.8.12:", type="build", when="@4.3.3:4.3")
-        depends_on("cmake@2.8.11:", type="build", when="@4.4.0:")
-        depends_on("cmake@3.6.1:", type="build", when="@4.5.0:")
-        depends_on("cmake@3.12:", type="build", when="@4.9.0:")
-        # Starting version 4.9.1, nczarr_test/CMakeLists.txt relies on the FILE_PERMISSIONS feature
-        # of the configure_file command, which is only available starting CMake 3.20:
-        depends_on("cmake@3.20:", type="test", when="@4.9.1:")
-
-    with when("build_system=autotools"):
-        for __s in itertools.chain(["@main"], _force_autoreconf_when):
-            with when(__s):
-                depends_on("autoconf", type="build")
-                depends_on("automake", type="build")
-                depends_on("libtool", type="build")
-                depends_on("m4", type="build")
-        del __s
-
-    # M4 is also needed for the source and man file generation. All the generated source files are
-    # included in the release tarballs starting at least the oldest supported version:
-    depends_on("m4", type="build", when="@main")
-
-    # The man files are included in the release tarballs starting version 4.5.0 but they are not
-    # needed for the Windows platform:
-    for __p in ["darwin", "linux"]:
-        with when("platform={0}".format(__p)):
-            # It is possible to install the package with CMake and without M4 on a non-Windows
-            # platform but some of the man files will not be installed in that case (even if they
-            # are in the release tarball):
-            depends_on("m4", type="build", when="build_system=cmake")
-            # Apart from the redundant configure-time check, which we suppress below, M4 is not
-            # needed when building with Autotools if the man files are in the release tarball:
-            depends_on("m4", type="build", when="@:4.4 build_system=autotools")
-    del __p
-
     depends_on("hdf~netcdf", when="+hdf4")
-
-    # curl 7.18.0 or later is required:
-    # https://docs.unidata.ucar.edu/nug/current/getting_and_building_netcdf.html
-    depends_on("curl@7.18.0:", when="+dap")
-    depends_on("curl@7.18.0:", when="+byterange")
-
-    # curl is supposed to only be needed when +dap or +byterange, but the check is missing
-    # this is fixed in 4.9.3. Spack autotools already protects against this
-    # https://github.com/Unidata/netcdf-c/issues/3016
-    depends_on("curl@7.18.0:", when="@:4.9.2 build_system=cmake")
-
-    # Need to include libxml2 when using DAP in 4.9.0 and newer to build
-    # https://github.com/Unidata/netcdf-c/commit/53464e89635a43b812b5fec5f7abb6ff34b9be63
-    depends_on("libxml2", when="@4.9.0:+dap")
-
     depends_on("parallel-netcdf", when="+parallel-netcdf")
-
     # We need to build with MPI wrappers if any of the two
     # parallel I/O features is enabled:
     # https://docs.unidata.ucar.edu/nug/current/getting_and_building_netcdf.html#build_parallel
@@ -270,21 +196,8 @@ class NetcdfC(CMakePackage, AutotoolsPackage):
     # https://docs.unidata.ucar.edu/nug/current/getting_and_building_netcdf.html
     depends_on("hdf5@1.8.9:+hl")
 
-    # Starting version 4.4.0, it became possible to disable parallel I/O even
-    # if HDF5 supports it. For previous versions of the library we need
-    # HDF5 without mpi support to disable parallel I/O:
-    depends_on("hdf5~mpi", when="@:4.3~mpi")
-
     # We need HDF5 with mpi support to enable parallel I/O.
     depends_on("hdf5+mpi", when="+mpi")
-
-    # NetCDF 4.4.0 and prior have compatibility issues with HDF5 1.10 and later
-    # https://github.com/Unidata/netcdf-c/issues/250
-    depends_on("hdf5@:1.8", when="@:4.4.0")
-
-    # NetCDF 4.7.4 and prior require HDF5 1.10 or older
-    # https://github.com/Unidata/netcdf-c/pull/1671
-    depends_on("hdf5@:1.10", when="@:4.7.3")
 
     # Although NetCDF 4.8.0 builds and passes the respective tests against HDF5 1.12.0 with the
     # default API (i.e. the problem reported in https://github.com/Unidata/netcdf-c/issues/1965 is
@@ -317,24 +230,16 @@ class NetcdfC(CMakePackage, AutotoolsPackage):
     # starting NetCDF 4.9.0 (for the deflate plugin):
     depends_on("zlib-api", when="@4.9.0:+shared")
     depends_on("zlib@1.2.5:", when="^[virtuals=zlib-api] zlib")
-
     # Use the vendored bzip2 on Windows:
     for __p in ["darwin", "linux"]:
         depends_on("bzip2", when="@4.9.0:+shared platform={0}".format(__p))
     del __p
-
-    depends_on("szip", when="+szip")
-    depends_on("c-blosc", when="+blosc")
-    depends_on("zstd", when="+zstd")
-
-    # Byte-range I/O was added in version 4.7.0:
-    conflicts("+byterange", when="@:4.6")
-
     # Byte-range requires DAP starting version 4.9.3:
     requires("+dap", when="@4.9.3:+byterange")
 
     # JNA was added in 4.3.2 and removed in 4.9.3:
-    conflicts("+jna", when="@:4.3.1,4.9.3:")
+    conflicts("+jna", when="@:4.7.0,4.9.3:")
+
 
     # NCZarr was added in version 4.8.0 as an experimental feature and became a supported one in
     # version 4.8.1:
@@ -346,11 +251,9 @@ class NetcdfC(CMakePackage, AutotoolsPackage):
         conflicts("+blosc")
         conflicts("+zstd")
 
-    # The plugins are not built when the shared libraries are disabled:
-    with when("~shared"):
-        conflicts("+szip")
-        conflicts("+blosc")
-        conflicts("+zstd")
+    depends_on("szip", when="+szip")
+    depends_on("c-blosc", when="+blosc")
+    depends_on("zstd", when="+zstd")
 
     default_build_system = "cmake" if sys.platform == "win32" else "autotools"
 
@@ -369,6 +272,17 @@ class NetcdfC(CMakePackage, AutotoolsPackage):
                 if "+optimize" in self.spec:
                     flags.append("-O2")
         return flags, None, None
+    def patch(self):
+        # Needed due to the patch applied to fix CVE-2025-14933.
+        # A `#include <stdint.h>` is introduced in version 4.8.1.
+        # Refer to https://github.com/spack/spack-packages/issues/5524
+        if self.spec.satisfies("@:4.8.0"):
+            filter_file(
+                "#define NCCONFIGURE_H 1",
+                "#define NCCONFIGURE_H 1\n\n#ifdef HAVE_STDINT_H\n#include <stdint.h>\n#endif",
+                "include/ncconfigure.h",
+                string=True,
+            )
 
     def patch(self):
         # Needed due to the patch applied to fix CVE-2025-14933.
@@ -682,20 +596,6 @@ class AutotoolsBuilder(AnyBuilder, autotools.AutotoolsBuilder):
         elif self.spec.satisfies("@4.9.0:"):
             # Prevent linking to system c-blosc:
             config_args.append("ac_cv_lib_blosc_blosc_init=no")
-
-        if self.spec.satisfies("@:4.7~dap+byterange"):
-            extra_libs.append(self.spec["curl"].libs)
-        elif "+dap" in self.spec or "+byterange" in self.spec:
-            lib_search_dirs.extend(self.spec["curl"].libs.directories)
-        elif self.spec.satisfies("@4.7.0"):
-            # This particular version fails if curl is not found, even if it is not needed
-            # (see https://github.com/Unidata/netcdf-c/issues/1390). Note that the following does
-            # not trigger linking to system curl for this version because DAP support is disabled:
-            config_args.append("ac_cv_lib_curl_curl_easy_setopt=yes")
-        else:
-            # Prevent linking to system curl (for versions 4.8.0 and newer) and the redundant check
-            # for curl (for older versions):
-            config_args.append("ac_cv_lib_curl_curl_easy_setopt=no")
 
         if not self.spec.satisfies("@:4.4,main"):
             # Suppress the redundant check for m4:

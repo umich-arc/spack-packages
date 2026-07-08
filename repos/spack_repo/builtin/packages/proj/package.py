@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
+import os
+
 from spack_repo.builtin.build_systems import autotools, cmake
 from spack_repo.builtin.build_systems.autotools import AutotoolsPackage
 from spack_repo.builtin.build_systems.cmake import CMakePackage
@@ -59,29 +61,8 @@ class Proj(CMakePackage, AutotoolsPackage):
     version("4.9.1", sha256="fca0388f3f8bc5a1a803d2f6ff30017532367992b30cf144f2d39be88f36c319")
 
     variant("tiff", default=True, when="@7:", description="Enable TIFF support")
-    variant("curl", default=True, when="@7:", description="Enable curl support")
     variant("shared", default=True, description="Enable shared libraries")
     variant("pic", default=False, description="Enable position-independent code (PIC)")
-
-    # https://github.com/OSGeo/PROJ#distribution-files-and-format
-    # https://github.com/OSGeo/PROJ-data
-    resource(
-        name="proj-data",
-        url="https://download.osgeo.org/proj/proj-data-1.13.tar.gz",
-        sha256="f1e5e42ba15426d01d1970be727af77ac9b88c472215497a5a433d0a16dd105b",
-        placement=join_path("share", "proj"),
-        when="@7:",
-    )
-
-    # https://github.com/OSGeo/PROJ#distribution-files-and-format
-    # https://github.com/OSGeo/proj-datumgrid
-    resource(
-        name="proj-datumgrid",
-        url="https://download.osgeo.org/proj/proj-datumgrid-1.8.tar.gz",
-        sha256="3ff6618a0acc9f0b9b4f6a62e7ff0f7bf538fb4f74de47ad04da1317408fcc15",
-        placement=join_path("share", "proj"),
-        when="@:6",
-    )
 
     patch(
         "https://github.com/OSGeo/PROJ/commit/3f38a67a354a3a1e5cca97793b9a43860c380d95.patch?full_index=1",
@@ -91,6 +72,9 @@ class Proj(CMakePackage, AutotoolsPackage):
 
     depends_on("c", type="build")  # generated
     depends_on("cxx", type="build")  # generated
+    depends_on("sqlite@3.11:", when="@6:")
+    depends_on("libtiff@4:", when="@7:+tiff")
+
 
     # https://proj.org/install.html#build-requirements
     with when("build_system=cmake"):
@@ -121,18 +105,11 @@ class Proj(CMakePackage, AutotoolsPackage):
         # fixed in upstream proj as of 9
         patch("proj_8_curl_libraries.patch", when="@8")
 
-        depends_on("cmake@3.16:", when="@9.4:", type="build")
-        depends_on("cmake@3.9:", when="@6:", type="build")
-        depends_on("cmake@3.5:", when="@5", type="build")
-        depends_on("cmake@2.6:", when="@:4", type="build")
+        # PROJ 9.7.0 enables a warning flag that GCC 8.5.0 does not support.
+        patch("proj-9.7.0-gcc-8.5.0.patch", when="@9.7.0 %gcc@8.5.0")
 
     with when("build_system=autotools"):
         depends_on("pkgconfig", when="@6:", type="build")
-
-    depends_on("sqlite@3.11:", when="@6:")
-    depends_on("libtiff@4:", when="@7:+tiff")
-    depends_on("curl@7.29:", when="@7:+curl")
-    depends_on("googletest@1.8:", when="@6:", type="test")
 
     build_system(
         conditional("autotools", when="@:8"), conditional("cmake", when="@5:"), default="cmake"
@@ -153,7 +130,9 @@ class AnyBuilder(BaseBuilder):
 
     @run_after("install")
     def install_datum_grids(self):
-        install_tree(join_path("share", "proj"), self.prefix.share.proj)
+        datum_grids = join_path("share", "proj")
+        if os.path.isdir(datum_grids):
+            install_tree(datum_grids, self.prefix.share.proj)
 
 
 class CMakeBuilder(AnyBuilder, cmake.CMakeBuilder):
@@ -161,10 +140,8 @@ class CMakeBuilder(AnyBuilder, cmake.CMakeBuilder):
         shared_arg = "BUILD_SHARED_LIBS" if self.spec.satisfies("@7:") else "BUILD_LIBPROJ_SHARED"
         args = [
             self.define_from_variant("ENABLE_TIFF", "tiff"),
-            self.define_from_variant("ENABLE_CURL", "curl"),
             self.define_from_variant(shared_arg, "shared"),
             # projsync needs curl
-            self.define_from_variant("BUILD_PROJSYNC", "curl"),
             self.define_from_variant("CMAKE_POSITION_INDEPENDENT_CODE", "pic"),
         ]
         if self.spec.satisfies("@6:") and self.pkg.run_tests:
@@ -176,8 +153,7 @@ class CMakeBuilder(AnyBuilder, cmake.CMakeBuilder):
         else:
             test_flag = "PROJ4_TESTS"
         args.append(self.define(test_flag, self.pkg.run_tests))
-        if self.spec.satisfies("%curl build_system=cmake"):
-            args.append(self.define("CMAKE_CXX_FLAGS", "-DCURL_STATICLIB"))
+        
         return args
 
 
@@ -191,11 +167,7 @@ class AutotoolsBuilder(AnyBuilder, autotools.AutotoolsBuilder):
         if self.spec.satisfies("@7:"):
             args.extend(self.enable_or_disable("tiff"))
 
-            if "+curl" in self.spec:
-                args.append("--with-curl=" + self.spec["curl"].prefix.bin.join("curl-config"))
-            else:
-                args.append("--without-curl")
-
+           
         args.extend(self.enable_or_disable("shared"))
         args.extend(self.with_or_without("pic"))
 

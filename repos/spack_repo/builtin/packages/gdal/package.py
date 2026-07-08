@@ -139,7 +139,7 @@ class Gdal(CMakePackage, AutotoolsPackage, PythonExtension):
     variant("freexl", default=False, description="Required for XLS driver")
     variant("fyba", default=False, description="Required for SOSI driver")
     variant("geos", default=True, description="Required for geometry processing operations in OGR")
-    variant("gif", default=False, description="Required for GIF driver")
+    variant("gif", default=True, description="Required for GIF driver")
     variant("grass", default=False, when="@:3.4", description="Required for GRASS driver")
     variant("grok", default=False, when="@3.13:", description="Required for JP2Grok driver")
     variant("gta", default=False, description="Required for GTA driver")
@@ -180,7 +180,7 @@ class Gdal(CMakePackage, AutotoolsPackage, PythonExtension):
     )
     variant(
         "mssql_odbc",
-        default=False,
+        default=True,
         when="build_system=cmake",
         description="Required for MSSQLSpatial driver",
     )
@@ -190,9 +190,9 @@ class Gdal(CMakePackage, AutotoolsPackage, PythonExtension):
         when="@3.11:",
         description="Required for nominal C++ VRT expressions",
     )
-    variant("mysql", default=False, description="Required for MySQL driver")
-    variant("netcdf", default=False, description="Required for NetCDF driver")
-    variant("odbc", default=False, description="Required for many OGR drivers")
+    variant("mysql", default=True, description="Required for MySQL driver")
+    variant("netcdf", default=True, description="Required for NetCDF driver")
+    variant("odbc", default=True, description="Required for many OGR drivers")
     variant(
         "odbccpp",
         default=False,
@@ -354,7 +354,7 @@ class Gdal(CMakePackage, AutotoolsPackage, PythonExtension):
     # depends_on('mrsid', when='+mrsid')
     # depends_on('lizardtech-lidar', when='+mrsid_lidar')
     # depends_on('mssql_ncli', when='+mssql_ncli')
-    # depends_on('mssql_odbc', when='+mssql_odbc')
+    depends_on('mssql_odbc', when='+mssql_odbc')
     depends_on("muparser", when="+muparser")
     depends_on("mysql", when="+mysql")
     depends_on("netcdf-c@4.7:", when="@3.9:+netcdf")
@@ -413,9 +413,11 @@ class Gdal(CMakePackage, AutotoolsPackage, PythonExtension):
     depends_on("zstd", when="+zstd")
 
     # Language bindings
+    # FIXME: Allow packages to extend multiple packages
+    # See https://github.com/spack/spack/issues/987
     extends("python", when="+python")
-    extends("java", when="+java")
-    extends("perl", when="+perl")
+    # extends('openjdk', when='+java')
+    # extends('perl', when='+perl')
 
     # swig/python/pyproject.toml (3.9+)
     # swig/python/setup.py.in (3.5-3.8)
@@ -543,7 +545,7 @@ class CMakeBuilder(CMakeBuilder):
         # https://gdal.org/en/stable/development/building_from_source.html
         args = [
             # Only use Spack-installed dependencies
-            self.define("GDAL_USE_EXTERNAL_LIBS", False),
+            self.define("GDAL_USE_EXTERNAL_LIBS", True),
             self.define("GDAL_USE_INTERNAL_LIBS", False),
             # Required dependencies
             self.define("GDAL_USE_GEOTIFF", True),
