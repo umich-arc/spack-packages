@@ -105,6 +105,9 @@ class Proj(CMakePackage, AutotoolsPackage):
         # fixed in upstream proj as of 9
         patch("proj_8_curl_libraries.patch", when="@8")
 
+        # PROJ 9.7.0 enables a warning flag that GCC 8.5.0 does not support.
+        patch("proj-9.7.0-gcc-8.5.0.patch", when="@9.7.0 %gcc@8.5.0")
+
     with when("build_system=autotools"):
         depends_on("pkgconfig", when="@6:", type="build")
 
