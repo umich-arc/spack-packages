@@ -4,12 +4,11 @@
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class Nlcglib(CMakePackage, CudaPackage, ROCmPackage):
+class Nlcglib(CMakePackage, CudaPackage):
     """Nonlinear CG methods for wave-function optimization in DFT."""
 
     homepage = "https://github.com/simonpintarelli/nlcglib"
@@ -57,7 +56,7 @@ class Nlcglib(CMakePackage, CudaPackage, ROCmPackage):
         msg="Only mkl or openblas are supported for blas/lapack with ldak",
     )
 
-    depends_on("kokkos~cuda~rocm", when="~cuda~rocm")
+    depends_on("kokkos~cuda", when="~cuda")
     depends_on("kokkos+openmp", when="+openmp")
 
     depends_on("googletest", type="build", when="+tests")
@@ -67,16 +66,16 @@ class Nlcglib(CMakePackage, CudaPackage, ROCmPackage):
     # MKLConfig.cmake introduced in 2021.3
     conflicts("intel-oneapi-mkl@:2021.2", when="^intel-oneapi-mkl")
 
-    with when("@:0.9"):
-        conflicts("+rocm")
-        conflicts("^kokkos@4:")
+    #with when("@:0.9"):
+    #    conflicts("+rocm")
+    #    conflicts("^kokkos@4:")
 
-    with when("+rocm"):
-        variant("magma", default=True, description="Use magma eigenvalue solver (AMDGPU)")
-        depends_on("magma+rocm", when="+magma")
-        depends_on("kokkos+rocm")
-        depends_on("rocblas")
-        depends_on("rocsolver")
+    #with when("+rocm"):
+    #    variant("magma", default=True, description="Use magma eigenvalue solver (AMDGPU)")
+    #    depends_on("magma+rocm", when="+magma")
+    #    depends_on("kokkos+rocm")
+    #    depends_on("rocblas")
+    #    depends_on("rocsolver")
 
     with when("+cuda"):
         depends_on("kokkos+cuda_lambda+wrapper", when="%gcc")
@@ -88,7 +87,7 @@ class Nlcglib(CMakePackage, CudaPackage, ROCmPackage):
         options = [
             self.define_from_variant("USE_OPENMP", "openmp"),
             self.define_from_variant("BUILD_TESTS", "tests"),
-            self.define_from_variant("USE_ROCM", "rocm"),
+            self.define("USE_ROCM", "OFF"),
             self.define_from_variant("USE_GPU_DIRECT", "gpu_direct"),
             self.define_from_variant("USE_MAGMA", "magma"),
             self.define_from_variant("USE_CUDA", "cuda"),
@@ -139,16 +138,16 @@ class Nlcglib(CMakePackage, CudaPackage, ROCmPackage):
         if "^cuda+allow-unsupported-compilers" in self.spec:
             options.append(self.define("CMAKE_CUDA_FLAGS", "--allow-unsupported-compiler"))
 
-        if "+rocm" in self.spec:
-            archs = ",".join(self.spec.variants["amdgpu_target"].value)
-            options.extend(
-                [
-                    self.define("CMAKE_CXX_COMPILER", self.spec["hip"].hipcc),
-                    self.define("HIP_HCC_FLAGS", f"--amdgpu-target={archs}"),
-                    self.define(
-                        "CMAKE_CXX_FLAGS", f"--amdgpu-target={archs} --offload-arch={archs}"
-                    ),
-                ]
-            )
+        #if "+rocm" in self.spec:
+        #    archs = ",".join(self.spec.variants["amdgpu_target"].value)
+        #    options.extend(
+        #        [
+        #            self.define("CMAKE_CXX_COMPILER", self.spec["hip"].hipcc),
+        #            self.define("HIP_HCC_FLAGS", f"--amdgpu-target={archs}"),
+        #            self.define(
+        #                "CMAKE_CXX_FLAGS", f"--amdgpu-target={archs} --offload-arch={archs}"
+        #            ),
+        #        ]
+        #    )
 
         return options

@@ -110,7 +110,7 @@ class Lci(CMakePackage):
         "bootstrap",
         description="Bootstrap backends to enable",
         values=disjoint_sets(
-            ("auto",), ("pmix", "pmi2", "pmi1", "mpi", "file", "local"), ("cray",)
+            ("auto",), ("pmix", "pmi2", "pmi1", "mpi", "file", "local")
         )
         .prohibit_empty_set()
         .with_default("auto")
@@ -130,7 +130,7 @@ class Lci(CMakePackage):
         "default-pm",
         description="Order of process management backends to try by default",
         values=disjoint_sets(
-            ("auto",), ("pmix", "pmi2", "pmi1", "mpi", "file", "local"), ("cray",)
+            ("auto",), ("pmix", "pmi2", "pmi1", "mpi", "file", "local")
         )
         .prohibit_empty_set()
         .with_default("auto")
@@ -149,21 +149,18 @@ class Lci(CMakePackage):
     depends_on("mpi", when="bootstrap=mpi")
     depends_on("papi", when="+papi")
     depends_on("doxygen", when="+docs")
-    depends_on("cray-pmi", when="bootstrap=cray")
+    #depends_on("cray-pmi", when="bootstrap=cray")
     depends_on("gperftools", when="+tcmalloc")
     depends_on("python@3.8:", type="build", when="@2:")
 
     def cmake_args(self):
-        # The deprecated variants override the bootstrap value used below.
-        bootstrap = self.spec.variants["bootstrap"].value
-
         if not self.spec.satisfies("enable-pm=auto"):
             warnings.warn(
                 "The 'enable-pm' variant is deprecated, use 'bootstrap' instead.",
                 DeprecationWarning,
                 stacklevel=2,
             )
-            bootstrap = self.spec.variants["enable-pm"].value
+            self.spec.variants["bootstrap"].value = self.spec.variants["enable-pm"].value
 
         if not self.spec.satisfies("default-pm=auto"):
             warnings.warn(
@@ -171,7 +168,7 @@ class Lci(CMakePackage):
                 DeprecationWarning,
                 stacklevel=2,
             )
-            bootstrap = self.spec.variants["default-pm"].value
+            self.spec.variants["bootstrap"].value = self.spec.variants["default-pm"].value
 
         args = [
             self.define_from_variant("LCI_WITH_EXAMPLES", "examples"),
@@ -184,24 +181,32 @@ class Lci(CMakePackage):
             self.define_from_variant("LCI_USE_TCMALLOC", "tcmalloc"),
         ]
 
-        if "auto" not in bootstrap:
-            if "cray" in bootstrap:
-                args.extend(
+        if not self.spec.satisfies("bootstrap=auto"):
+            #if self.spec.satisfies("bootstrap=cray"):
+            #    args.extend(
+            #        [
+            #            self.define("LCI_PMI_BACKEND_DEFAULT", "pmi1"),
+            #            self.define("LCT_PMI_BACKEND_ENABLE_PMI1", True),
+            #        ]
+            #    )
+
+            args.extend(
                     [
-                        self.define("LCI_PMI_BACKEND_DEFAULT", "pmi1"),
-                        self.define("LCT_PMI_BACKEND_ENABLE_PMI1", True),
+                        self.define(
+                            "LCT_PMI_BACKEND_ENABLE_PMI1", self.spec.satisfies("bootstrap=pmi1")
+                        ),
+                        self.define(
+                            "LCT_PMI_BACKEND_ENABLE_PMI2", self.spec.satisfies("bootstrap=pmi2")
+                        ),
+                        self.define(
+                            "LCT_PMI_BACKEND_ENABLE_MPI", self.spec.satisfies("bootstrap=mpi")
+                        ),
+                        self.define(
+                            "LCT_PMI_BACKEND_ENABLE_PMIX", self.spec.satisfies("bootstrap=pmix")
+                        ),
+                        self.define_from_variant("LCI_PMI_BACKEND_DEFAULT", "bootstrap"),
                     ]
-                )
-            else:
-                args.extend(
-                    [
-                        self.define("LCT_PMI_BACKEND_ENABLE_PMI1", "pmi1" in bootstrap),
-                        self.define("LCT_PMI_BACKEND_ENABLE_PMI2", "pmi2" in bootstrap),
-                        self.define("LCT_PMI_BACKEND_ENABLE_MPI", "mpi" in bootstrap),
-                        self.define("LCT_PMI_BACKEND_ENABLE_PMIX", "pmix" in bootstrap),
-                        self.define("LCI_PMI_BACKEND_DEFAULT", sorted(bootstrap)),
-                    ]
-                )
+            )
 
         if not self.spec.satisfies("cache-line=auto"):
             args.append(self.define_from_variant("LCI_CACHE_LINE", "cache-line"))

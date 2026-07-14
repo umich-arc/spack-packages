@@ -28,7 +28,6 @@ class RocmCore(ROCmLibrary, CMakePackage):
         ("7.2.3", "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"),
         (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
-    version("10.0.0", sha256="f30517ed6d9e18cde104eb487f173e62fed0175083a9498ca383f8136a9f4eec")
     version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="e90cfd8694af28a56433c8827a581ee12a4ba835f0d952436741d9e0f3f8685b")
@@ -57,41 +56,40 @@ class RocmCore(ROCmLibrary, CMakePackage):
     version("5.7.1", sha256="fc4915019ddfd126e8ef6a15006bce3aa7bd5fd11dc8eb04ce2ee6bdf9c6ae7f")
     version("5.7.0", sha256="722689bfec46c35f5428a41c5aacfc31efec2294fc3b0112861c562f8a71ac93")
 
-    variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
+    #variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
 
-    conflicts("+asan", when="os=rhel9")
-    conflicts("+asan", when="os=centos7")
-    conflicts("+asan", when="os=centos8")
+    #conflicts("+asan", when="os=rhel9")
+    #conflicts("+asan", when="os=centos7")
+    #conflicts("+asan", when="os=centos8")
 
     depends_on("cxx", type="build")  # generated
 
-    for ver in [
-        "6.1.0",
-        "6.1.1",
-        "6.1.2",
-        "6.2.0",
-        "6.2.1",
-        "6.2.4",
-        "6.3.0",
-        "6.3.1",
-        "6.3.2",
-        "6.3.3",
-        "6.4.0",
-        "6.4.1",
-        "6.4.2",
-        "6.4.3",
-        "7.0.0",
-        "7.0.2",
-        "7.1.0",
-        "7.1.1",
-        "7.2.0",
-        "7.2.1",
-        "7.2.3",
-        "7.13.0",
-        "7.14.0",
-        "10.0.0",
-    ]:
-        depends_on("llvm-amdgpu", when=f"@{ver}+asan")
+    #for ver in [
+    #    "6.1.0",
+    #    "6.1.1",
+    #    "6.1.2",
+    #    "6.2.0",
+    #    "6.2.1",
+    #    "6.2.4",
+    #    "6.3.0",
+    #    "6.3.1",
+    #    "6.3.2",
+    #    "6.3.3",
+    #    "6.4.0",
+    #    "6.4.1",
+    #    "6.4.2",
+    #    "6.4.3",
+    #    "7.0.0",
+    #    "7.0.2",
+    #    "7.1.0",
+    #    "7.1.1",
+    #    "7.2.0",
+    #    "7.2.1",
+    #    "7.2.3",
+    #    "7.13.0",
+    #    "7.14.0",
+    #]:
+    #    depends_on("llvm-amdgpu", when=f"@{ver}+asan")
 
     @classmethod
     def determine_version(cls, lib):
@@ -111,14 +109,14 @@ class RocmCore(ROCmLibrary, CMakePackage):
         else:
             return "projects/rocm-core"
 
-    def setup_build_environment(self, env: EnvironmentModifications) -> None:
-        if self.spec.satisfies("+asan"):
-            env.set("CC", self.spec["llvm-amdgpu"].prefix + "/bin/clang")
-            env.set("CXX", self.spec["llvm-amdgpu"].prefix + "/bin/clang++")
-            env.set("ASAN_OPTIONS", "detect_leaks=0")
-            env.set("CFLAGS", "-fsanitize=address -shared-libasan")
-            env.set("CXXFLAGS", "-fsanitize=address -shared-libasan")
-            env.set("LDFLAGS", "-fuse-ld=lld")
+    #def setup_build_environment(self, env: EnvironmentModifications) -> None:
+        #if self.spec.satisfies("+asan"):
+        #    env.set("CC", self.spec["llvm-amdgpu"].prefix + "/bin/clang")
+        #    env.set("CXX", self.spec["llvm-amdgpu"].prefix + "/bin/clang++")
+        #    env.set("ASAN_OPTIONS", "detect_leaks=0")
+        #    env.set("CFLAGS", "-fsanitize=address -shared-libasan")
+        #    env.set("CXXFLAGS", "-fsanitize=address -shared-libasan")
+        #    env.set("LDFLAGS", "-fuse-ld=lld")
 
     def cmake_args(self):
         args = [self.define("ROCM_VERSION", self.spec.version)]

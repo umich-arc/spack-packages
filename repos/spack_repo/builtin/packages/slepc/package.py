@@ -7,12 +7,11 @@ import sys
 
 from spack_repo.builtin.build_systems.cuda import CudaPackage
 from spack_repo.builtin.build_systems.generic import Package
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class Slepc(Package, CudaPackage, ROCmPackage):
+class Slepc(Package, CudaPackage):
     """Scalable Library for Eigenvalue Problem Computations."""
 
     homepage = "https://slepc.upv.es"
@@ -25,8 +24,6 @@ class Slepc(Package, CudaPackage, ROCmPackage):
     test_requires_compiler = True
 
     version("main", branch="main")
-    version("3.26.0", sha256="a2f4cc2af76d55c078c30ad8bc66b44736dac921a7912266eb44136fc1b6029d")
-    version("3.25.2", sha256="65795612fd50efd77d151bb884b0075429fe12c532963e38081988a5ed6efbd5")
     version("3.25.1", sha256="906ddbe15a20774c23ddcdf13a5054889d00a26c3c37463447ee593c757d03ee")
     version("3.25.0", sha256="ba2d1cd42d637a7577cab63b0f9e910921fdd60db58290dd1041d60152655f78")
     version("3.24.3", sha256="3f13421f3fcd68fd720a143088506e0f91e24243844703997597eee793225452")
@@ -86,7 +83,6 @@ class Slepc(Package, CudaPackage, ROCmPackage):
     # Cannot mix release and development versions of SLEPc and PETSc:
     depends_on("petsc@main", when="@main")
     for ver in [
-        "3.26",
         "3.25",
         "3.24",
         "3.23",
@@ -105,9 +101,9 @@ class Slepc(Package, CudaPackage, ROCmPackage):
     depends_on("arpack-ng~mpi", when="+arpack^petsc~mpi~int64")
     depends_on("arpack-ng+mpi", when="+arpack^petsc+mpi~int64")
 
-    for arch in ROCmPackage.amdgpu_targets:
-        rocm_dep = "+rocm amdgpu_target={0}".format(arch)
-        depends_on("petsc {0}".format(rocm_dep), when=rocm_dep)
+    #for arch in ROCmPackage.amdgpu_targets:
+    #    rocm_dep = "+rocm amdgpu_target={0}".format(arch)
+    #    depends_on("petsc {0}".format(rocm_dep), when=rocm_dep)
 
     # arpack-ng does not have an int64 variant that can enabled explicitly.
     conflicts("+arpack", when="^petsc+int64")

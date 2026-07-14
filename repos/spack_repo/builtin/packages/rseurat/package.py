@@ -8,16 +8,20 @@ from spack.package import *
 
 
 class Rseurat(RCollectivePackage):
-    cran = "Seurat"
-    #cran_mirror = "https://repo.miserver.it.umich.edu/cran/"
+    """Easily Install and Load the Seurat.
+
+    Seurat is a single cell analysis package for R."""
 
     license("MIT")
+    has_code = False
+    metalist = {
+    "5.5.1_R4.6.1": [('r', '4.6.1'), ("r-seurat", "5.5.1")]
+    }
 
-    version("5.1.0", sha256="adcfb43d7a8cc55eaa7a0954a082ac95e14059a82901913379bfec115e224d59")
-
+    for key in metalist.keys():
+        version(key)
+        for pairing in metalist[key]:
+             depends_on(f"{pairing[0]}@{pairing[1]}", when=f"@{key}", type="run")
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
-    depends_on("r@3.3:", type=("build", "run"))
-    depends_on("gdal")
-    depends_on("proj")

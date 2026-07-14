@@ -11,7 +11,6 @@ import sys
 from spack_repo.builtin.build_systems.cached_cmake import cmake_cache_path, cmake_cache_string
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
@@ -29,12 +28,12 @@ def cmake_cache_entry(name, value, vtype=None):
     return 'set({0} "{1}" CACHE {2} "")\n\n'.format(name, value, vtype)
 
 
-def propagate_hip_arch(package, spec=""):
-    for hip_arch in ROCmPackage.amdgpu_targets:
-        depends_on(
-            f"{package} +rocm amdgpu_target={hip_arch}",
-            when=f"{spec} +rocm amdgpu_target={hip_arch}",
-        )
+#def propagate_hip_arch(package, spec=""):
+#    for hip_arch in ROCmPackage.amdgpu_targets:
+#        depends_on(
+#            f"{package} +rocm amdgpu_target={hip_arch}",
+#            when=f"{spec} +rocm amdgpu_target={hip_arch}",
+#        )
 
 
 def propagate_cuda_arch(package, spec=None):
@@ -47,7 +46,7 @@ def propagate_cuda_arch(package, spec=None):
         )
 
 
-class Ascent(CMakePackage, CudaPackage, ROCmPackage):
+class Ascent(CMakePackage, CudaPackage):
     """Ascent is an open source many-core capable lightweight in situ
     visualization and analysis infrastructure for multi-physics HPC
     simulations."""
@@ -234,8 +233,8 @@ class Ascent(CMakePackage, CudaPackage, ROCmPackage):
         depends_on("raja@2024.02.1:2025.03.1", when="@0.9.3:")
         depends_on("raja+openmp", when="+openmp")
         depends_on("raja~openmp", when="~openmp")
-        depends_on("raja+rocm", when="+rocm")
-        depends_on("raja~rocm", when="~rocm")
+        #depends_on("raja+rocm", when="+rocm")
+        #depends_on("raja~rocm", when="~rocm")
 
     with when("+umpire"):
         depends_on("umpire")
@@ -265,13 +264,13 @@ class Ascent(CMakePackage, CudaPackage, ROCmPackage):
         depends_on("vtk-m~openmp", when="@0.9.0: ~openmp")
         depends_on("vtk-m~cuda", when="@0.9.0: ~cuda")
         depends_on("vtk-m+cuda", when="@0.9.0: +cuda")
-        depends_on("vtk-m~rocm", when="@0.9.0: ~rocm")
+        #depends_on("vtk-m~rocm", when="@0.9.0: ~rocm")
         depends_on("vtk-m+fpic", when="@0.8.0:")
         depends_on("vtk-m~shared+fpic", when="@0.8.0: ~shared")
 
-        with when("+rocm"):
-            depends_on("kokkos@3.7.02:+rocm")
-            depends_on("vtk-m+kokkos+rocm")
+        #with when("+rocm"):
+        #    depends_on("kokkos@3.7.02:+rocm")
+        #    depends_on("vtk-m+kokkos+rocm")
 
         #######################
         # VTK-h
@@ -291,10 +290,10 @@ class Ascent(CMakePackage, CudaPackage, ROCmPackage):
         depends_on("vtk-m@:1.7", when="@:0.8.0")
         depends_on("vtk-m+testlib", when="@:0.8.0 +test")
 
-    propagate_hip_arch("vtk-m", "+vtkh")
-    propagate_hip_arch("kokkos", "+vtkh")
-    propagate_hip_arch("raja", "+raja")
-    propagate_hip_arch("umpire", "+umpire")
+    #propagate_hip_arch("vtk-m", "+vtkh")
+    #propagate_hip_arch("kokkos", "+vtkh")
+    #propagate_hip_arch("raja", "+raja")
+    #propagate_hip_arch("umpire", "+umpire")
     propagate_cuda_arch("vtk-h", "@:0.8.0 +vtkh")
 
     # mfem
@@ -351,18 +350,18 @@ class Ascent(CMakePackage, CudaPackage, ROCmPackage):
         "~fides", when="@0.9: +adios2", msg="Ascent >= 0.9 assumes FIDES when building ADIOS2"
     )
 
-    conflicts("+fortran", when="+rocm")
-    conflicts("+rocm", when="@:0.9.2")
+    #conflicts("+fortran", when="+rocm")
+    #conflicts("+rocm", when="@:0.9.2")
 
-    @when("+rocm")
-    def patch(self):
-        # VTK-m external interface sets -std=c++14 (VTK-m 2.2), we need
-        # to override this since Kokkos requires -std=c++17.
-        with open("src/libs/vtkh/vtkm_filters/CMakeLists.txt", "a") as f:
-            f.write(
-                """target_compile_options(vtkm_compiled_filters PUBLIC
-                $<$<OR:$<COMPILE_LANGUAGE:CXX>,$<COMPILE_LANGUAGE:HIP>>:-std=c++17>)"""
-            )
+    #@when("+rocm")
+    #def patch(self):
+    #    # VTK-m external interface sets -std=c++14 (VTK-m 2.2), we need
+    #    # to override this since Kokkos requires -std=c++17.
+    #    with open("src/libs/vtkh/vtkm_filters/CMakeLists.txt", "a") as f:
+    #        f.write(
+    #            """target_compile_options(vtkm_compiled_filters PUBLIC
+    #            $<$<OR:$<COMPILE_LANGUAGE:CXX>,$<COMPILE_LANGUAGE:HIP>>:-std=c++17>)"""
+    #        )
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         env.set("CTEST_OUTPUT_ON_FAILURE", "1")
@@ -665,30 +664,30 @@ class Ascent(CMakePackage, CudaPackage, ROCmPackage):
 
         cfg.write("# HIP Support\n")
 
-        if spec.satisfies("+rocm"):
-            cfg.write(cmake_cache_entry("ENABLE_HIP", "ON"))
-            cfg.write(cmake_cache_entry("KOKKOS_DIR", spec["kokkos"].prefix))
+        #if spec.satisfies("+rocm"):
+        #    cfg.write(cmake_cache_entry("ENABLE_HIP", "ON"))
+        #    cfg.write(cmake_cache_entry("KOKKOS_DIR", spec["kokkos"].prefix))
 
-            amdgpu_archs = ";".join(spec.variants["amdgpu_target"].value)
-            cfg.write(cmake_cache_path("HIP_ROOT_DIR", f"{spec['hip'].prefix}"))
-            cfg.write(cmake_cache_path("HIP_CLANG_PATH", f"{spec['llvm-amdgpu'].prefix.bin}"))
-            cfg.write(cmake_cache_string("CMAKE_HIP_ARCHITECTURES", amdgpu_archs))
+        #    amdgpu_archs = ";".join(spec.variants["amdgpu_target"].value)
+        #    cfg.write(cmake_cache_path("HIP_ROOT_DIR", f"{spec['hip'].prefix}"))
+        #    cfg.write(cmake_cache_path("HIP_CLANG_PATH", f"{spec['llvm-amdgpu'].prefix.bin}"))
+        #    cfg.write(cmake_cache_string("CMAKE_HIP_ARCHITECTURES", amdgpu_archs))
 
-            # This is needed for Kokkos
-            kokkos_cxxstd = spec["kokkos"].variants["cxxstd"].value
-            cfg.write(cmake_cache_entry("CMAKE_CXX_STANDARD", kokkos_cxxstd))
-            cfg.write(cmake_cache_entry("CMAKE_HIP_STANDARD", kokkos_cxxstd))
-            cfg.write(cmake_cache_entry("BLT_CXX_STD", f"c++{kokkos_cxxstd}"))
+        #    # This is needed for Kokkos
+        #    kokkos_cxxstd = spec["kokkos"].variants["cxxstd"].value
+        #    cfg.write(cmake_cache_entry("CMAKE_CXX_STANDARD", kokkos_cxxstd))
+        #    cfg.write(cmake_cache_entry("CMAKE_HIP_STANDARD", kokkos_cxxstd))
+        #    cfg.write(cmake_cache_entry("BLT_CXX_STD", f"c++{kokkos_cxxstd}"))
 
-            # Newer ROCm > 5 versions do not autoinclude hip runtime headers.
-            cfg.write(
-                cmake_cache_entry(
-                    "CMAKE_HIP_FLAGS", f"-include {spec['hip'].prefix.include}/hip/hip_runtime.h"
-                )
-            )
+        #    # Newer ROCm > 5 versions do not autoinclude hip runtime headers.
+        #    cfg.write(
+        #        cmake_cache_entry(
+        #            "CMAKE_HIP_FLAGS", f"-include {spec['hip'].prefix.include}/hip/hip_runtime.h"
+        #        )
+        #    )
 
-        else:
-            cfg.write(cmake_cache_entry("ENABLE_HIP", "OFF"))
+
+        cfg.write(cmake_cache_entry("ENABLE_HIP", "OFF"))
 
         #######################
         # VTK-h (and deps)

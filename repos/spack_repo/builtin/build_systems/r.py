@@ -3,7 +3,10 @@
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 from typing import List, Optional, Tuple
 
-from spack.package import ClassProperty, classproperty, depends_on, extends, mkdirp
+import spack.llnl.util.tty as tty
+from spack.package import join_path
+
+from spack.package import ClassProperty, classproperty, depends_on, extends, mkdirp, register_builder, BuilderWithDefaults, Spec, Prefix, build_system, variant, when, HeaderList, LibraryList
 
 from .generic import GenericBuilder, Package
 
@@ -114,80 +117,166 @@ class RPackage(Package):
     git: ClassProperty[Optional[str]] = classproperty(_git)
 
 
-class RCollectiveBuilder(RBuilder):
-    """Builder for RCollectivePackage.
+@register_builder("r_collective")
+class RCollectiveBuilder(BuilderWithDefaults):
+    """Create a unified R prefix from installed Spack packages."""
 
-    Installs the primary CRAN package and all packages listed in
-    ``cran_packages`` via ``install.packages()`` from the configured mirror.
-    Using ``install.packages()`` (rather than ``R CMD INSTALL``) lets CRAN
-    resolve and fetch R-level dependencies automatically, which is necessary
-    when those dependencies are not individually packaged in Spack.
-
-    Each ``install.packages()`` invocation inherits Spack's normal dependency
-    build environment, so pkg-config, CMake, R extension paths, and dependency
-    executables are resolved the same way they are for regular RPackage
-    builds.  After each install the package is verified with
-    ``requireNamespace()``; a failed install causes an explicit ``stop()`` so
-    Spack receives a non-zero exit code.
-    """
-
-    def _r_string(self, value):
-        """Return a quoted R string literal."""
-        import json
-
-        return json.dumps(str(value))
+    phases = ("install",)
 
     def install(self, pkg, spec, prefix):
-        mkdirp(pkg.module.r_lib_dir)
+        r_spec = pkg.r_spec
 
-        r = pkg.module.R
-        r_lib_dir = pkg.module.r_lib_dir
+        tty.info(
+            "Creating R collective with {0}".format(
+                r_spec.format("{name}@{version}/{hash:7}")
+            )
+        )
 
-        all_packages = ([pkg.cran] if pkg.cran else []) + list(pkg.cran_packages)
+        mkdirp(prefix)
 
-        for cran_pkg in all_packages:
-            cran_pkg_expr = self._r_string(cran_pkg)
-            r_lib_dir_expr = self._r_string(r_lib_dir)
-            cran_mirror_expr = self._r_string(pkg.cran_mirror)
-            failed_msg_expr = self._r_string(
-                "install.packages failed for {0}".format(cran_pkg)
+        #
+        # Add R packages belonging to this R interpreter.
+        #
+        extensions = self._r_extensions(spec, r_spec)
+
+        for extension in extensions:
+            tty.info(
+                "Adding {0}".format(
+                    extension.format("{name}@{version}/{hash:7}")
+                )
             )
 
-            r(
-                "--vanilla",
-                "-e",
-                (
-                    "install.packages({0}, lib={1}, repos={2}, dependencies=TRUE); ".format(
-                        cran_pkg_expr, r_lib_dir_expr, cran_mirror_expr
-                    )
-                    + "if (!requireNamespace({0}, lib.loc={1}, quietly=TRUE)) ".format(
-                        cran_pkg_expr, r_lib_dir_expr
-                    )
-                    + "stop({0})".format(failed_msg_expr)
-                ),
-                extra_env={"R_LIBS_USER": ""},
+
+        self._write_manifest(spec, prefix, r_spec, extensions)
+
+    def _r_extensions(self, root_spec: Spec, r_spec: Spec) -> List[Spec]:
+        """Return R extensions belonging to this collective's R."""
+
+        extensions = []
+
+        #
+        # traverse() includes transitive dependencies.
+        #
+        for dep in root_spec.traverse(root=False):
+
+            if dep.name == "r":
+                continue
+
+            #
+            # Only consider installed packages.
+            #
+            try:
+                dep_pkg = dep.package
+            except Exception:
+                continue
+
+            #
+            # Python packages are extensions. Determine whether this package
+            # extends Python.
+            #
+            try:
+                extendee_spec = dep_pkg.extendee_spec
+            except Exception:
+                extendee_spec = None
+
+            if extendee_spec is None:
+                continue
+
+            if extendee_spec.name != "r":
+                continue
+
+            #
+            # Make sure the extension belongs to the exact R instance
+            # used by this collective.
+            #
+            try:
+                extendee_r = dep["r"]
+            except KeyError:
+                continue
+
+            if extendee_r.dag_hash() != r_spec.dag_hash():
+                continue
+
+            extensions.append(dep)
+
+        return sorted(
+            extensions,
+            key=lambda x: (
+                x.name,
+                str(x.version),
+                x.dag_hash(),
+            ),
+        )
+
+
+    def _write_manifest(
+        self,
+        root_spec: Spec,
+        prefix: Prefix,
+        r_spec: Spec,
+        extensions: List[Spec],
+    ) -> None:
+        """Record the exact contents of the collective."""
+
+        metadata = join_path(prefix, ".spack-r-collective")
+        mkdirp(metadata)
+
+        manifest = join_path(metadata, "packages.txt")
+
+        with open(manifest, "w", encoding="utf-8") as f:
+            f.write("# Generated by RCollectiveBuilder\n")
+            f.write(
+                "# collective: "
+                + root_spec.format("{name}@{version}/{hash}")
+                + "\n\n"
             )
+
+            f.write(
+                r_spec.format("{name}@{version} /{hash} {prefix}")
+                + "\n"
+            )
+
+            for dep in extensions:
+                f.write(
+                    dep.format("{name}@{version} /{hash} {prefix}")
+                    + "\n"
+                )
 
 
 class RCollectivePackage(RPackage):
-    """Specialized class for a primary R package that also installs a
-    collection of additional CRAN packages into the same R library prefix.
+    """
+    RCollectivePackage does not build R modules itself. Instead,
+    it depends on normal Spack R packages and creates a unified prefix
+    containing Python and all R extensions in its dependency DAG.
 
-    Subclasses must set :attr:`cran` (the primary package) and may populate
-    :attr:`cran_packages` with the names of extra CRAN packages to install.
-
-    Example::
-
-        class Rtidyverse(RCollectivePackage):
-            cran = "tidyverse"
-            cran_packages = ["Rcpp"]
+    Each dependency remains an independently installed Spack package.
     """
 
-    #: Additional CRAN package names to install alongside the primary package.
-    cran_packages: List[str] = []
-
-    #: CRAN mirror used for the additional ``install.packages()`` calls.
-    cran_mirror: str = "https://cloud.r-project.org"
-
-    GenericBuilder = RCollectiveBuilder
     build_system_class = "RCollectivePackage"
+
+    default_buildsystem = "r_collective"
+
+    build_system("r_collective")
+
+    variant(
+        "transitive",
+        default=True,
+        description="Include transitive R extension dependencies",
+    )
+
+    with when("build_system=r_collective"):
+        extends("r")
+
+    @property
+    def r_spec(self) -> Spec:
+        """R used by this collective."""
+        r, *_ = self.spec.dependencies("r")
+        return r
+
+    @property
+    def headers(self) -> HeaderList:
+        return HeaderList([])
+
+    @property
+    def libs(self) -> LibraryList:
+        return LibraryList([])

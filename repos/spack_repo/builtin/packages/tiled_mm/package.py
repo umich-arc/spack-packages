@@ -4,12 +4,11 @@
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class TiledMm(CMakePackage, CudaPackage, ROCmPackage):
+class TiledMm(CMakePackage, CudaPackage):
     """Matrix multiplication on GPUs for matrices stored on a CPU. Similar to cublasXt,
     but ported to both NVIDIA and AMD GPUs."""
 
@@ -35,12 +34,12 @@ class TiledMm(CMakePackage, CudaPackage, ROCmPackage):
 
     depends_on("cxx", type="build")  # generated
 
-    depends_on("rocblas", when="+rocm")
+    #depends_on("rocblas", when="+rocm")
     depends_on("cxxopts", when="+tests")
     depends_on("cxxopts", when="+examples")
 
-    conflicts("~cuda~rocm")
-    conflicts("+cuda", when="+rocm")
+    conflicts("~cuda")
+    #conflicts("+cuda", when="+rocm")
 
     def cmake_args(self):
         args = [
@@ -49,8 +48,8 @@ class TiledMm(CMakePackage, CudaPackage, ROCmPackage):
             self.define_from_variant("TILEDMM_WITH_TESTS", "tests"),
         ]
 
-        if "+rocm" in self.spec:
-            args.extend([self.define("TILEDMM_GPU_BACKEND", "ROCM")])
+        #if "+rocm" in self.spec:
+        #    args.extend([self.define("TILEDMM_GPU_BACKEND", "ROCM")])
 
         if "+cuda" in self.spec:
             args.extend([self.define("TILEDMM_GPU_BACKEND", "CUDA")])

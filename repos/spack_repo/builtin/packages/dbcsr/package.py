@@ -6,12 +6,11 @@ import os
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage, generator
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
+class Dbcsr(CMakePackage, CudaPackage):
     """Distributed Block Compressed Sparse Row matrix library."""
 
     homepage = "https://github.com/cp2k/dbcsr"
@@ -119,7 +118,7 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
     variant("mpi_f08", default=False, when="@2.6:", description="Use mpi F08 module")
 
     variant("g2g", default=False, when="@:2.8", description="GPU-aware MPI with CUDA/HIP")
-    conflicts("+g2g", when="~cuda ~rocm", msg="GPU-aware MPI requires +cuda or +rocm")
+    conflicts("+g2g", when="~cuda", msg="GPU-aware MPI requires +cuda")
 
     depends_on("c", type="build")  # generated
     depends_on("cxx", type="build")  # generated
@@ -145,7 +144,7 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
     depends_on("pkgconfig", type="build")
     depends_on("python@3.6:", type="build", when="+cuda")
 
-    depends_on("hipblas", when="+rocm")
+    #depends_on("hipblas", when="+rocm")
     depends_on("libxs@1:+fortran", when="@2.10: smm=libxs")
     depends_on(
         "libxsmm@2: build_system=cmake",
@@ -194,15 +193,15 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
     amd_msg = f"""DBCSR supports these AMD gpu targets:  {", ".join(dbcsr_amdgpu_targets)}.
                   Set amdgpu_target explicitly to one of the supported targets"""
 
-    for arch in ROCmPackage.amdgpu_targets:
-        if arch not in dbcsr_amdgpu_targets:
-            conflicts("+rocm", when=f"amdgpu_target={arch}", msg=amd_msg)
+    #for arch in ROCmPackage.amdgpu_targets:
+    #    if arch not in dbcsr_amdgpu_targets:
+    #        conflicts("+rocm", when=f"amdgpu_target={arch}", msg=amd_msg)
 
     # GPU runtimes are usually mutually exclusive
-    accel_msg = "CUDA and ROCm are mutually exlusive"
-    conflicts("+cuda", when="+rocm", msg=accel_msg)
+    accel_msg = "CUDA and OpenCL are mutually exlusive"
+    #conflicts("+cuda", when="+rocm", msg=accel_msg)
     conflicts("+cuda", when="+opencl", msg=accel_msg)
-    conflicts("+rocm", when="+opencl", msg=accel_msg)
+    #conflicts("+rocm", when="+opencl", msg=accel_msg)
 
     # Require OpenMP threading by making other options conflict
     conflicts("^intel-oneapi-mkl threads=none", when="+openmp")
@@ -221,17 +220,17 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
     generator("ninja")
     depends_on("ninja@1.10:", type="build")
 
-    @when("+rocm")
-    def patch(self):
-        for directory, subdirectory, files in os.walk(os.getcwd()):
-            for i in files:
-                file_path = os.path.join(directory, i)
-                filter_file("USE ISO_C_BINDING", "USE,INTRINSIC :: ISO_C_BINDING", file_path)
-                filter_file("USE ISO_FORTRAN_ENV", "USE,INTRINSIC :: ISO_FORTRAN_ENV", file_path)
-                filter_file("USE omp_lib", "USE,INTRINSIC :: omp_lib", file_path)
-                filter_file("USE OMP_LIB", "USE,INTRINSIC :: OMP_LIB", file_path)
-                filter_file("USE iso_c_binding", "USE,INTRINSIC :: iso_c_binding", file_path)
-                filter_file("USE iso_fortran_env", "USE,INTRINSIC :: iso_fortran_env", file_path)
+    #@when("+rocm")
+    #def patch(self):
+    #    for directory, subdirectory, files in os.walk(os.getcwd()):
+    #        for i in files:
+    #            file_path = os.path.join(directory, i)
+    #            filter_file("USE ISO_C_BINDING", "USE,INTRINSIC :: ISO_C_BINDING", file_path)
+    #            filter_file("USE ISO_FORTRAN_ENV", "USE,INTRINSIC :: ISO_FORTRAN_ENV", file_path)
+    #            filter_file("USE omp_lib", "USE,INTRINSIC :: omp_lib", file_path)
+    #            filter_file("USE OMP_LIB", "USE,INTRINSIC :: OMP_LIB", file_path)
+    #            filter_file("USE iso_c_binding", "USE,INTRINSIC :: iso_c_binding", file_path)
+    #            filter_file("USE iso_fortran_env", "USE,INTRINSIC :: iso_fortran_env", file_path)
 
     def cmake_args(self):
         spec = self.spec
@@ -239,8 +238,8 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
         if "+cuda" in spec and len(spec.variants["cuda_arch"].value) > 1:
             raise InstallError("dbcsr supports only one cuda_arch at a time")
 
-        if "+rocm" in spec and len(spec.variants["amdgpu_target"].value) > 1:
-            raise InstallError("DBCSR supports only one amdgpu_arch at a time")
+        #if "+rocm" in spec and len(spec.variants["amdgpu_target"].value) > 1:
+        #    raise InstallError("DBCSR supports only one amdgpu_arch at a time")
 
         args = [
             self.define_from_variant("USE_MPI", "mpi"),
@@ -291,19 +290,19 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
 
             args += ["-DWITH_GPU=%s" % gpuver, "-DUSE_ACCEL=cuda"]
 
-        if self.spec.satisfies("+rocm"):
-            amd_arch = self.spec.variants["amdgpu_target"].value[0]
-            gpuver = {
-                "gfx906": "Mi50",
-                "gfx908": "Mi100",
-                "gfx90a": "Mi250",
-                "gfx90a:xnack-": "Mi250",
-                "gfx90a:xnack+": "Mi250",
-                "gfx942": "Mi300",
-                "gfx950": "Mi350",
-            }[amd_arch]
+        #if self.spec.satisfies("+rocm"):
+        #    amd_arch = self.spec.variants["amdgpu_target"].value[0]
+        #    gpuver = {
+        #        "gfx906": "Mi50",
+        #        "gfx908": "Mi100",
+        #        "gfx90a": "Mi250",
+        #        "gfx90a:xnack-": "Mi250",
+        #        "gfx90a:xnack+": "Mi250",
+        #        "gfx942": "Mi300",
+        #        "gfx950": "Mi350",
+        #    }[amd_arch]
 
-            args += [f"-DWITH_GPU={gpuver}", "-DUSE_ACCEL=hip"]
+        #    args += [f"-DWITH_GPU={gpuver}", "-DUSE_ACCEL=hip"]
 
         if self.spec.satisfies("+opencl"):
             args += ["-DUSE_ACCEL=opencl"]

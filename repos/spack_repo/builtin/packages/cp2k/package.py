@@ -8,7 +8,6 @@ from spack_repo.builtin.build_systems import cmake, makefile
 from spack_repo.builtin.build_systems.cmake import CMakePackage, generator
 from spack_repo.builtin.build_systems.cuda import CudaPackage
 from spack_repo.builtin.build_systems.makefile import MakefilePackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
@@ -28,7 +27,7 @@ GPU_MAP = {
 }
 
 
-class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
+class Cp2k(MakefilePackage, CMakePackage, CudaPackage):
     """CP2K is a quantum chemistry and solid state physics software package
     that can perform atomistic simulations of solid state, liquid, molecular,
     periodic, material, crystal, and biological systems
@@ -206,12 +205,12 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
         description="Enable FFT calculations on GPU",
         when="@2025.2: +cuda",
     )
-    variant(
-        "pw_gpu",
-        default=False,
-        description="Enable FFT calculations on GPU",
-        when="@2025.2: +rocm",
-    )
+    #variant(
+    #    "pw_gpu",
+    #    default=False,
+    #    description="Enable FFT calculations on GPU",
+    #    when="@2025.2: +rocm",
+    #)
 
     variant(
         "pw_gpu",
@@ -353,7 +352,7 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
     with when("+openmp"):
         depends_on("fftw+openmp", when="^[virtuals=fftw-api] fftw")
         depends_on("amdfftw+openmp", when="^[virtuals=fftw-api] amdfftw")
-        depends_on("cray-fftw+openmp", when="^[virtuals=fftw-api] cray-fftw")
+        #depends_on("cray-fftw+openmp", when="^[virtuals=fftw-api] cray-fftw")
         depends_on("armpl-gcc threads=openmp", when="^[virtuals=blas] armpl-gcc")
         depends_on("openblas threads=openmp", when="^[virtuals=blas] openblas")
         depends_on(
@@ -368,7 +367,7 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
         # The Cray compiler wrappers will automatically add libsci_mp with
         # -fopenmp. Since CP2K unconditionally links blas/lapack/scalapack
         # we have to be consistent.
-        depends_on("cray-libsci+openmp", when="^[virtuals=blas] cray-libsci")
+        #depends_on("cray-libsci+openmp", when="^[virtuals=blas] cray-libsci")
 
     with when("smm=libxsmm"):
         # require libxsmm-1.11+ since 1.10 can leak file descriptors in Fortran
@@ -415,7 +414,7 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
 
     with when("+spla"):
         depends_on("spla+cuda+fortran", when="+cuda")
-        depends_on("spla+rocm+fortran", when="+rocm")
+        #depends_on("spla+rocm+fortran", when="+rocm")
 
     with when("+mpi"):
         depends_on("mpi@2:")
@@ -430,15 +429,15 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
         depends_on("cosma@2.5.1:", when="@9:")
         depends_on("cosma@2.6.3:", when="@2023.2:")
         depends_on("cosma+cuda", when="+cuda")
-        depends_on("cosma+rocm", when="+rocm")
+        #depends_on("cosma+rocm", when="+rocm")
 
     with when("+elpa"):
         depends_on("elpa+openmp", when="+openmp")
         depends_on("elpa~openmp", when="~openmp")
         depends_on("elpa+cuda", when="+cuda")
         depends_on("elpa~cuda", when="~cuda")
-        depends_on("elpa+rocm", when="+rocm")
-        depends_on("elpa~rocm", when="~rocm")
+        #depends_on("elpa+rocm", when="+rocm")
+        #depends_on("elpa~rocm", when="~rocm")
         depends_on("elpa@2021.05:", when="@8.3:")
         depends_on("elpa@2021.11.001:", when="@9.1:")
         depends_on("elpa@2023.05.001:", when="@2023.2:")
@@ -447,9 +446,9 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
         with when("@:2024.1"):
             depends_on("dla-future@0.2.1: +scalapack")
             depends_on("dla-future ~cuda", when="~cuda")
-            depends_on("dla-future ~rocm", when="~rocm")
+            #depends_on("dla-future ~rocm", when="~rocm")
             depends_on("dla-future +cuda", when="+cuda")
-            depends_on("dla-future +rocm", when="+rocm")
+            #depends_on("dla-future +rocm", when="+rocm")
 
         with when("@2024.2:"):
             depends_on("dla-future-fortran@0.1.0:")
@@ -459,9 +458,9 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
             # WARN: In the concretizer output, dla-future will appear as dependency of CP2K
             #       instead of dla-future-fortran
             depends_on("dla-future ~cuda", when="~cuda")
-            depends_on("dla-future ~rocm", when="~rocm")
+            #depends_on("dla-future ~rocm", when="~rocm")
             depends_on("dla-future +cuda", when="+cuda")
-            depends_on("dla-future +rocm", when="+rocm")
+            #depends_on("dla-future +rocm", when="+rocm")
 
     conflicts(
         "+plumed",
@@ -485,7 +484,7 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
     with when("+sirius"):
         depends_on("sirius+fortran+shared+scalapack")
         depends_on("sirius+cuda", when="+cuda")
-        depends_on("sirius+rocm", when="+rocm")
+        #depends_on("sirius+rocm", when="+rocm")
         depends_on("sirius+openmp", when="+openmp")
         depends_on("sirius~openmp", when="~openmp")
         depends_on("sirius@7.3:", when="@9.1")
@@ -536,7 +535,7 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
         depends_on("dbcsr+openmp", when="+openmp")
         depends_on("dbcsr+opencl", when="+opencl")
         depends_on("dbcsr+mpi", when="+mpi")
-        depends_on("dbcsr+rocm", when="+rocm")
+        #depends_on("dbcsr+rocm", when="+rocm")
         depends_on("dbcsr+cuda", when="+cuda")
 
         depends_on("dbcsr@:2.9.1 smm=libxsmm", when="smm=libxsmm")
@@ -544,9 +543,9 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
         depends_on("dbcsr@2.10: smm=libxs", when="@2026.2: smm=libxs")
         depends_on("dbcsr~libxsmm", when="~libxsmm")
 
-    with when("@2022: +rocm"):
-        depends_on("hipblas")
-        depends_on("hipfft")
+    #with when("@2022: +rocm"):
+    #    depends_on("hipblas")
+    #    depends_on("hipfft")
 
     # The CMake build system and AOCC are not compatible as of AOCC 5
     requires("build_system=makefile", when="%aocc")
@@ -595,10 +594,10 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
             if arch not in supported_cuda_arch_list:
                 conflicts("+cuda", when="cuda_arch={0}".format(arch), msg=cuda_msg)
 
-    with when("@:2026.1 +rocm"):
-        for arch in ROCmPackage.amdgpu_targets:
-            if arch not in supported_rocm_arch_list:
-                conflicts("+rocm", when="amdgpu_target={0}".format(arch), msg=rocm_msg)
+    #with when("@:2026.1 +rocm"):
+    #    for arch in ROCmPackage.amdgpu_targets:
+    #        if arch not in supported_rocm_arch_list:
+    #            conflicts("+rocm", when="amdgpu_target={0}".format(arch), msg=rocm_msg)
 
     # Fix 2- and 3-center integral calls to libint
     patch(
@@ -677,24 +676,24 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
         # This patch triggers compilation errors on some systems as rocm install these
         # modules files in rocm/include/llvm and this directory is given to gcc
 
-        if self.spec.satisfies("+rocm"):
-            for directory, subdirectory, files in os.walk(os.getcwd()):
-                for i in files:
-                    file_path = os.path.join(directory, i)
-                    filter_file("USE ISO_C_BINDING", "USE,INTRINSIC :: ISO_C_BINDING", file_path)
-                    filter_file(
-                        "USE ISO_FORTRAN_ENV",
-                        "USE,INTRINSIC :: ISO_FORTRAN_ENV",
-                        file_path,
-                    )
-                    filter_file("USE omp_lib", "USE,INTRINSIC :: omp_lib", file_path)
-                    filter_file("USE OMP_LIB", "USE,INTRINSIC :: OMP_LIB", file_path)
-                    filter_file("USE iso_c_binding", "USE,INTRINSIC :: iso_c_binding", file_path)
-                    filter_file(
-                        "USE iso_fortran_env",
-                        "USE,INTRINSIC :: iso_fortran_env",
-                        file_path,
-                    )
+        #if self.spec.satisfies("+rocm"):
+        #    for directory, subdirectory, files in os.walk(os.getcwd()):
+        #        for i in files:
+        #            file_path = os.path.join(directory, i)
+        #            filter_file("USE ISO_C_BINDING", "USE,INTRINSIC :: ISO_C_BINDING", file_path)
+        #            filter_file(
+        #                "USE ISO_FORTRAN_ENV",
+        #                "USE,INTRINSIC :: ISO_FORTRAN_ENV",
+        #                file_path,
+        #            )
+        #            filter_file("USE omp_lib", "USE,INTRINSIC :: omp_lib", file_path)
+        #            filter_file("USE OMP_LIB", "USE,INTRINSIC :: OMP_LIB", file_path)
+        #            filter_file("USE iso_c_binding", "USE,INTRINSIC :: iso_c_binding", file_path)
+        #            filter_file(
+        #                "USE iso_fortran_env",
+        #                "USE,INTRINSIC :: iso_fortran_env",
+        #                file_path,
+        #            )
 
     def url_for_version(self, version):
         url = "https://github.com/cp2k/cp2k/releases/download/v{0}/cp2k-{0}.tar.bz2"
@@ -719,10 +718,10 @@ class MakefileBuilder(makefile.MakefileBuilder):
             "intel-oneapi-compilers": ["-O2", "-fp-model precise"],
             "intel": ["-g", "-O2", "-fp-model precise"],
             "nvhpc": ["-fast"],
-            "cce": ["-O2"],
+            #"cce": ["-O2"],
             "xl": ["-O3"],
             "aocc": ["-O2"],
-            "rocmcc": ["-O1"],
+            #"rocmcc": ["-O1"],
         }
 
         dflags = ["-DNDEBUG"] if spec.satisfies("@:2023.2") else []
@@ -763,17 +762,17 @@ class MakefileBuilder(makefile.MakefileBuilder):
                 "-ffree-line-length-none",
                 "-ggdb",  # make sure we get proper Fortran backtraces
             ]
-        elif spec.satisfies("%aocc") or spec.satisfies("%rocmcc"):
+        elif spec.satisfies("%aocc"):
             fcflags += ["-ffree-form", "-Mbackslash"]
         elif spec.satisfies("%nvhpc"):
             fcflags += ["-Mfreeform", "-Mextend"]
-        elif spec.satisfies("%cce"):
-            fcflags += ["-emf", "-ffree", "-hflex_mp=strict"]
+        #elif spec.satisfies("%cce"):
+        #    fcflags += ["-emf", "-ffree", "-hflex_mp=strict"]
         elif spec.satisfies("%xl"):
             fcflags += ["-qpreprocess", "-qstrict", "-q64"]
             ldflags += ["-Wl,--allow-multiple-definition"]
 
-        if "+mpi %gcc@10:" in spec and spec["mpi"].name in ["mpich", "cray-mpich"]:
+        if "+mpi %gcc@10:" in spec and spec["mpi"].name in ["mpich"]:
             fcflags += [
                 "-fallow-argument-mismatch"
             ]  # https://github.com/pmodels/mpich/issues/4300
@@ -786,11 +785,11 @@ class MakefileBuilder(makefile.MakefileBuilder):
             fcflags.append(pkg.compiler.openmp_flag)
             ldflags.append(pkg.compiler.openmp_flag)
             nvflags.append('-Xcompiler="{0}"'.format(pkg.compiler.openmp_flag))
-        elif spec.satisfies("%cce"):  # Cray enables OpenMP by default
-            cflags += ["-hnoomp"]
-            cxxflags += ["-hnoomp"]
-            fcflags += ["-hnoomp"]
-            ldflags += ["-hnoomp"]
+        #elif spec.satisfies("%cce"):  # Cray enables OpenMP by default
+        #    cflags += ["-hnoomp"]
+        #    cxxflags += ["-hnoomp"]
+        #    fcflags += ["-hnoomp"]
+        #    ldflags += ["-hnoomp"]
 
         if spec.satisfies("@7:"):  # recent versions of CP2K use C++14 CUDA code
             cxxflags.append(pkg.compiler.cxx14_flag)
@@ -1035,23 +1034,23 @@ class MakefileBuilder(makefile.MakefileBuilder):
             if cuda_arch == "35" and spec.satisfies("+cuda_arch_35_k20x"):
                 gpuver = "K20X"
 
-        if spec.satisfies("@2022: +rocm"):
-            libs += [
-                "-L{}".format(spec["hip"].prefix.lib),
-                "-lamdhip64",
-                "-lhipblas",
-                "-lhipfft",
-                "-lstdc++",
-            ]
+        #if spec.satisfies("@2022: +rocm"):
+        #    libs += [
+        #        "-L{}".format(spec["hip"].prefix.lib),
+        #        "-lamdhip64",
+        #        "-lhipblas",
+        #        "-lhipfft",
+        #        "-lstdc++",
+        #    ]
 
-            acc_compiler_var = "hipcc"
-            acc_flags_var = "NVFLAGS"
-            cppflags += ["-D__ACC"]
-            cppflags += ["-D__DBCSR_ACC"]
-            cppflags += ["-D__HIP_PLATFORM_AMD__"]
-            cppflags += ["-D__GRID_HIP"]
+        #    acc_compiler_var = "hipcc"
+        #    acc_flags_var = "NVFLAGS"
+        #    cppflags += ["-D__ACC"]
+        #    cppflags += ["-D__DBCSR_ACC"]
+        #    cppflags += ["-D__HIP_PLATFORM_AMD__"]
+        #    cppflags += ["-D__GRID_HIP"]
 
-            gpuver = GPU_MAP[spec.variants["amdgpu_target"].value[0]]
+        #    gpuver = GPU_MAP[spec.variants["amdgpu_target"].value[0]]
 
         if spec.satisfies("smm=libsmm"):
             lib_dir = join_path("lib", self.makefile_architecture, self.makefile_version)
@@ -1125,8 +1124,8 @@ class MakefileBuilder(makefile.MakefileBuilder):
             mkf.write(fflags("CXXFLAGS", cxxflags))
             if spec.satisfies("+cuda"):
                 mkf.write(fflags(acc_flags_var, nvflags))
-            if "+rocm" in spec:
-                mkf.write("OFFLOAD_TARGET = hip\n")
+            #if "+rocm" in spec:
+            #    mkf.write("OFFLOAD_TARGET = hip\n")
 
             mkf.write(fflags("FCFLAGS", fcflags))
             mkf.write(fflags("LDFLAGS", ldflags))
@@ -1240,7 +1239,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
             content += " " + self.spec["fftw-api"].libs.ld_flags
 
             fftw = self.spec["fftw-api"]
-            if fftw.name in ["fftw", "amdfftw", "cray-fftw"] and fftw.satisfies("+openmp"):
+            if fftw.name in ["fftw", "amdfftw"] and fftw.satisfies("+openmp"):
                 content += " -lfftw3_omp"
 
             content += "\n"
@@ -1313,25 +1312,25 @@ class CMakeBuilder(cmake.CMakeBuilder):
             else:
                 args += [self.define("CP2K_USE_ACCEL", "CUDA")]
 
-        if spec.satisfies("+rocm"):
-            if len(spec.variants["amdgpu_target"].value) > 1:
-                raise InstallError("CP2K supports only one amdgpu_target at a time.")
+        #if spec.satisfies("+rocm"):
+        #    if len(spec.variants["amdgpu_target"].value) > 1:
+        #        raise InstallError("CP2K supports only one amdgpu_target at a time.")
 
-            args += [
-                self.define("CP2K_USE_ACCEL", "HIP"),
-            ]
+        #    args += [
+        #        self.define("CP2K_USE_ACCEL", "HIP"),
+        #    ]
 
-            if spec.satisfies("@:2026.1"):
-                gpu_ver = GPU_MAP[spec.variants["amdgpu_target"].value[0]]
-                args += [
-                    self.define("CP2K_WITH_GPU", gpu_ver),
-                ]
-            else:
-                args += [
-                    self.define(
-                        "CMAKE_HIP_ARCHITECTURES", spec.variants["amdgpu_target"].value[0]
-                    ),
-                ]
+        #    if spec.satisfies("@:2026.1"):
+        #        gpu_ver = GPU_MAP[spec.variants["amdgpu_target"].value[0]]
+        #        args += [
+        #            self.define("CP2K_WITH_GPU", gpu_ver),
+        #        ]
+        #    else:
+        #        args += [
+        #            self.define(
+        #                "CMAKE_HIP_ARCHITECTURES", spec.variants["amdgpu_target"].value[0]
+        #            ),
+        #        ]
 
         if spec.satisfies("+sirius"):
             args += [
@@ -1350,7 +1349,7 @@ class CMakeBuilder(cmake.CMakeBuilder):
             )
         ]
 
-        if "spla" in spec and (spec.satisfies("+cuda") or spec.satisfies("+rocm")):
+        if "spla" in spec and (spec.satisfies("+cuda")):
             args += ["-DCP2K_USE_SPLA_GEMM_OFFLOADING=ON"]
 
         use_libxsmm = spec.satisfies("smm=libxsmm") or spec.satisfies("+libxsmm")

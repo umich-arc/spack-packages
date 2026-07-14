@@ -6,12 +6,11 @@ import os
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class Hiop(CMakePackage, CudaPackage, ROCmPackage):
+class Hiop(CMakePackage, CudaPackage):
     """HiOp is an optimization solver for solving certain mathematical
     optimization problems expressed as nonlinear programming problems.
     HiOp is a lightweight HPC solver that leverages application"s existing
@@ -131,21 +130,21 @@ class Hiop(CMakePackage, CudaPackage, ROCmPackage):
         # Camp GPU arch doesn't get propogated correctly
         depends_on("camp {0}".format(cuda_dep), when="+raja {0}".format(cuda_dep))
 
-    for arch in ROCmPackage.amdgpu_targets:
-        rocm_dep = "+rocm amdgpu_target={0}".format(arch)
-        depends_on("magma {0}".format(rocm_dep), when=rocm_dep)
-        depends_on("raja {0}".format(rocm_dep), when="+raja {0}".format(rocm_dep))
-        depends_on("ginkgo {0}".format(rocm_dep), when="+ginkgo {0}".format(rocm_dep))
-        depends_on("umpire {0}".format(rocm_dep), when="+raja {0}".format(rocm_dep))
-        # Camp GPU arch doesn't get propogated correctly
-        depends_on("camp {0}".format(rocm_dep), when="+raja {0}".format(rocm_dep))
+    #for arch in ROCmPackage.amdgpu_targets:
+    #    rocm_dep = "+rocm amdgpu_target={0}".format(arch)
+    #    depends_on("magma {0}".format(rocm_dep), when=rocm_dep)
+    #    depends_on("raja {0}".format(rocm_dep), when="+raja {0}".format(rocm_dep))
+    #    depends_on("ginkgo {0}".format(rocm_dep), when="+ginkgo {0}".format(rocm_dep))
+    #    depends_on("umpire {0}".format(rocm_dep), when="+raja {0}".format(rocm_dep))
+    #    # Camp GPU arch doesn't get propogated correctly
+    #    depends_on("camp {0}".format(rocm_dep), when="+raja {0}".format(rocm_dep))
 
     magma_ver_constraints = (("2.5.4", "0.4"), ("2.6.1", "0.4.6"), ("2.6.2", "0.5.4"))
 
     # Depends on Magma when +rocm or +cuda
     for magma_v, hiop_v in magma_ver_constraints:
         depends_on("magma@{0}:".format(magma_v), when="@{0}:+cuda".format(hiop_v))
-        depends_on("magma@{0}:".format(magma_v), when="@{0}:+rocm".format(hiop_v))
+        #depends_on("magma@{0}:".format(magma_v), when="@{0}:+rocm".format(hiop_v))
 
     # 1.0.2 fixes bug with cuda 12 compatibility
     # hiop@0.6.0 requires cusolver API in cuda@11
@@ -160,7 +159,7 @@ class Hiop(CMakePackage, CudaPackage, ROCmPackage):
 
     depends_on("raja", when="+raja")
     depends_on("umpire", when="+raja")
-    depends_on("raja+openmp", when="+raja~cuda~rocm")
+    depends_on("raja+openmp", when="+raja~cuda")
 
     # RAJA > 0.14 and Umpire > 6.0 require c++ std 14
     depends_on("raja@2024.07.0:", when="@1.1.1:+raja")
@@ -185,12 +184,12 @@ class Hiop(CMakePackage, CudaPackage, ROCmPackage):
 
     # We rely on RAJA / Umpire utilities when supporting CUDA backend
     conflicts("~raja", when="+cuda", msg="RAJA is required for CUDA support")
-    conflicts("~raja", when="+rocm", msg="RAJA is required for ROCm support")
+    #conflicts("~raja", when="+rocm", msg="RAJA is required for ROCm support")
 
-    depends_on("hip", when="+rocm")
-    depends_on("hiprand", when="+rocm")
-    depends_on("hipblas", when="+rocm")
-    depends_on("hipsparse", when="+rocm")
+    #depends_on("hip", when="+rocm")
+    #depends_on("hiprand", when="+rocm")
+    #depends_on("hipblas", when="+rocm")
+    #depends_on("hipsparse", when="+rocm")
 
     depends_on("suite-sparse", when="+kron")
     depends_on("suite-sparse", when="+cusolver_lu")
@@ -206,7 +205,7 @@ class Hiop(CMakePackage, CudaPackage, ROCmPackage):
         args = []
         spec = self.spec
 
-        use_gpu = spec.satisfies("+cuda") or spec.satisfies("+rocm")
+        use_gpu = spec.satisfies("+cuda")
 
         if use_gpu:
             args.extend(
@@ -229,7 +228,7 @@ class Hiop(CMakePackage, CudaPackage, ROCmPackage):
                 self.define_from_variant("HIOP_DEEPCHECKS", "deepchecking"),
                 self.define_from_variant("HIOP_USE_CUDA", "cuda"),
                 self.define_from_variant("HIOP_USE_AXOM", "axom"),
-                self.define_from_variant("HIOP_USE_HIP", "rocm"),
+                self.define("HIOP_USE_HIP", "OFF"),
                 self.define_from_variant("HIOP_USE_RAJA", "raja"),
                 self.define_from_variant("HIOP_USE_UMPIRE", "raja"),
                 self.define_from_variant("HIOP_WITH_KRON_REDUCTION", "kron"),
@@ -279,13 +278,13 @@ class Hiop(CMakePackage, CudaPackage, ROCmPackage):
         # args.append(
         #     self.define('HIP_CLANG_INCLUDE_PATH',
         #         '/opt/rocm-X.Y.Z/llvm/lib/clang/14.0.0/include/'))
-        if spec.satisfies("+rocm"):
-            args.append(self.define("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
+        #if spec.satisfies("+rocm"):
+        #    args.append(self.define("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
 
-            rocm_arch_list = spec.variants["amdgpu_target"].value
-            if rocm_arch_list[0] != "none":
-                args.append(self.define("GPU_TARGETS", rocm_arch_list))
-                args.append(self.define("AMDGPU_TARGETS", rocm_arch_list))
+        #    rocm_arch_list = spec.variants["amdgpu_target"].value
+        #    if rocm_arch_list[0] != "none":
+        #        args.append(self.define("GPU_TARGETS", rocm_arch_list))
+        #        args.append(self.define("AMDGPU_TARGETS", rocm_arch_list))
 
         if spec.satisfies("+kron"):
             args.append(self.define("HIOP_UMFPACK_DIR", spec["suite-sparse"].prefix))

@@ -18,67 +18,61 @@ spack:
     specs:
     - bamtools
     - bcftools
-    - beast1 ^libbeagle ^openjdk
+    - beast1
     - bedtools2 ^python@3.13.13+arc
-    - diamond ^blast-plus cxxflags="-fcoroutines" ^python@3.13.13+arc 
-    - blast2go ^blast-plus cxxflags="-fcoroutines"
-    - rseurat
-    - rseurat ^r@4.6.0
-    #- dorado@0.9.6 %llvm ^cuda
-    #- dorado@1.0.2 %llvm ^cuda
+    - blast-plus@2.17.0+sqlite
+    - scons
+    - diamond ^blast-plus@2.17.0+sqlite cxxflags="-fcoroutines" ^python@3.13.13+arc
+    - blast2go ^blast-plus@2.17.0+sqlite cxxflags="-fcoroutines" 
+    - dorado@2.1
+    - rseurat@5.5.1_R4.6.1 ^r@4.6.1/hsmq64i ^r-seurat/qzgh
     - elastix@5.2.0
-    # - blat
-    # - bowtie
-    # - bowtie2
-    # - bwa
-    # - cairo
-    # - canu
-    # - cap3
-    # - clustal-omega
-    # - cufflinks
-    # - delly2
-    # - fastqc
-    # - figtree
-    # - gatk
-    # - gdk-pixbuf
-    # - gnuplot
-    # - harfbuzz
-    # - hisat2
-    # - hmmer
-    # - homer
-    # - htslib
-    # - igv
-    # - imagemagick
-    # - impute2
-    # - itk
-    # - jellyfish
-    # - libxft
-    # - masurca
-    # - minimap2
-    # - mothur
-    # - ncftp
-    # - neuron
-    # - nextflow
-    # - openslide
-    # - pango
-    # - pdf2svg
-    # - poppler
-    # - raxml
-    # - rmats
-    # - rsem
-    # - salmon
-    # - samtools
-    # - seqkit
-    # - spades
-    # - sratoolkit
-    # - star
-    # - stringtie
-    # - trimgalore
+    - plink2 ^openblas
+    - gatk@4.5.0.0+r ^r/hsmq64i
+    - mothur@1.48.0+boost+gsl+hdf5 ^usearch@12 ^boost/vigykcw
+    - rdeseq2@1.52
+    - rsem ^zlib
+    - bowtie
+    - bowtie2
+    - star
+    - seqtk@1.4
+    - sortmerna
+    - sratoolkit@3.4.1
+    - stringtie@3.0.3
+    - stringtie@2.2.1
+    - itk@5.4.4
+    - hmmer ^gcc/o4xno4x
+    - fasttree ^gcc/o4xno4x
+    - trimmomatic
+    - tabix
+    - kallisto
+    - mafft
+    - mrbayes~mpi
+    - sage ^rust@1.97.1
+    - spades cxxflags="-mno-avx512f" ^python+arc ^aocc
+    - subread
+    - picard
+    - vcftools
+    - exonerate
+    - py-quast ^mummer/i2fdrm6
+    - glimmer
+    - mummer
+    - py-nanoplot ^flexiblas
+    - py-multiqc ^python@3.13.13+arc
     override:
       packages:
+        c:
+          prefer: [gcc@14.3.1]
+        cxx:
+          prefer: [gcc@14.3.1]
+        fortran:
+          prefer: [gcc@14.3.1]
         apr-util:
           prefer:
-          - '~crypto'
+          - '~crypto'    
+        openmpi:
+          require:
+          - '+arc'
   concretizer:
     unify: false
     reuse: true
@@ -92,18 +86,22 @@ spack:
         lmod: /sw/spack/bioinformatics/opt/modules
         tcl: /sw/spack/bioinformatics/opt/modules
       lmod:
+        hide_implicits: true
         projections:
           r: 'R/{version}'
           hdf5~threadsafe: 'hdf5/{version}-nonatomic'
           intel-oneapi-compilers-classic: 'intel/{version}'
           miniforge3: 'mamba/{version}'
-          py-mpi4py: 'mpi4py/{version}' 
-          rseurat: "rseurat/{version}-R-{^r.version}"
+          py-mpi4py: 'mpi4py/{version}'
+          py-nanoplot: 'nanoplot/{version}'
+          py-multiqc: 'multiqc/{version}'
         hash_length: 0
         core_compilers:
         - gcc@14.3.1
+        - aocc
         - oneapi
-        hierarchy: []
+        - llvm
+        hierarchy:: []
         core_specs:
         - gcc@14.3.1
         - gcc-runtime@14.3.1
@@ -112,5 +110,12 @@ spack:
         - glibc
         - autoconf
         - compiler-wrapper
+        - compiler-wrapper
+        - util-macros
+        - py-pip
+        - py-setuptools
+        - py-wheel
+        - py-cython
+        - python-venv
         gcc-runtime:
           template: gcc-runtime.lua

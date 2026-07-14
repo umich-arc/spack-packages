@@ -41,11 +41,10 @@ class Bwa(Package):
     depends_on("zlib-api")
     depends_on("sse2neon", when="target=aarch64:")
 
-    # This patch does not successfully apply when @0.7.18:
     patch(
         "bwa_for_aarch64.patch",
         sha256="b77213b16cf8760f01e32f9a0b2cd8988cf7bac48a11267100f703cbd55c4bfd",
-        when="@:0.7.17 target=aarch64:",
+        when="target=aarch64:",
     )
 
     patch(

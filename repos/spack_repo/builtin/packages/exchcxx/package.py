@@ -5,12 +5,11 @@
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage, generator
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class Exchcxx(CMakePackage, CudaPackage, ROCmPackage):
+class Exchcxx(CMakePackage, CudaPackage):
     """Exchange correlation (XC) library for density functional theory (DFT)
     calculations in modern C++."""
 
@@ -31,9 +30,9 @@ class Exchcxx(CMakePackage, CudaPackage, ROCmPackage):
     variant("shared", default=False, description="Build shared libraries")
     variant("pic", default=True, description="Build position independent code")
 
-    conflicts("+cuda", when="+rocm", msg="CUDA and ROCm are mutually exclusive")
+    #conflicts("+cuda", when="+rocm", msg="CUDA and ROCm are mutually exclusive")
     conflicts("+cuda", when="+sycl", msg="CUDA and SYCL are mutually exclusive")
-    conflicts("+rocm", when="+sycl", msg="ROCm and SYCL are mutually exclusive")
+    #conflicts("+rocm", when="+sycl", msg="ROCm and SYCL are mutually exclusive")
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
@@ -41,7 +40,7 @@ class Exchcxx(CMakePackage, CudaPackage, ROCmPackage):
     depends_on("ninja@1.10:", type="build")
     depends_on("libxc@7.0.0:", when="+libxc")
     depends_on("cuda@11:", when="+cuda")
-    depends_on("hip", when="+rocm")
+    #depends_on("hip", when="+rocm")
     depends_on("intel-oneapi-compilers", when="+sycl")
 
     generator("ninja")
@@ -51,7 +50,7 @@ class Exchcxx(CMakePackage, CudaPackage, ROCmPackage):
         args = [
             self.define_from_variant("EXCHCXX_ENABLE_BENCHMARK", "benchmark"),
             self.define_from_variant("EXCHCXX_ENABLE_CUDA", "cuda"),
-            self.define_from_variant("EXCHCXX_ENABLE_HIP", "rocm"),
+            self.define("EXCHCXX_ENABLE_HIP", "OFF"),
             self.define_from_variant("EXCHCXX_ENABLE_SYCL", "sycl"),
             self.define_from_variant("EXCHCXX_ENABLE_LIBXC", "libxc"),
             self.define_from_variant("BUILD_SHARED_LIBS", "shared"),
@@ -62,9 +61,9 @@ class Exchcxx(CMakePackage, CudaPackage, ROCmPackage):
             if "none" not in archs:
                 arch_str = ";".join(archs)
                 args.append(self.define("CMAKE_CUDA_ARCHITECTURES", arch_str))
-        if spec.satisfies("+rocm"):
-            archs = spec.variants["amdgpu_target"].value
-            if "none" not in archs:
-                arch_str = ";".join(archs)
-                args.append(self.define("CMAKE_HIP_ARCHITECTURES", arch_str))
+        #if spec.satisfies("+rocm"):
+        #    archs = spec.variants["amdgpu_target"].value
+        #    if "none" not in archs:
+        #        arch_str = ";".join(archs)
+        #        args.append(self.define("CMAKE_HIP_ARCHITECTURES", arch_str))
         return args

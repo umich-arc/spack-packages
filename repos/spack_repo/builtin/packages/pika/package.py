@@ -7,12 +7,11 @@ import sys
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage, generator
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class Pika(CMakePackage, CudaPackage, ROCmPackage):
+class Pika(CMakePackage, CudaPackage):
     """C++ runtime system for parallellism and concurrency."""
 
     homepage = "https://github.com/pika-org/pika/"
@@ -203,7 +202,7 @@ class Pika(CMakePackage, CudaPackage, ROCmPackage):
     depends_on("fmt@9:", when="@0.11:")
     # https://github.com/pika-org/pika/issues/686
     conflicts("^fmt@10:", when="@:0.15 +cuda")
-    conflicts("^fmt@10:", when="@:0.15 +rocm")
+    #conflicts("^fmt@10:", when="@:0.15 +rocm")
     # https://github.com/pika-org/pika/pull/1074
     conflicts("^fmt@11:", when="@:0.23")
     depends_on("spdlog@1.9.2:", when="@0.25:")
@@ -221,8 +220,8 @@ class Pika(CMakePackage, CudaPackage, ROCmPackage):
 
     depends_on("apex", when="+apex")
     depends_on("cuda@11:", when="+cuda")
-    depends_on("hip@5.2:", when="@0.8: +rocm")
-    depends_on("hipblas", when="@:0.8 +rocm")
+    #depends_on("hip@5.2:", when="@0.8: +rocm")
+    #depends_on("hipblas", when="@:0.8 +rocm")
     depends_on("mpi", when="+mpi")
     with when("+stdexec"):
         depends_on("stdexec")
@@ -235,20 +234,20 @@ class Pika(CMakePackage, CudaPackage, ROCmPackage):
             "parallel execution is expected; see https://github.com/pika-org/pika/issues/1448 "
             "for more details",
         )
-    depends_on("rocblas", when="+rocm")
-    depends_on("rocsolver", when="@0.5: +rocm")
+    #depends_on("rocblas", when="+rocm")
+    #depends_on("rocsolver", when="@0.5: +rocm")
     depends_on("tracy-client", when="+tracy")
     conflicts("^tracy-client@0.9:", when="@:0.9")
-    depends_on("whip@0.1: +rocm", when="@0.9: +rocm")
+    #depends_on("whip@0.1: +rocm", when="@0.9: +rocm")
     depends_on("whip@0.1: +cuda", when="@0.9: +cuda")
 
     depends_on("valgrind", when="+valgrind")
 
-    with when("+rocm"):
-        for val in ROCmPackage.amdgpu_targets:
-            depends_on(f"whip@0.1: amdgpu_target={val}", when=f"@0.9: amdgpu_target={val}")
-            depends_on(f"rocsolver amdgpu_target={val}", when=f"@0.5: amdgpu_target={val}")
-            depends_on(f"rocblas amdgpu_target={val}", when=f"amdgpu_target={val}")
+    #with when("+rocm"):
+    #    for val in ROCmPackage.amdgpu_targets:
+    #        depends_on(f"whip@0.1: amdgpu_target={val}", when=f"@0.9: amdgpu_target={val}")
+    #        depends_on(f"rocsolver amdgpu_target={val}", when=f"@0.5: amdgpu_target={val}")
+    #        depends_on(f"rocblas amdgpu_target={val}", when=f"amdgpu_target={val}")
 
     with when("+cuda"):
         for val in CudaPackage.cuda_arch_values:
@@ -306,7 +305,7 @@ class Pika(CMakePackage, CudaPackage, ROCmPackage):
             self.define_from_variant("PIKA_WITH_EXAMPLES", "examples"),
             self.define_from_variant("PIKA_WITH_MALLOC", "malloc"),
             self.define_from_variant("PIKA_WITH_CUDA", "cuda"),
-            self.define_from_variant("PIKA_WITH_HIP", "rocm"),
+            self.define("PIKA_WITH_HIP", "OFF"),
             self.define_from_variant("PIKA_WITH_MPI", "mpi"),
             self.define_from_variant("PIKA_WITH_APEX", "apex"),
             self.define_from_variant("PIKA_WITH_TRACY", "tracy"),
@@ -326,14 +325,14 @@ class Pika(CMakePackage, CudaPackage, ROCmPackage):
             )
 
         # HIP support requires compiling with hipcc for < 0.8.0
-        if spec.satisfies("@:0.7 +rocm"):
-            args.append(self.define("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
-            if spec.satisfies("^cmake@3.21.0:3.21.2"):
-                args.append(self.define("__skip_rocmclang", True))
-        if spec.satisfies("@0.8: +rocm"):
-            rocm_archs = spec.variants["amdgpu_target"].value
-            if "none" not in rocm_archs:
-                rocm_archs = ";".join(rocm_archs)
-                args.append(self.define("CMAKE_HIP_ARCHITECTURES", rocm_archs))
+        #if spec.satisfies("@:0.7 +rocm"):
+        #    args.append(self.define("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
+        #    if spec.satisfies("^cmake@3.21.0:3.21.2"):
+        #        args.append(self.define("__skip_rocmclang", True))
+        #if spec.satisfies("@0.8: +rocm"):
+        #    rocm_archs = spec.variants["amdgpu_target"].value
+        #    if "none" not in rocm_archs:
+        #        rocm_archs = ";".join(rocm_archs)
+        #        args.append(self.define("CMAKE_HIP_ARCHITECTURES", rocm_archs))
 
         return args

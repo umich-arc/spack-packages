@@ -5,12 +5,11 @@
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class Whip(CMakePackage, CudaPackage, ROCmPackage):
+class Whip(CMakePackage, CudaPackage):
     """whip is a small C++ abstraction layer for CUDA and HIP."""
 
     homepage = "https://github.com/eth-cscs/whip/"
@@ -31,11 +30,11 @@ class Whip(CMakePackage, CudaPackage, ROCmPackage):
     depends_on("cmake@3.22:", type="build")
 
     # Exactly one of +cuda and +rocm need to be set
-    conflicts("~cuda ~rocm")
-    conflicts("+cuda +rocm")
+    #conflicts("~cuda ~rocm")
+    #conflicts("+cuda +rocm")
 
     def cmake_args(self):
         if self.spec.satisfies("+cuda"):
             return [self.define("WHIP_BACKEND", "CUDA")]
-        else:
-            return [self.define("WHIP_BACKEND", "HIP")]
+        #else:
+        #    return [self.define("WHIP_BACKEND", "HIP")]

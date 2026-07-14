@@ -12,13 +12,12 @@ from spack_repo.builtin.build_systems.cached_cmake import (
     cmake_cache_string,
 )
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 from spack_repo.builtin.packages.blt.package import llnl_link_helpers
 
 from spack.package import *
 
 
-class Chai(CachedCMakePackage, CudaPackage, ROCmPackage):
+class Chai(CachedCMakePackage, CudaPackage):
     """
     Copy-hiding array interface for data migration between memory spaces
     """
@@ -160,7 +159,6 @@ class Chai(CachedCMakePackage, CudaPackage, ROCmPackage):
     variant("disable_rm", default=False, description="Make ManagedArray a thin wrapper")
     variant(
         "cxxstd",
-        description="C++ standard to build with",
         default="20",
         values=(
             conditional("11", when="@:2.4"),
@@ -170,6 +168,7 @@ class Chai(CachedCMakePackage, CudaPackage, ROCmPackage):
             "23",
         ),
         multi=False,
+        description="C++ standard to build with",
     )
 
     # TODO: figure out gtest dependency and then set this default True
@@ -203,7 +202,7 @@ class Chai(CachedCMakePackage, CudaPackage, ROCmPackage):
     depends_on("blt@0.4.1:0.5.3", type="build", when="@2.4.0")
     depends_on("blt@0.4.0:0.5.3", type="build", when="@2.3.0")
     depends_on("blt@0.3.6:0.5.3", type="build", when="@:2.2.2")
-    conflicts("^blt@:0.3.6", when="+rocm")
+    #conflicts("^blt@:0.3.6", when="+rocm")
 
     depends_on("umpire")
     depends_on("umpire@2026.07.1:", when="@2026.07:")
@@ -228,12 +227,12 @@ class Chai(CachedCMakePackage, CudaPackage, ROCmPackage):
         with when("@2024.02.0:"):
             depends_on("umpire~fmt_header_only")
 
-    with when("+rocm"):
-        depends_on("umpire+rocm")
-        for arch in ROCmPackage.amdgpu_targets:
-            depends_on(
-                "umpire+rocm amdgpu_target={0}".format(arch), when="amdgpu_target={0}".format(arch)
-            )
+    #with when("+rocm"):
+    #    depends_on("umpire+rocm")
+    #    for arch in ROCmPackage.amdgpu_targets:
+    #        depends_on(
+    #            "umpire+rocm amdgpu_target={0}".format(arch), when="amdgpu_target={0}".format(arch)
+    #        )
 
     with when("+raja"):
         depends_on("raja~openmp", when="~openmp")
@@ -258,13 +257,13 @@ class Chai(CachedCMakePackage, CudaPackage, ROCmPackage):
             depends_on("raja+cuda")
             for sm_ in CudaPackage.cuda_arch_values:
                 depends_on("raja+cuda cuda_arch={0}".format(sm_), when="cuda_arch={0}".format(sm_))
-        with when("+rocm"):
-            depends_on("raja+rocm")
-            for arch in ROCmPackage.amdgpu_targets:
-                depends_on(
-                    "raja+rocm amdgpu_target={0}".format(arch),
-                    when="amdgpu_target={0}".format(arch),
-                )
+        #with when("+rocm"):
+        #    depends_on("raja+rocm")
+        #    for arch in ROCmPackage.amdgpu_targets:
+        #        depends_on(
+        #            "raja+rocm amdgpu_target={0}".format(arch),
+        #            when="amdgpu_target={0}".format(arch),
+        #        )
 
     depends_on("mpi", when="+mpi")
 
@@ -293,8 +292,8 @@ class Chai(CachedCMakePackage, CudaPackage, ROCmPackage):
         # Default entries are already defined in CachedCMakePackage, inherit them:
         entries = super().initconfig_compiler_entries()
 
-        if spec.satisfies("+rocm ^blt@:0.6"):
-            entries.insert(0, cmake_cache_path("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
+        #if spec.satisfies("+rocm ^blt@:0.6"):
+        #    entries.insert(0, cmake_cache_path("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
 
         llnl_link_helpers(entries, spec, compiler)
 
@@ -333,36 +332,36 @@ class Chai(CachedCMakePackage, CudaPackage, ROCmPackage):
         else:
             entries.append(cmake_cache_option("ENABLE_CUDA", False))
 
-        if spec.satisfies("+rocm"):
-            entries.append(cmake_cache_option("ENABLE_HIP", True))
+        #if spec.satisfies("+rocm"):
+        #    entries.append(cmake_cache_option("ENABLE_HIP", True))
 
-            # HIP configuration from hip_for_radiuss_projects
-            rocm_root = spec["llvm-amdgpu"].prefix
-            gcc_toolchain_regex = re.compile(".*gcc-toolchain.*")
-            using_toolchain = list(
-                filter(gcc_toolchain_regex.match, spec.compiler_flags["cxxflags"])
-            )
-            hip_link_flags = ""
+        #    # HIP configuration from hip_for_radiuss_projects
+        #    rocm_root = spec["llvm-amdgpu"].prefix
+        #    gcc_toolchain_regex = re.compile(".*gcc-toolchain.*")
+        #    using_toolchain = list(
+        #        filter(gcc_toolchain_regex.match, spec.compiler_flags["cxxflags"])
+        #    )
+        #    hip_link_flags = ""
 
-            if using_toolchain:
-                gcc_prefix = using_toolchain[0]
-                entries.append(
-                    cmake_cache_string("HIP_CLANG_FLAGS", "--gcc-toolchain={0}".format(gcc_prefix))
-                )
-                entries.append(
-                    cmake_cache_string(
-                        "CMAKE_EXE_LINKER_FLAGS",
-                        hip_link_flags + " -Wl,-rpath={0}/lib64".format(gcc_prefix),
-                    )
-                )
-            else:
-                entries.append(
-                    cmake_cache_string(
-                        "CMAKE_EXE_LINKER_FLAGS", "-Wl,-rpath={0}/llvm/lib/".format(rocm_root)
-                    )
-                )
-        else:
-            entries.append(cmake_cache_option("ENABLE_HIP", False))
+        #    if using_toolchain:
+        #        gcc_prefix = using_toolchain[0]
+        #        entries.append(
+        #            cmake_cache_string("HIP_CLANG_FLAGS", "--gcc-toolchain={0}".format(gcc_prefix))
+        #        )
+        #        entries.append(
+        #            cmake_cache_string(
+        #                "CMAKE_EXE_LINKER_FLAGS",
+        #                hip_link_flags + " -Wl,-rpath={0}/lib64".format(gcc_prefix),
+        #            )
+        #        )
+        #    else:
+        #        entries.append(
+        #            cmake_cache_string(
+        #                "CMAKE_EXE_LINKER_FLAGS", "-Wl,-rpath={0}/llvm/lib/".format(rocm_root)
+        #            )
+        #        )
+        #else:
+        entries.append(cmake_cache_option("ENABLE_HIP", False))
 
         return entries
 

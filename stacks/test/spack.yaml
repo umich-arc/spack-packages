@@ -6,6 +6,8 @@ spack:
   config:
     install_tree:
       root: /sw/test/opt
+  mirrors:
+      buildcache: file:///sw/spack/buildcache
   upstreams:
     arc-compiler-stacks:
       install_tree: /sw/spack/opt/pkgs
@@ -18,7 +20,7 @@ spack:
   ##########################################################################################
   - group: bioinformatics
     specs:
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi ldflags="-L/sw/spack/opt/pkgs/amdlibm/5.3-gcc-14.3.1-lk57/lib -Wl,-rpath,/sw/spack/opt/pkgs/amdlibm/5.3-gcc-14.3.1-lk57/lib" ldlibs="-lamdlibm"
+    - spades cxxflags="-mno-avx512f" ^python+arc ^aocc +license-agreed
     override:
       packages:
         c:
@@ -29,7 +31,7 @@ spack:
           prefer: [gcc@14.3.1]
         apr-util:
           prefer:
-          - '~crypto'    
+          - '~crypto'
   concretizer:
     unify: false
     reuse: true

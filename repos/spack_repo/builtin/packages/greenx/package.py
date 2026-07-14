@@ -35,7 +35,6 @@ class Greenx(CMakePackage):
     variant("lbasis", default=False, description="Enable localized basis component")
     variant("paw", default=False, description="Enable PAW component")
 
-    depends_on("c", type="build")
     depends_on("cxx", type="build")
     depends_on("fortran", type="build")
 

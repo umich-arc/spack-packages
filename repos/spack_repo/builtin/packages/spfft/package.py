@@ -5,12 +5,11 @@
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
 
-class Spfft(CMakePackage, CudaPackage, ROCmPackage):
+class Spfft(CMakePackage, CudaPackage):
     """Sparse 3D FFT library with MPI, OpenMP, CUDA and ROCm support."""
 
     homepage = "https://github.com/eth-cscs/SpFFT"
@@ -60,20 +59,20 @@ class Spfft(CMakePackage, CudaPackage, ROCmPackage):
     depends_on("mpi", when="+mpi")
     depends_on("cmake@3.11:", type="build")
     depends_on("cmake@3.18:", type="build", when="@1.1.0:")
-    depends_on("cmake@3.21:", type="build", when="@1.1.0: +rocm")
+    #depends_on("cmake@3.21:", type="build", when="@1.1.0: +rocm")
 
     depends_on("cuda@9:10", when="@:0.9.11 +cuda")
     depends_on("cuda@9:", when="@0.9.12:1.0.6 +cuda")
     depends_on("cuda@11:", when="@1.1.0: +cuda")
 
     # Workaround for compiler bug in ROCm 4.5+ added in SpFFT 1.0.6
-    conflicts("+rocm", when="@:1.0.5")
+    #conflicts("+rocm", when="@:1.0.5")
 
-    with when("+rocm"):
-        depends_on("rocfft")
-        depends_on("hipfft+rocm")
-        # hip 6.0 requires v1.1.0 and later
-        conflicts("^hip@6.0.0:", when="@:1.0.6 +rocm")
+    #with when("+rocm"):
+    #    depends_on("rocfft")
+    #    depends_on("hipfft+rocm")
+    #    # hip 6.0 requires v1.1.0 and later
+    #    conflicts("^hip@6.0.0:", when="@:1.0.6 +rocm")
 
     # Fix compilation error in some cases due to missing include statement
     # before version 1.0.3
@@ -104,19 +103,19 @@ class Spfft(CMakePackage, CudaPackage, ROCmPackage):
             if cuda_arch[0] != "none":
                 args += [self.define("CMAKE_CUDA_ARCHITECTURES", cuda_arch)]
 
-        if spec.satisfies("@1.1.0: +rocm"):
-            # v1.1.0 switched to CMake HIP language feature
-            args += ["-DSPFFT_GPU_BACKEND=ROCM"]
-            rocm_arch = self.spec.variants["amdgpu_target"].value
-            if rocm_arch[0] != "none":
-                args += [self.define("CMAKE_HIP_ARCHITECTURES", rocm_arch)]
-        elif spec.satisfies("+rocm"):
-            archs = ",".join(self.spec.variants["amdgpu_target"].value)
-            args += [
-                "-DSPFFT_GPU_BACKEND=ROCM",
-                "-DHIP_ROOT_DIR={0}".format(spec["hip"].prefix),
-                "-DHIP_HCC_FLAGS=--amdgpu-target={0}".format(archs),
-                "-DHIP_CXX_COMPILER={0}".format(self.spec["hip"].hipcc),
-            ]
+        #if spec.satisfies("@1.1.0: +rocm"):
+        #    # v1.1.0 switched to CMake HIP language feature
+        #    args += ["-DSPFFT_GPU_BACKEND=ROCM"]
+        #    rocm_arch = self.spec.variants["amdgpu_target"].value
+        #    if rocm_arch[0] != "none":
+        #        args += [self.define("CMAKE_HIP_ARCHITECTURES", rocm_arch)]
+        #elif spec.satisfies("+rocm"):
+        #    archs = ",".join(self.spec.variants["amdgpu_target"].value)
+        #    args += [
+        #        "-DSPFFT_GPU_BACKEND=ROCM",
+        #        "-DHIP_ROOT_DIR={0}".format(spec["hip"].prefix),
+        #        "-DHIP_HCC_FLAGS=--amdgpu-target={0}".format(archs),
+        #        "-DHIP_CXX_COMPILER={0}".format(self.spec["hip"].hipcc),
+        #    ]
 
         return args
