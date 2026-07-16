@@ -1,0 +1,94 @@
+# This is a Spack Environment file.
+#
+# It describes a set of packages to be installed, along with
+# configuration settings.
+spack:
+  config:
+    install_tree:
+      root: /sw/pkgs/arc/spack
+  view: false
+  specs:
+  ##########################################################################################
+  #                                       Software                                         #
+  ##########################################################################################
+  - group: R stacks
+    specs:
+    - matrix:
+      - - rtidyverse@2.0.0 ^r@4.5.3
+        - rgeospatial@1.5-18 ^r@4.5.3 ^libtiff@4.7.1 ^rtidyverse@2.0.0 ^gdal ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk
+        - rtidyverse@2.0.0 ^r@4.6.0
+        - rgeospatial@1.5-18 ^r@4.6.0 ^libtiff@4.7.1 ^rtidyverse@2.0.0 ^gdal ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk
+      - - '%gcc@14.3.1'
+    override:
+      packages:
+        python:
+          require:
+          - +arc
+        openmpi:
+          require:
+          - +arc
+        r:
+          require:
+          - +arc
+        gdal:
+          require:
+          - +blosc+arrow+hdf4+hdf5+liblzma+libxml2+poppler+parquet+libaec+zstd+webp+sfcgal+pcre2+lz4+deflate+avif+freexl+jxl+heif
+          - spec: '@3.8.5~armadillo ^arrow@:18'
+            when: '%gcc@8.5.0'
+          - spec: '@3.13.2+armadillo'
+            when: '%gcc@10.3.0:'
+        sfcgal:
+          prefer:
+          - +eigen
+        arrow:
+          require:
+          - +brotli+bz2+csv+compute+dataset+filesystem+ipc+mimalloc~orc+parquet~python+shared~snappy+zlib+zstd
+        boost:
+          require:
+          - spec: '@1.88:'
+            when: '%gcc@14:'
+        json-c:
+          prefer:
+          - '@0.16'
+        libheif:
+          prefer:
+          - ~gdk-plugin
+        highway:
+          prefer:
+          - "@1.0.7"
+  concretizer:
+    unify: false
+    reuse: true
+    ##########################################################################################
+    #                                         Modules                                        #
+    ##########################################################################################
+  modules:
+    default:
+      roots:
+        lmod: /sw/modules/spack
+        tcl: /sw/modules/spack
+      lmod:
+        projections:
+          r: R/{version}
+          hdf5~threadsafe: hdf5/{version}-nonatomic
+          intel-oneapi-compilers-classic: intel/{version}
+          miniforge3: mamba/{version}
+          py-mpi4py: mpi4py/{version}
+        hash_length: 0
+        core_compilers:
+        - gcc@14.3.1
+        hierarchy:
+        - r
+        - mpi
+        core_specs:
+        - gcc@14.3.1
+        - gcc-runtime@14.3.1
+        exclude:
+        - gcc-runtime@14.3.1
+        - glibc
+        - autoconf
+        - compiler-wrapper
+        - util-macros
+        - poppler-data
+        gcc-runtime:
+          template: gcc-runtime.lua

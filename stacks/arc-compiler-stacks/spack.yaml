@@ -3,6 +3,9 @@
 # It describes a set of packages to be installed, along with
 # configuration settings.
 spack:
+  config:
+      install_tree:
+        root: /sw/pkgs/arc/staging/spack
   view: false
   specs:
   ##########################################################################################
@@ -11,27 +14,35 @@ spack:
 
   - group: gcc-8
     specs:
-    - python@3.9.25+arc
-    - python@3.10.20+arc
-    - python@3.11.15+arc
-    - python@3.12.13+arc
-    - python@3.13.13+arc
+    - python@3.13.13
     - boost@1.78.0
     - geos@3.14.1
-    - openmpi@5.0.10+arc
-    #- flexiblas %gcc@8.5.0
+    - openmpi@5.0.10
+    - openblas@0.3.33
+    - openjdk@18.0.1.1
+    - netlib-lapack@3.12.1
     - libaec@1.1.4
     - proj@9.7.0
-    - gdal@3.6.3 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran
-    - hdf5@1.14.6+hl+cxx+fortran
+    - hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     - libjpeg-turbo@3.1.3
     - libtiff@4.7.1
-    - netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-cxx4@4.3.1 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-fortran@4.6.2 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran
+    - netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-cxx4@4.3.1 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-fortran@4.6.2 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - gdal@3.6.3 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     - sqlite@3.53.1
-    - archivetar@0.18.2 ^python@3.13.13+arc ^openmpi@5.0.10+arc
-    - archivetar@0.17.2 ^python@3.13.13+arc ^openmpi@5.0.10+arc
+    - archivetar@0.18.2 ^python@3.13.13 ^openmpi@5.0.10
+    - libsodium@1.0.22
+    - libgd@2.3.3
+    - r@4.6.1 ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58
+    - r@4.6.0 ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 
+    - rtidyverse@2.0.0 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^r@4.6.1+arc ^flexiblas@3.4.2
+    - rtidyverse@2.0.0 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^r@4.6.0+arc ^flexiblas@3.4.2
+    - cuda@12.9.1
+    - cuda@13.3.0
+    - cudnn@9.21.0.82-12 ^cuda@12.9.1
+    - cudnn@9.21.0.82-13 ^cuda@13.3.0
+    - bioinformatics@1.0
     override:
       packages:
         c:
@@ -40,107 +51,149 @@ spack:
           prefer: [gcc@8.5.0]
         fortran:
           prefer: [gcc@8.5.0]
-  - group: gcc-15.1.0
+        python:
+          require:
+          - "+arc"
+        openmpi:
+          require:
+          - "+arc"
+        r:
+          require:
+          - "+arc"
+  - group: gcc-10
     specs:
-    - python@3.9.25+arc
-    - python@3.10.20+arc
-    - python@3.11.15+arc
-    - python@3.12.13+arc
-    - python@3.13.13+arc
+    - python@3.13.13
     - boost@1.78.0
     - geos@3.14.1
-    - openmpi@5.0.10+arc
-    #- flexiblas %gcc@15.1.0
+    - openmpi@5.0.10
+    - openblas@0.3.33
+    - netlib-lapack@3.12.1
     - libaec@1.1.4
     - proj@9.7.0
-    - gdal@3.13.1 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - hdf5@1.14.6+hl+cxx+fortran
+    - hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     - libjpeg-turbo@3.1.3
     - libtiff@4.7.1
-    - netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-cxx4@4.3.1 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-fortran@4.6.2 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
+    - netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-cxx4@4.3.1 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-fortran@4.6.2 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - gdal@3.6.3 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - gdal@3.13.1 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     - sqlite@3.53.1
+    - libsodium@1.0.22
+    - libgd@2.3.3
+    - r@4.6.1 ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58
+    - rtidyverse@2.0.0 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^r@4.6.1 ^flexiblas@3.4.2 
+    - rgeospatial@1.5-18 ^rtidyverse@2.0.0 ^r@4.6.1 ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^gdal@3.13.1 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     override:
-        packages:
-          c:
-            prefer: [gcc@15.1.0]
-          cxx:
-            prefer: [gcc@15.1.0]
-          fortran:
-            prefer: [gcc@15.1.0]
-  - group: gcc-10.3.0
+      packages:
+        c:
+          prefer: [gcc@10.3.0]
+        cxx:
+          prefer: [gcc@10.3.0]
+        fortran:
+          prefer: [gcc@10.3.0]
+        python:
+          require:
+          - "+arc"
+        openmpi:
+          require:
+          - "+arc"
+        r:
+          require:
+          - "+arc"
+  - group: gcc-15
     specs:
-    - python@3.9.25+arc
-    - python@3.10.20+arc
-    - python@3.11.15+arc
-    - python@3.12.13+arc
-    - python@3.13.13+arc
+    - python@3.13.13
     - boost@1.78.0
     - geos@3.14.1
-    - openmpi@5.0.10+arc
-    #- flexiblas %gcc@10.3.0
+    - openmpi@5.0.10
+    - openblas@0.3.33
+    - netlib-lapack@3.12.1
     - libaec@1.1.4
     - proj@9.7.0
-    - gdal@3.13.1 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - hdf5@1.14.6+hl+cxx+fortran
+    - hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     - libjpeg-turbo@3.1.3
     - libtiff@4.7.1
-    - netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-cxx4@4.3.1 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-fortran@4.6.2 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
+    - netcdf-c@4.10.0~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-cxx4@4.3.1 ^netcdf-c@4.10.0~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-fortran@4.6.2 ^netcdf-c@4.10.0 ~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - gdal@3.13.1 ^netcdf-c@4.10.0 ~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     - sqlite@3.53.1
+    - libsodium@1.0.22
+    - libgd@2.3.3
+    - r@4.6.1 ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58
+    - rtidyverse@2.0.0 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^r@4.6.1 ^flexiblas@3.4.2
     override:
-        packages:
-          c:
-            prefer: [gcc@10.3.0]
-          cxx:
-            prefer: [gcc@10.3.0]
-          fortran:
-            prefer: [gcc@10.3.0]
-  - group: llvm-22.1.3
+      packages:
+        c:
+          prefer: [gcc@15.1.0]
+        cxx:
+          prefer: [gcc@15.1.0]
+        fortran:
+          prefer: [gcc@15.1.0]
+        python:
+          require:
+          - "+arc"
+        openmpi:
+          require:
+          - "+arc"
+        r:
+          require:
+          - "+arc"
+  - group: llvm-22
     specs:
     - boost@1.88.0
     - geos@3.14.1
     - openmpi@5.0.10+arc
-    #- flexiblas %llvm@22.1.3
+    - openblas@0.3.33
+    - netlib-lapack@3.12.1
     - libaec@1.1.4
     - proj@9.7.0
-    #- gdal@3.13.1 ^netcdf-c ^hdf5+hl+cxx+fortran
-    - hdf5@1.14.6+hl+cxx+fortran
+    - hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     - libjpeg-turbo@3.1.3
     - libtiff@4.7.1
-    - netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-cxx4@4.3.1 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-fortran@4.6.2 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
+    - netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-cxx4@4.3.1 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-fortran@4.6.2 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - gdal@3.6.3 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
     - sqlite@3.53.1
+    - libsodium@1.0.22
+    - libgd@2.3.3
     override:
-        packages:
-          c:
-            prefer: [llvm@22.1.3]
-          cxx:
-            prefer: [llvm@22.1.3]
-          fortran:
-            prefer: [llvm@22.1.3]
-  - group: intel-classic-compiler
+      packages:
+        c:
+          prefer: [llvm@22.1.3]
+        cxx:
+          prefer: [llvm@22.1.3]
+        fortran:
+          prefer: [llvm@22.1.3]
+  - group: intel
     specs:
     - boost@1.78.0
+    - geos@3.14.1
     - openmpi@5.0.10+arc
-    #- flexiblas
-    - fftw@3.3.11~mpi
-    - libaec@1.1.4 %intel-oneapi-compilers-classic@2021.5.0
-    - hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-cxx4@4.3.1 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
-    - netcdf-fortran@4.6.2 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran
+    - openblas@0.3.33
+    - netlib-lapack@3.12.1
+    - libaec@1.1.4
+    - proj@9.7.0
+    - hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - libjpeg-turbo@3.1.3
+    - libtiff@4.7.1
+    - netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-cxx4@4.3.1 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - netcdf-fortran@4.6.2 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - gdal@3.6.3 ^netcdf-c@4.7.4~mpi~parallel-netcdf~hdf4 ^hdf5@1.14.6+cxx+fortran+hl~ipo~java~map~mpi+shared+szip~threadsafe+tools ^libaec@1.1.4
+    - sqlite@3.53.1
+    - libsodium@1.0.22
+    - libgd@2.3.3
     override:
-        packages:
-          c:
-            prefer: [intel-oneapi-compilers-classic@2021.5.0]
-          cxx:
-            prefer: [intel-oneapi-compilers-classic@2021.5.0]
-          fortran:
-            prefer: [intel-oneapi-compilers-classic@2021.5.0]
+      packages:
+        c:
+          prefer: [intel-oneapi-compilers-classic@2021.5.0]
+        cxx:
+          prefer: [intel-oneapi-compilers-classic@2021.5.0]
+        fortran:
+          prefer: [intel-oneapi-compilers-classic@2021.5.0]
   concretizer:
     unify: false
     reuse: true
@@ -148,7 +201,9 @@ spack:
   ##########################################################################################
   #                                       Compilers                                        #
   ##########################################################################################
-  
+    all:
+      providers:
+        java: [openjdk]
     gcc:
       externals:
       - spec: gcc@8.5.0 languages:='c,c++,fortran'
@@ -216,15 +271,60 @@ spack:
       externals:
       - spec: icu4c@60.3
         prefix: /usr
+    openjdk:
+      buildable: false
+      externals:
+      - spec: openjdk@1.8.0
+        prefix: /usr/lib/jvm/jre
+      - spec: openjdk@18.0.1.1
+        prefix: /sw/pkgs/arc/openjdk/jdk-18.0.1.1
+    autoconf:
+      buildable: false
+      externals:
+      - spec: autoconf@2.69
+        prefix: /usr
+    pkgconf:
+      buildable: false
+      externals:
+      - spec: pkgconf@2.5.1
+        prefix: /usr
+    openssl:
+      buildable: false
+      externals:
+      - spec: openssl@1.1.1
+        prefix: /usr
+    tar:
+      buildable: false
+      externals:
+      - spec: tar@1.30
+        prefix: /usr
+    ##########################################################################################
+    #                                         Modules                                        #
+    ##########################################################################################
+
   modules:
     default:
+      roots:
+        lmod: /sw/pkgs/arc/staging/spack/modules
+        tcl: /sw/pkgs/arc/staging/spack/modules
       lmod:
+        projections:
+          r: 'R/{version}'
+          intel-oneapi-compilers-classic: 'intel/{version}'
         hash_length: 0
-        core_compilers:
-        - gcc@8.5.0/w6akmqjjogstolgcqh5loghofzx54fk5
+        hierarchy:
+          - r
+          - mpi
         core_specs:
         - gcc@8.5.0
+        - gcc-runtime@8.5.0
         - gcc@10.3.0
         - gcc@15.1.0
         - llvm@22.1.3
         - intel-oneapi-compilers-classic@2021.5.0
+        exclude:
+        - gcc-runtime@8.5.0
+        - glibc
+        - autoconf
+        - compiler-wrapper
+        - util-macros
