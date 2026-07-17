@@ -91,7 +91,7 @@ spack:
           require:
           - "/rahzyli"
   concretizer:
-    unify: false
+    unify: when_possible
     reuse: true
     ##########################################################################################
     #                                         Modules                                        #
