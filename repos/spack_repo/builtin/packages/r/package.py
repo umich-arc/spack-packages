@@ -78,11 +78,11 @@ class R(AutotoolsPackage):
     depends_on("java", when="+java", type=("build", "run"))
 
     with when("+arc"):
-        # depends_on("pkgconfig", type="build")
-        # depends_on("git", type=("build", "run"))
-        # depends_on("libgit2@1.0:")
-        # depends_on("libxml2")
-        # depends_on("openssl@1.0.2:")
+        depends_on("pkgconfig", type="build")
+        #depends_on("git", type=("build", "run"))
+        #depends_on("libgit2@1.0:")
+        #depends_on("libxml2")
+        #depends_on("openssl@1.0.2:")
         depends_on("fontconfig")
         depends_on("freetype")
         depends_on("libwebp+libwebpmux")

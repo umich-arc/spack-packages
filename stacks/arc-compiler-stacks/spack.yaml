@@ -7,19 +7,37 @@ spack:
   specs:
   - group: gcc-8
     specs:
-    - geos
-    #- openmpi %gcc@8.5.0
-    #- flexiblas %gcc@8.5.0
-    - libaec 
-    - proj 
-    - gdal@3.6.3 ^netcdf-c@4.7.4 ^hdf5+hl+cxx+fortran
-    - hdf5+hl+cxx+fortran
-    - libjpeg-turbo
-    - libtiff
-    - netcdf-c@4.7.4 ^hdf5+hl+cxx+fortran
-    - netcdf-cxx4 ^netcdf-c@4.7.4 ^hdf5+hl+cxx+fortran
-    - netcdf-fortran ^netcdf-c@4.7.4 ^hdf5+hl+cxx+fortran
-    - sqlite
+    - python@3.13.13+arc
+    - boost@1.78.0
+    - geos@3.14.1
+    - openmpi@5.0.10+arc
+    - openblas@0.3.33
+    - openjdk@18.0.1.1
+    - netlib-lapack@3.12.1
+    - libaec@1.1.4
+    - proj@9.7.0
+    - hdf5@1.14.6+hl+cxx+fortran
+    - libjpeg-turbo@3.1.3
+    - libtiff@4.7.1
+    - netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - netcdf-cxx4@4.3.1 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - netcdf-fortran@4.6.2 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - gdal@3.6.3 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - sqlite@3.53.1
+    - archivetar@0.18.2 ^python@3.13.13+arc ^openmpi@5.0.10+arc
+    - libsodium@1.0.22
+    - libgd@2.3.3
+    - r@4.6.1+arc ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58
+    - r@4.6.0+arc ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58
+    - rtidyverse@2.0.0 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^r@4.6.1+arc ^flexiblas@3.4.2
+    - rtidyverse@2.0.0 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^r@4.6.0+arc ^flexiblas@3.4.2
+    # wont build with gcc 8.5.0, but leaving it here for the future.
+    #- rgeospatial ^rtidyverse@2.0.0 ^r@4.6.0+arc ^flexiblas ^jpeg ^libtiff ^libpng ^gdal@3.6.3 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - cuda@12.9.1
+    - cuda@13.3.0
+    - cudnn@9.21.0.82-12 ^cuda@12.9.1
+    - cudnn@9.21.0.82-13 ^cuda@13.3.0
+    - bioinformatics@1.0
     override:
       packages:
         c:
@@ -30,19 +48,28 @@ spack:
           prefer: [gcc@8.5.0]
   - group: gcc-15.1.0
     specs:
-    - geos
-    #- openmpi %gcc@15.1.0
-    #- flexiblas %gcc@15.1.0
-    - libaec
-    - proj
-    - gdal ^netcdf-c ^hdf5+hl+cxx+fortran
-    - hdf5+hl+cxx+fortran
-    - libjpeg-turbo
-    - libtiff
-    - netcdf-c ^hdf5+hl+cxx+fortran
-    - netcdf-cxx4 ^netcdf-c ^hdf5+hl+cxx+fortran
-    - netcdf-fortran ^netcdf-c ^hdf5+hl+cxx+fortran
-    - sqlite
+    - python@3.13.13+arc
+    - boost@1.78.0
+    - geos@3.14.1
+    - openmpi@5.0.10+arc
+    - openblas@0.3.33
+    - netlib-lapack@3.12.1
+    - libaec@1.1.4
+    - proj@9.7.0
+    - hdf5@1.14.6+hl+cxx+fortran
+    - libjpeg-turbo@3.1.3
+    - libtiff@4.7.1
+    - netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - netcdf-cxx4@4.3.1 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - netcdf-fortran@4.6.2 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - gdal@3.6.3 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - gdal@3.13.1 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - sqlite@3.53.1
+    - libsodium@1.0.22
+    - libgd@2.3.3
+    - r@4.6.1+arc ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58
+    - rtidyverse@2.0.0 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^r@4.6.1+arc ^flexiblas@3.4.2
+    - rgeospatial@1.5-18 ^rtidyverse@2.0.0 ^r@4.6.1+arc ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^gdal@3.13.1 ^netcdf-c@4.7.4 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
     override:
         packages:
           c:
@@ -53,19 +80,27 @@ spack:
             prefer: [gcc@15.1.0]
   - group: gcc-10.3.0
     specs:
-    - geos
-    #- openmpi %gcc@10.3.0
-    #- flexiblas %gcc@10.3.0
-    - libaec
-    - proj
-    - gdal@3.13.1 ^netcdf-c ^hdf5+hl+cxx+fortran
-    - hdf5+hl+cxx+fortran
-    - libjpeg-turbo
-    - libtiff
-    - netcdf-c ^hdf5+hl+cxx+fortran
-    - netcdf-cxx4 ^netcdf-c ^hdf5+hl+cxx+fortran
-    - netcdf-fortran ^netcdf-c ^hdf5+hl+cxx+fortran
-    - sqlite
+    - python@3.13.13+arc
+    - boost@1.78.0
+    - geos@3.14.1
+    - openmpi@5.0.10+arc
+    - openblas@0.3.33
+    - netlib-lapack@3.12.1
+    - libaec@1.1.4
+    - proj@9.7.0
+    - hdf5@1.14.6+hl+cxx+fortran
+    - libjpeg-turbo@3.1.3
+    - libtiff@4.7.1
+    - netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - netcdf-cxx4@4.3.1 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - netcdf-fortran@4.6.2 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - gdal@3.13.1 ^netcdf-c@4.10.0 ^hdf5@1.14.6+hl+cxx+fortran ^libaec@1.1.4
+    - sqlite@3.53.1
+    #- archivetar@0.18.2 ^python@3.13.13+arc ^openmpi@5.0.10+arc
+    - libsodium@1.0.22
+    - libgd@2.3.3
+    - r@4.6.1+arc ^flexiblas@3.4.2 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58
+    - rtidyverse@2.0.0 ^libjpeg-turbo@3.1.3 ^libtiff@4.7.1 ^libpng@1.6.58 ^r@4.6.1+arc ^flexiblas@3.4.2
     override:
         packages:
           c:
@@ -179,6 +214,26 @@ spack:
         prefix: /usr
   modules:
     default:
+      roots:
+        lmod: /sw/pkgs/arc/staging/spack/modules
+        tcl: /sw/pkgs/arc/staging/spack/modules
       lmod:
-        core_compilers:
-        - gcc@8.5.0/w6akmqjjogstolgcqh5loghofzx54fk5
+        projections:
+          r: 'R/{version}'
+          intel-oneapi-compilers-classic: 'intel/{version}'
+        hash_length: 0
+        hierarchy:
+          - r
+          - mpi
+        core_specs:
+        - gcc@8.5.0
+        - gcc-runtime@8.5.0
+        - gcc@10.3.0
+        - gcc@15.1.0
+        - llvm@22.1.3
+        - intel-oneapi-compilers-classic@2021.5.0
+        exclude:
+        - gcc-runtime@8.5.0
+        - glibc
+        - autoconf
+        - compiler-wrapper
