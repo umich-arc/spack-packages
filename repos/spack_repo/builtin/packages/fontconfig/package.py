@@ -30,7 +30,7 @@ class Fontconfig(AutotoolsPackage):
     depends_on("freetype@2.8.1:", when="@2.13:")
     depends_on("freetype")
     depends_on("gperf", type="build", when="@2.11.1:")
-    depends_on("libxml2@2.6:")
+    #depends_on("libxml2@2.6:")
     depends_on("pkgconfig", type="build")
     depends_on("font-util")
     depends_on("uuid", when="@2.13.1:")
@@ -59,14 +59,12 @@ class Fontconfig(AutotoolsPackage):
         ldflags = []
         libs = []
         deps = []
-        # if freetype is an external, we can't access its DAG (bzip2 and libpng specs)
-        # we assume that the externals are shared libs
-        if not self.spec["freetype"].external and self.spec["bzip2"].satisfies("~shared"):
-            deps.append("bzip2")
-        if not self.spec["freetype"].external and not self.spec["libpng"].satisfies("libs=shared"):
+        #if self.spec["bzip2"].satisfies("~shared"):
+        #    deps.append("bzip2")
+        if not self.spec["libpng"].satisfies("libs=shared"):
             deps.append("libpng")
-        if self.spec["libxml2"].satisfies("~shared"):
-            deps.append("libxml-2.0")
+        #if self.spec["libxml2"].satisfies("~shared"):
+        #    deps.append("libxml-2.0")
         if deps:
             pc = which("pkg-config", required=True)
             for lib in deps:
