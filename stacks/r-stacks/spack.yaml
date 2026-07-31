@@ -3,11 +3,6 @@
 # It describes a set of packages to be installed, along with
 # configuration settings.
 spack:
-  upstreams:
-    arc-compiler-stacks:
-      install_tree: /sw/pkgs/arc/staging/spack
-    bioinformatics:
-      install_tree: /sw/pkgs/arc/staging/biospack
   config:
       install_tree:
         root: /sw/pkgs/arc/staging/spack
@@ -16,21 +11,19 @@ spack:
   ##########################################################################################
   #                                       Software                                         #
   ##########################################################################################
-  - group: gcc-10
+  - group: R stacks for gcc-8, gcc-10 and gcc-15
     specs:
-    - r@4.5
-    - r@4.6.0
-    - r@4.6.1
-    - rtidyverse@2.0.0 
-    - rgeospatial@1.5-18 
+    - matrix:
+      - 
+        - rtidyverse@2.0.0 ^r@4.5.3
+        - rgeospatial@1.5-18 ^r@4.5.3 ^rtidyverse@2.0.0 ^gdal@3.13.2 ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk@18.0.1.1
+        - rtidyverse@2.0.0 ^r@4.6.0
+        - rgeospatial@1.5-18 ^r@4.6.0 ^rtidyverse@2.0.0 ^gdal@3.13.2 ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk@18.0.1.1
+      - - "%gcc@8.5.0"
+        - "%gcc@10.3.0"
+        - "%gcc@15.1.0"
     override:
       packages:
-        c:
-          prefer: [gcc@10.3.0]
-        cxx:
-          prefer: [gcc@10.3.0]
-        fortran:
-          prefer: [gcc@10.3.0]
         python:
           require:
           - "+arc"
@@ -40,6 +33,14 @@ spack:
         r:
           require:
           - "+arc"
+        gdal:
+          require:
+          - "+armadillo+blosc+arrow+hdf4+hdf5+liblzma+libxml2+poppler+parquet+libaec+zstd"
+        arrow:
+          require:
+          - "+bz2+hdfs+ipc+mimalloc~orc+parquet~python+shared~snappy+zlib+zstd"
+        json-c:
+          prefer: "@0.13.1:"
   concretizer:
     unify: false
     reuse: true
@@ -73,41 +74,9 @@ spack:
             c: /sw/pkgs/arc/gcc/15.1.0/bin/gcc
             cxx: /sw/pkgs/arc/gcc/15.1.0/bin/g++
             fortran: /sw/pkgs/arc/gcc/15.1.0/bin/gfortran
-    llvm:
-      externals:
-      - spec: llvm@22.1.3+flang openmp=runtime
-        prefix: /sw/pkgs/arc/llvm/22.1.3
-        extra_attributes:
-          compilers:
-            c: /sw/pkgs/arc/llvm/22.1.3/bin/clang
-            cxx: /sw/pkgs/arc/llvm/22.1.3/bin/clang++
-            fortran: /sw/pkgs/arc/llvm/22.1.3/bin/flang
-          extra_rpaths:
-          - /sw/pkgs/arc/llvm/22.1.3/lib/x86_64-unknown-linux-gnu/
-          environment:
-                  prepend_path:
-                          LD_LIBRARY_PATH: /sw/pkgs/arc/llvm/22.1.3/lib/x86_64-unknown-linux-gnu/
-    intel-oneapi-compilers-classic:
-      externals:
-      - spec: intel-oneapi-compilers-classic@2021.5.0
-        prefix: /sw/pkgs/arc/intel/2022.1.2/compiler/2022.0.2/linux
-        extra_attributes:
-          compilers:
-            c: /sw/pkgs/arc/intel/2022.1.2/compiler/2022.0.2/linux/bin/intel64/icc
-            cxx: /sw/pkgs/arc/intel/2022.1.2/compiler/2022.0.2/linux/bin/intel64/icpc
-            fortran: /sw/pkgs/arc/intel/2022.1.2/compiler/2022.0.2/linux/bin/intel64/ifort
-          flags:
-            ldflags: -L/sw/pkgs/arc/intel/2022.1.2/compiler/2022.0.2/linux/compiler/lib/intel64_lin/
-          extra_rpaths:
-          - /sw/pkgs/arc/intel/2022.1.2/compiler/2022.0.2/linux/compiler/lib/intel64_lin/
-          environment:
-            prepend_path:
-              LD_LIBRARY_PATH: /sw/pkgs/arc/intel/2022.1.2/compiler/2022.0.2/linux/compiler/lib/intel64_lin/
-
     ##########################################################################################
     #                                       Externals                                        #
     ##########################################################################################
-
     perl:
       externals:
       - spec: perl@5.26.3
@@ -145,9 +114,9 @@ spack:
       - spec: tar@1.30
         prefix: /usr
     curl:
-      buildable: false
+      buildable: true
       externals:
-      - spec: curl@7.68.0
+      - spec: curl@7.61.1
         prefix: /usr
     expat:
       buildable: false
@@ -155,10 +124,25 @@ spack:
       - spec: expat@2.5.0
         prefix: /usr
     json-c:
-      buildable: false
+      buildable: True
       externals:
       - spec: json-c@0.13.1
         prefix: /usr
+    readline:
+      buildable: false
+      externals:
+      - spec: readline@7.0
+        prefix: /usr
+    hwloc:
+      buildable: false
+      externals:
+      - spec: hwloc@2.1.0
+        prefix: /usr
+    pmix:
+      buildable: false
+      externals:
+      - spec: pmix@5.0.10
+        prefix: /opt/pmix/5.0.10
     ##########################################################################################
     #                                         Modules                                        #
     ##########################################################################################
@@ -173,6 +157,8 @@ spack:
           r: 'R/{version}'
           intel-oneapi-compilers-classic: 'intel/{version}'
         hash_length: 0
+        core_compilers:
+          - gcc@8.5.0
         hierarchy:
           - r
           - mpi
