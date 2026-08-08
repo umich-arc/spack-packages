@@ -185,6 +185,17 @@ spack:
       externals:
       - spec: openssl@1.1.1
         prefix: /usr
+    fribidi:
+      buildable: false
+      externals:
+      - spec: fribidi@1.0.4
+        prefix: /usr
+    libxcb:
+      buildable: false
+      externals:
+      - spec: libxcb@1.13.1
+        prefix: /usr
+
 
     ##########################################################################################
     #                                         Modules                                        #
