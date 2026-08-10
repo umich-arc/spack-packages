@@ -51,7 +51,11 @@ spack:
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
     - mumps +complex+double+float+metis+parmetis+scotch+mpi
     - lua-luaposix
-    - lua
+    - lua@5.4.8
+    - aocc@5.2.0 +license-agreed
+    - nvhpc@26.5
+    - intel-oneapi-compilers-classic@2021.13.1
+    - llvm
     override:
       packages:
         c:
