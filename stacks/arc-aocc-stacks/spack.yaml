@@ -1,0 +1,103 @@
+# This is a Spack Environment file.
+#
+# It describes a set of packages to be installed, along with
+# configuration settings.
+spack:
+  config:
+      install_tree:
+        root: /sw/spack/opt/pkgs
+  view: false
+  specs:
+  ##########################################################################################
+  #                                       Software                                         #
+  ##########################################################################################
+
+  - group: Base-AOCC-Compiler
+    specs:
+    - python@3.13.13
+    - armadillo ^flexiblas
+    - flexiblas@3.4.2
+    - boost@1.90.0~mpi
+    - geos@3.14.1
+    - openmpi@5.0.10
+    - openblas@0.3.33
+    - netlib-lapack@3.12.1
+    - libaec@1.1.4
+    - proj@9.7.0 ^libtiff@4.7.1
+    - hdf5@1.14.6+cxx+fortran+hl+threadsafe~mpi ^libaec@1.1.4
+    - hdf5@1.14.6+threadsafe ^libaec@1.1.4
+    - netcdf-c+blosc+hdf4+mpi+parallel-netcdf+szip+zstd
+    - netcdf-cxx4 
+    - netcdf-fortran
+    - libjpeg-turbo@3.1.3
+    - libtiff@4.7.1
+    - sqlite@3.53.1
+    - archivetar@0.18.2 ^python@3.13.13 ^openmpi@5.0.10
+    - libsodium@1.0.22
+    - r@4.6.1
+    - r@4.5.3
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi
+    override:
+      packages:
+        c:
+          prefer: [aocc@5.2.0]
+        cxx:
+          prefer: [aocc@5.2.0]
+        fortran:
+          prefer: [aocc@5.2.0]
+        python:
+          require:
+          - "+arc"
+        openmpi:
+          require:
+          - "+arc"
+        r:
+          require:
+          - "+arc+X"
+        hdf5:
+          prefer:
+          - "+cxx+fortran+hl+mpi"
+        boost:
+          prefer:
+          - "~mpi"
+  concretizer:
+    unify: false
+    reuse: true
+    ##########################################################################################
+    #                                         Modules                                        #
+    ##########################################################################################
+  modules:
+    default:
+      roots:
+        lmod: /sw/spack/opt/modules
+        tcl: /sw/spack/opt/modules
+      lmod:
+        projections:
+          r: 'R/{version}'
+          hdf5~threadsafe: 'hdf5/{version}-nonatomic'
+          intel-oneapi-compilers-classic: 'intel/{version}'
+          miniforge3: 'mamba/{version}'
+          py-mpi4py: 'mpi4py/{version}' 
+        hash_length: 0
+        core_compilers:
+          - gcc@14.3.1
+        hierarchy:
+          - r
+          - mpi
+        core_specs:
+        - gcc@14.3.1
+        - gcc-runtime@14.3.1
+        - aocc@5.2.0
+        exclude:
+        - gcc-runtime@14.3.1
+        - glibc
+        - autoconf
+        - compiler-wrapper
+        - util-macros
+        - py-pip
+        - py-setuptools
+        - py-wheel
+        - py-cython
+        - python-venv
+        gcc-runtime:
+          template: gcc-runtime.lua
