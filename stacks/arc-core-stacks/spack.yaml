@@ -50,31 +50,14 @@ spack:
     - fftw+mpi
     - fftw+mpi ^mvapich2
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
-    - mumps +complex~double+float+metis~parmetis+scotch~mpi ^scotch~mpi
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi # using glibc libm
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi ^mvapich2
-    - ruby
-    - julia cpu_target=znver5
-    - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %gcc@14.3.1 ^ffmpeg/ipusu3b
-    - gromacs+cuda+mpi %gcc@14.3.1
-    - quantum-espresso %gcc@14.3.1 ^fftw/q2kkuso
-    - rclone
-    - jags
-    - nco ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
-    - pgplot
-    - ncview ^libxaw@1.0.15 ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
-    - gh
-    - nvtop
-    - gdal/wj3bifx
-    - maven
-    - amdlibm
-    #- mana@1.4.0
-    - mpifileutils@0.12
-    - cmake/g5xxe7a
-    - gmake/3nhmrgc
-    - nasm
-    - yasm
-    - pbzip2
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi
+    - lua-luaposix
+    - lua@5.4.8
+    - aocc@5.2.0 +license-agreed
+    - nvhpc@26.5
+    - intel-oneapi-compilers-classic@2021.13.1
+    - llvm
+    - gcc@10.3.0+binutils
     override:
       packages:
         c:
@@ -184,3 +167,8 @@ spack:
         - python-venv
         gcc-runtime:
           template: gcc-runtime.lua
+        miniforge3:
+          environment:
+            set:
+              CONDA_ENVS_PATH: "~/.conda/envs"
+              CONDA_PKGS_DIRS: "~/.conda/pkgs"
