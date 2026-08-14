@@ -17,7 +17,7 @@ spack:
   - group: Base-GCC14-Compiler
     specs:
     - argtable cflags="-Wno-error=implicit-function-declaration"
-    - gcc@14.3.1/o4xno4x
+    - gcc@14.3.1
     - python@3.14.7
     - python@3.13.13
     - python@3.11
@@ -137,7 +137,8 @@ spack:
     specs:
     - freesurfer
     - vtk/mby2353
-    - vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10 ^harfbuzz@11.4
+    - vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10
+    - vtk~mpi ^freetype@2.14.3 ^proj@8.1.0
     - fsl@6.0.5.2+cuda cuda_arch=80 ^openblas@0.3.33
     override:
       packages:
