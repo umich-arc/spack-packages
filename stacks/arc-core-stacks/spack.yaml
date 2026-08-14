@@ -17,6 +17,7 @@ spack:
     - bioinformatics
     - argtable cflags="-Wno-error=implicit-function-declaration"
     - gcc@14.3.1
+    - python@3.14.7
     - python@3.13.13
     - python@3.11
     - python@3.9.24
