@@ -17,10 +17,10 @@ spack:
   - group: Base-GCC14-Compiler
     specs:
     - argtable cflags="-Wno-error=implicit-function-declaration"
-    - gcc@14.3.1/o4xno4x
+    - gcc@14.3.1
     - python@3.14.7
     - python@3.13.13
-    - python@3.11 
+    - python@3.11
     - python@3.9.24
     - python@3.10.19
     - miniforge3@26.3.2-3+notebook+pytorch pytorch-cuda=13
@@ -67,7 +67,7 @@ spack:
     - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %gcc@14.3.1 ^ffmpeg/ipusu3b
     - gromacs+cuda+mpi %gcc@14.3.1
     - quantum-espresso %gcc@14.3.1 ^fftw/q2kkuso
-    - rclone 
+    - rclone
     - jags
     - nco ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
     - pgplot
@@ -116,7 +116,7 @@ spack:
     - intel-oneapi-mpi@2021.18.0
     - aocc@5.2.0 +license-agreed
     - nvhpc@26.5
-    - llvm/ganxupa ^python@3.10.19 
+    - llvm/ganxupa ^python@3.10.19
     - gcc@10.3.0+binutils
     - gcc@12.3.0+binutils
     - go/psk2nbe ^gcc/o4xno4x
@@ -139,8 +139,8 @@ spack:
   - group: imaging
     specs:
     - freesurfer
-    - vtk/mby2353 
-    - vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10 
+    - vtk/mby2353
+    - vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10
     - vtk~mpi ^freetype@2.14.3 ^proj@8.1.0
     - fsl@6.0.5.2+cuda cuda_arch=80 ^openblas@0.3.33
     override:
