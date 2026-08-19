@@ -8,6 +8,8 @@ import shutil
 import stat
 from typing import Dict, Iterable, List, Mapping, Optional, Tuple
 
+from spack.llnl.util.filesystem import mkdirp
+
 from spack.package import (
     BuilderWithDefaults,
     ClassProperty,
@@ -33,6 +35,7 @@ from spack.package import (
     symlink,
     test_part,
     tty,
+    variant,
     when,
     working_dir,
 )
@@ -457,11 +460,6 @@ class PythonCollectiveBuilder(BuilderWithDefaults):
         mkdirp(prefix)
 
         #
-        # Add Python itself.
-        #
-        self._merge_spec(python_spec, prefix)
-
-        #
         # Add Python packages belonging to this Python interpreter.
         #
         extensions = self._python_extensions(spec, python_spec)
@@ -473,7 +471,6 @@ class PythonCollectiveBuilder(BuilderWithDefaults):
                 )
             )
 
-            self._merge_spec(extension, prefix)
 
         self._write_manifest(spec, prefix, python_spec, extensions)
 
@@ -536,53 +533,6 @@ class PythonCollectiveBuilder(BuilderWithDefaults):
             ),
         )
 
-    def _merge_spec(self, dep_spec: Spec, prefix: Prefix) -> None:
-        """Merge one installed package prefix into the collective."""
-
-        source = str(dep_spec.prefix)
-        destination = str(prefix)
-
-        for root, dirs, files in os.walk(source):
-
-            relative = os.path.relpath(root, source)
-
-            if relative == ".":
-                dest_root = destination
-            else:
-                dest_root = os.path.join(destination, relative)
-
-            mkdirp(dest_root)
-
-            for directory in dirs:
-                mkdirp(join_path(dest_root, directory))
-
-            for filename in files:
-                src = join_path(root, filename)
-                dst = join_path(dest_root, filename)
-
-                self._link_file(src, dst, dep_spec)
-
-    def _link_file(self, src: str, dst: str, owner: Spec) -> None:
-        """Add a file to the collective and detect collisions."""
-
-        if not os.path.lexists(dst):
-            symlink(src, dst)
-            return
-
-        #
-        # Same underlying file: harmless.
-        #
-        if os.path.islink(dst):
-            if os.path.realpath(dst) == os.path.realpath(src):
-                return
-
-        raise InstallError(
-            "Python collective file collision:\n"
-            f"  destination: {dst}\n"
-            f"  existing:    {os.path.realpath(dst)}\n"
-            f"  incoming:    {src}\n"
-            f"  package:     {owner.format('{name}@{version}/{hash:7}')}"
-        )
 
     def _write_manifest(
         self,
