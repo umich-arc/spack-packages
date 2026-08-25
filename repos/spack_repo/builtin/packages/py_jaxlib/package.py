@@ -6,7 +6,6 @@ import glob
 
 from spack_repo.builtin.build_systems.cuda import CudaPackage
 from spack_repo.builtin.build_systems.python import PythonPackage, PythonPipBuilder
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
@@ -35,7 +34,7 @@ rocm_dependencies = [
 ]
 
 
-class PyJaxlib(PythonPackage, CudaPackage, ROCmPackage):
+class PyJaxlib(PythonPackage, CudaPackage):
     """XLA library for Jax.
 
     jaxlib is the support library for JAX. While JAX itself is a pure Python package,
@@ -120,21 +119,18 @@ class PyJaxlib(PythonPackage, CudaPackage, ROCmPackage):
         depends_on("nccl@2.16:", when="@0.4.18:")
         depends_on("nccl")
 
-    with when("+rocm"):
-        for pkg_dep in rocm_dependencies:
-            depends_on(f"{pkg_dep}@6:", when="@0.4.28:")
-            depends_on(f"{pkg_dep}@6.3:", when="@0.6:")
-            depends_on(f"{pkg_dep}@:6", when="@:0.7")
-            depends_on(f"{pkg_dep}@7.2:", when="@0.10.2:")
-            depends_on(pkg_dep)
-        depends_on("rocprofiler-register", when="^hip@6.2:")
-        depends_on("hipblas-common", when="^hip@6.3:")
-        depends_on("hsakmt-roct", when="^hip@:6.2")
-        depends_on("llvm-amdgpu")
-        depends_on("rocprofiler-sdk", when="@0.8.1:")
-        depends_on("rocm-smi-lib", when="@0.11:0.11.1")
-        depends_on("amdsmi", when="@0.11.2:")
-        depends_on("py-nanobind")
+    #with when("+rocm"):
+    #    for pkg_dep in rocm_dependencies:
+    #        depends_on(f"{pkg_dep}@6:", when="@0.4.28:")
+    #        depends_on(f"{pkg_dep}@6.3:", when="@0.6:")
+    #        depends_on(f"{pkg_dep}@:6", when="@:0.7")
+    #        depends_on(pkg_dep)
+    #    depends_on("rocprofiler-register", when="^hip@6.2:")
+    #    depends_on("hipblas-common", when="^hip@6.3:")
+    #    depends_on("hsakmt-roct", when="^hip@:6.2")
+    #    depends_on("llvm-amdgpu")
+    #    depends_on("rocprofiler-sdk", when="@0.8.1:")
+    #    depends_on("py-nanobind")
 
     with default_args(type="build"):
         depends_on("c")
@@ -171,7 +167,7 @@ class PyJaxlib(PythonPackage, CudaPackage, ROCmPackage):
         depends_on("python@:3.13", when="@:0.7.0")
         depends_on("python@:3.12", when="@:0.4.33")
         depends_on("python@:3.11", when="@:0.4.16")
-        depends_on("python@:3.12", when="@:0.10 +rocm")
+        #depends_on("python@:3.12", when="+rocm")
 
         # jaxlib/setup.py
         depends_on("py-scipy@1.14:", when="@0.10:")
@@ -268,24 +264,15 @@ class PyJaxlib(PythonPackage, CudaPackage, ROCmPackage):
     # (-mavx512fp16 exists in gcc@12:)
     conflicts("%gcc@:11", when="@0.5:")
 
-    resource(
-        name="xla",
-        url="https://github.com/ROCm/xla/archive/07543ab117699a57c1267b453a62f89b1d5953fd.tar.gz",
-        sha256="cee377479654201c61cc3f230d89603cd589525fea2faf44564a23c70ba1448d",
-        expand=True,
-        destination="",
-        placement="xla",
-        when="@0.4.38:0.5.2 +rocm",
-    )
-    resource(
-        name="xla",
-        url="https://github.com/openxla/xla/archive/dcf304bc5dca1932b99f740b911dbd73631a1a69.tar.gz",
-        sha256="4c89ecfff5a662a6edfb4e2d403fedf55be40a3a0079e3c2f8ba47b37c16eaab",
-        expand=True,
-        destination="",
-        placement="xla",
-        when="@0.11.1 +rocm",
-    )
+    #resource(
+    #    name="xla",
+    #    url="https://github.com/ROCm/xla/archive/07543ab117699a57c1267b453a62f89b1d5953fd.tar.gz",
+    #    sha256="cee377479654201c61cc3f230d89603cd589525fea2faf44564a23c70ba1448d",
+    #    expand=True,
+    #    destination="",
+    #    placement="xla",
+    #    when="@0.4.38:0.5.2 +rocm",
+    #)
 
     def url_for_version(self, version):
         url = "https://github.com/jax-ml/jax/archive/refs/tags/{}-v{}.tar.gz"
@@ -297,22 +284,19 @@ class PyJaxlib(PythonPackage, CudaPackage, ROCmPackage):
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         spec = self.spec
-        if spec.satisfies("@0.4.38: +rocm") and not spec["hip"].external:
-            env.set("LLVM_PATH", spec["llvm-amdgpu"].prefix)
-            transitive_rocm_dependencies = [
-                "hipblas-common",
-                "rocprofiler-register",
-                "hsakmt-roct",
-                "rocprofiler-sdk",
-                "rocm-smi-lib",
-                "amdsmi",
-            ]
-            for pkg_dep in transitive_rocm_dependencies:
-                if self.spec.satisfies(f"^{pkg_dep}"):
-                    rocm_dependencies.append(pkg_dep)
-            for pkg_dep in rocm_dependencies:
-                env.prepend_path("TF_ROCM_MULTIPLE_PATHS", spec[pkg_dep].prefix)
-                env.prune_duplicate_paths("TF_ROCM_MULTIPLE_PATHS")
+        #if spec.satisfies("@0.4.38: +rocm") and not spec["hip"].external:
+        #    if spec.satisfies("^hip@6.2:"):
+        #        rocm_dependencies.append("rocprofiler-register")
+        #    if spec.satisfies("^hip@6.3:"):
+        #        rocm_dependencies.append("hipblas-common")
+        #    else:
+        #        rocm_dependencies.append("hsakmt-roct")
+        #    if spec.satisfies("@0.8.1:"):
+        #        rocm_dependencies.append("rocprofiler-sdk")
+        #    env.set("LLVM_PATH", spec["llvm-amdgpu"].prefix)
+        #    for pkg_dep in rocm_dependencies:
+        #        env.prepend_path("TF_ROCM_MULTIPLE_PATHS", spec[pkg_dep].prefix)
+        #        env.prune_duplicate_paths("TF_ROCM_MULTIPLE_PATHS")
 
             if spec.satisfies("@0.11:"):
                 # xla is not compatible with multiple ROCm paths if a singular ROCM_PATH is set
@@ -340,8 +324,8 @@ class PyJaxlib(PythonPackage, CudaPackage, ROCmPackage):
 
             if spec.satisfies("+cuda"):
                 args.append("--wheels=jaxlib,jax-cuda-plugin,jax-cuda-pjrt")
-            elif spec.satisfies("+rocm"):
-                args.append("--wheels=jaxlib,jax-rocm-plugin,jax-rocm-pjrt")
+            #elif spec.satisfies("+rocm"):
+            #    args.append("--wheels=jaxlib,jax-rocm-plugin,jax-rocm-pjrt")
             else:
                 args.append("--wheels=jaxlib")
 
@@ -376,32 +360,18 @@ class PyJaxlib(PythonPackage, CudaPackage, ROCmPackage):
         if "+nccl" in spec and spec.satisfies("@0.4.32:"):
             args.append(f"--bazel_options=--repo_env=LOCAL_NCCL_PATH={spec['nccl'].prefix}")
 
-        if "+rocm" in spec:
-            if spec.satisfies("@:0.10"):
-                args.append(f"--rocm_path={self.spec['hip'].prefix}")
-            if spec.satisfies("@:0.4.35"):
-                args.append("--enable_rocm")
-            if spec.satisfies("@0.11.2:"):
-                args.append(
-                    "--bazel_options=--extra_toolchains=@local_config_rocm//crosstool:toolchain-linux-x86_64"
-                )
-            if spec.satisfies("@0.11:"):
-                args.extend(
-                    [
-                        "--bazel_startup_options=--bazelrc=build/rocm/rocm.bazelrc",
-                        "--bazel_options=--config=rocm_clang_local",
-                    ]
-                )
-            if spec.satisfies("@0.4.38:") and not spec["hip"].external:
-                args.append("--bazel_options=--@local_config_rocm//rocm:rocm_path_type=multiple")
-            if spec.satisfies("@0.4.38:0.5.2"):
-                args.append(
-                    f"--bazel_options=--override_repository=xla={self.stage.source_path}/xla"
-                )
-            elif spec.satisfies("@0.11.1"):
-                args.append(f"--local_xla_path={self.stage.source_path}/xla")
-            amdgpu_targets = ",".join(self.spec.variants["amdgpu_target"].value)
-            args.append(f"--rocm_amdgpu_target={amdgpu_targets}")
+        #if "+rocm" in spec:
+        #    args.append(f"--rocm_path={self.spec['hip'].prefix}")
+        #    if spec.satisfies("@:0.4.35"):
+        #        args.append("--enable_rocm")
+        #    if spec.satisfies("@0.4.38:") and not spec["hip"].external:
+        #        args.append("--bazel_options=--@local_config_rocm//rocm:rocm_path_type=multiple")
+        #    if spec.satisfies("@0.4.38:0.5.2"):
+        #        args.append(
+        #            f"--bazel_options=--override_repository=xla={self.stage.source_path}/xla"
+        #        )
+        #    amdgpu_targets = ",".join(self.spec.variants["amdgpu_target"].value)
+        #    args.append(f"--rocm_amdgpu_target={amdgpu_targets}")
 
         args.extend(
             [
