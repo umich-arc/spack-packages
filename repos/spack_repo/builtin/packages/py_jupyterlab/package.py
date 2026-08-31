@@ -75,6 +75,8 @@ class PyJupyterlab(PythonPackage):
         depends_on("py-notebook-shim@0.2:", when="@4:")
         depends_on("py-packaging@23.2:", when="@4.5.8:")
         depends_on("py-packaging", when="@3:")
+        depends_on("py-setuptools@41.1:", when="@4.3.7:")
+        depends_on("py-setuptools@40.8.0:", when="@4.3.5:")
         depends_on("py-tomli@1.2.2:", when="@4.3.5: ^python@:3.10")
         depends_on("py-tomli", when="@4: ^python@:3.10")
         depends_on("py-tomli", when="@3.4.7:3")
