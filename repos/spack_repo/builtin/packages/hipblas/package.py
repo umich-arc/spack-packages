@@ -7,12 +7,12 @@ import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmLibrary, ROCmPackage
+from spack_repo.builtin.build_systems.rocm import ROCmLibrary
 
 from spack.package import *
 
 
-class Hipblas(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
+class Hipblas(ROCmLibrary, CMakePackage, CudaPackage):
     """hipBLAS is a BLAS marshalling library, with multiple
     supported backends"""
 
@@ -60,22 +60,22 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
     version("5.7.0", sha256="8c6cd2ffa4ce6ab03e05feffe074685b5525610870aebe9d78f817b3037f33a4")
 
     # default to an 'auto' variant until amdgpu_targets can be given a better default than 'none'
-    amdgpu_targets = ROCmPackage.amdgpu_targets
-    variant(
-        "amdgpu_target",
-        description="AMD GPU architecture",
-        values=disjoint_sets(("auto",), amdgpu_targets)
-        .with_default("auto")
-        .with_error(
-            "the values 'auto' and 'none' are mutually exclusive with any of the other values"
-        )
-        .with_non_feature_values("auto", "none"),
-        sticky=True,
-    )
-    variant("rocm", default=True, description="Enable ROCm support")
+    #amdgpu_targets = ROCmPackage.amdgpu_targets
+    #variant(
+    #    "amdgpu_target",
+    #    description="AMD GPU architecture",
+    #    values=disjoint_sets(("auto",), amdgpu_targets)
+    #    .with_default("auto")
+    #    .with_error(
+    #        "the values 'auto' and 'none' are mutually exclusive with any of the other values"
+    #    )
+    #    .with_non_feature_values("auto", "none"),
+    #    sticky=True,
+    #)
+    #variant("rocm", default=True, description="Enable ROCm support")
     variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
-    conflicts("+cuda +rocm", msg="CUDA and ROCm support are mutually exclusive")
-    conflicts("~cuda ~rocm", msg="CUDA or ROCm support is required")
+    #conflicts("+cuda +rocm", msg="CUDA and ROCm support are mutually exclusive")
+    conflicts("~cuda", msg="CUDA support is required")
 
     depends_on("c", type="build")  # generated
     depends_on("cxx", type="build")  # generated
@@ -94,70 +94,69 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
 
     depends_on("hip +cuda", when="+cuda")
 
-    for ver in ["5.7.0", "5.7.1"]:
-        depends_on(f"rocm-cmake@{ver}", when=f"+rocm @{ver}")
-        depends_on(f"rocsolver@{ver}", when=f"+rocm @{ver}")
-        depends_on(f"rocblas@{ver}", when=f"+rocm @{ver}")
+    #for ver in ["5.7.0", "5.7.1"]:
+    #    depends_on(f"rocm-cmake@{ver}", when=f"+rocm @{ver}")
+    #    depends_on(f"rocsolver@{ver}", when=f"+rocm @{ver}")
+    #    depends_on(f"rocblas@{ver}", when=f"+rocm @{ver}")
 
-    for ver in [
-        "6.0.0",
-        "6.0.2",
-        "6.1.0",
-        "6.1.1",
-        "6.1.2",
-        "6.2.0",
-        "6.2.1",
-        "6.2.4",
-        "6.3.0",
-        "6.3.1",
-        "6.3.2",
-        "6.3.3",
-        "6.4.0",
-        "6.4.1",
-        "6.4.2",
-        "6.4.3",
-        "7.0.0",
-        "7.0.2",
-        "7.1.0",
-        "7.1.1",
-        "7.2.0",
-        "7.2.1",
-        "7.2.3",
-        "7.13.0",
-        "7.14.0",
-        "10.0.0",
-    ]:
-        depends_on(f"rocm-cmake@{ver}", when=f"+rocm @{ver}")
-        depends_on(f"rocsolver@{ver}", when=f"+rocm @{ver}")
-        depends_on(f"rocblas@{ver}", when=f"+rocm @{ver}")
+    #for ver in [
+    #    "6.0.0",
+    #    "6.0.2",
+    #    "6.1.0",
+    #    "6.1.1",
+    #    "6.1.2",
+    #    "6.2.0",
+    #    "6.2.1",
+    #    "6.2.4",
+    #    "6.3.0",
+    #    "6.3.1",
+    #    "6.3.2",
+    #    "6.3.3",
+    #    "6.4.0",
+    #    "6.4.1",
+    #    "6.4.2",
+    #    "6.4.3",
+    #    "7.0.0",
+    #    "7.0.2",
+    #    "7.1.0",
+    #    "7.1.1",
+    #    "7.2.0",
+    #    "7.2.1",
+    #    "7.2.3",
+    #    "7.13.0",
+    #    "7.14.0",
+    #]:
+    #    depends_on(f"rocm-cmake@{ver}", when=f"+rocm @{ver}")
+    #    depends_on(f"rocsolver@{ver}", when=f"+rocm @{ver}")
+    #    depends_on(f"rocblas@{ver}", when=f"+rocm @{ver}")
 
-    for ver in [
-        "6.0.0",
-        "6.0.2",
-        "6.1.0",
-        "6.1.1",
-        "6.1.2",
-        "6.2.0",
-        "6.2.1",
-        "6.2.4",
-        "6.3.0",
-        "6.3.1",
-        "6.3.2",
-        "6.3.3",
-        "6.4.0",
-        "6.4.1",
-        "6.4.2",
-        "6.4.3",
-        "7.0.0",
-        "7.0.2",
-        "7.1.0",
-        "7.1.1",
-    ]:
-        depends_on(f"rocm-openmp-extras@{ver}", type="test", when=f"+rocm @{ver}")
+    #for ver in [
+    #    "6.0.0",
+    #    "6.0.2",
+    #    "6.1.0",
+    #    "6.1.1",
+    #    "6.1.2",
+    #    "6.2.0",
+    #    "6.2.1",
+    #    "6.2.4",
+    #    "6.3.0",
+    #    "6.3.1",
+    #    "6.3.2",
+    #    "6.3.3",
+    #    "6.4.0",
+    #    "6.4.1",
+    #    "6.4.2",
+    #    "6.4.3",
+    #    "7.0.0",
+    #    "7.0.2",
+    #    "7.1.0",
+    #    "7.1.1",
+    #]:
+    #    depends_on(f"rocm-openmp-extras@{ver}", type="test", when=f"+rocm @{ver}")
 
-    for tgt in itertools.chain(["auto"], amdgpu_targets):
-        depends_on(f"rocblas amdgpu_target={tgt}", when=f"+rocm amdgpu_target={tgt}")
-        depends_on(f"rocsolver amdgpu_target={tgt}", when=f"+rocm amdgpu_target={tgt}")
+    #for tgt in itertools.chain(["auto"], amdgpu_targets):
+    #    depends_on(f"rocblas amdgpu_target={tgt}", when=f"+rocm amdgpu_target={tgt}")
+    #    depends_on(f"rocsolver amdgpu_target={tgt}", when=f"+rocm amdgpu_target={tgt}")
 
     for ver in [
         "6.3.0",
