@@ -75,17 +75,6 @@ spack:
     - gh
     - nvtop
     - gdal/wj3bifx
-    - maven
-    - amdlibm
-    #- mana@1.4.0
-    - mpifileutils@0.12
-    - cmake/g5xxe7a
-    - gmake/3nhmrgc
-    - nasm
-    - yasm
-    - pbzip2 ^bzip2/4cpvt2c #os external
-    - llama-cpp@0.6.0 ^curl/zhvfjjx
-    - octave +fftw+fontconfig+gnuplot+hdf5+zlib+opengl+qt ^harfbuzz/gcoqsik
     override:
       packages:
         c:
@@ -165,23 +154,14 @@ spack:
       lmod:
         projections:
           r: 'R/{version}'
-          'libmng ^libtiff@4.0.10': 'libmng/{version}-tiff4.0.10'
-          'lcms ^libtiff@4.0.10': 'lcms/{version}-tiff4.0.10'
           hdf5~threadsafe+mpi: 'phdf5/{version}-nonatomic'
-          hdf5+threadsafe+mpi: 'phdf5/{version}'
-          hdf5~threadsafe~mpi: 'hdf5/{version}-nonatomic'
+          hdf5~threadsafe: 'hdf5/{version}-nonatomic'
           intel-oneapi-compilers-classic: 'intel/{version}'
           miniforge3: 'mamba/{version}'
           py-mpi4py: 'mpi4py/{version}'
           intel-oneapi-mpi: 'impi/{version}'
           gh: 'github-cli/{version}'
-          paraview~mpi~cuda: 'paraview/{version}-nompicuda'
-          mumps~mpi: 'mumps/{version}-seq'
-          mumps^mvapich2: 'mumps/{version}-mvapich2'
-          netlib-scalapack^mvapich2: 'netlib-scalapack/{version}-mvapich2'
-          scotch^mvapich2: 'scotch/{version}-mvapich2'
-          parmetis^mvapich2: 'parmetis/{version}-mvapich2'
-          ninja: 'ninja/{version}-py{^python.version.up_to_2}'
+          hdf5+mpi: 'phdf5/{version}'
         glew:
           suffixes:
             '^glx': glx
