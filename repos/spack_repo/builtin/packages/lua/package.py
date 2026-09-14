@@ -47,7 +47,6 @@ class LuaImplPackage(MakefilePackage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.lua_dir_name = "lua"
-        pass
 
     def __verdir(self):
         return (
@@ -264,7 +263,7 @@ class Lua(LuaImplPackage):
             "MYLDFLAGS="
             + " ".join((spec["readline"].libs.search_flags, spec["ncurses"].libs.search_flags)),
             "MYLIBS=%s" % spec["ncurses"].libs.link_flags,
-            "CC={0} -std=gnu99 {1}".format(spack_cc, self.compiler.cc_pic_flag),
+            f"CC={spack_cc} -std=gnu99 {self.compiler.cc_pic_flag}",
             target,
         )
 
@@ -284,7 +283,7 @@ class Lua(LuaImplPackage):
         if spec.satisfies("+shared"):
             with working_dir(prefix.lib):
                 # e.g., liblua.so.5.1.5
-                src_path = "liblua.{0}.{1}".format(dso_suffix, str(self.version.up_to(3)))
+                src_path = f"liblua.{dso_suffix}.{self.version.up_to(3)!s}"
 
                 # For lua version 5.1.X, the symlinks should be:
                 # liblua5.1.so
@@ -297,7 +296,7 @@ class Lua(LuaImplPackage):
                 ]
                 for version_str in version_formats:
                     for joiner in ["", "-"]:
-                        dest_path = "liblua{0}{1}.{2}".format(joiner, version_str, dso_suffix)
+                        dest_path = f"liblua{joiner}{version_str}.{dso_suffix}"
                         symlink(src_path, dest_path)
 
         # internal headers are needed for some tools like elmerfem-ice
@@ -328,7 +327,7 @@ class Lua(LuaImplPackage):
     @run_after("install")
     def generate_pkg_config(self):
         mkdirp(self.prefix.lib.pkgconfig)
-        versioned_pc_file_name = "lua{0}.pc".format(self.version.up_to(2))
+        versioned_pc_file_name = f"lua{self.version.up_to(2)}.pc"
         versioned_pc_file_path = join_path(self.prefix.lib.pkgconfig, versioned_pc_file_name)
         with open(versioned_pc_file_path, "w") as pcfile:
             pcfile.write(_LUA_PC_TEMPLATE.format(self.prefix, self.version.up_to(2), self.version))

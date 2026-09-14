@@ -20,7 +20,7 @@ class Mathematica(Package):
     https://spack.readthedocs.io/en/latest/mirrors.html"""
 
     homepage = "https://www.wolfram.com/mathematica/"
-    url = "file://{0}/Mathematica_12.0.0_LINUX.sh".format(os.getcwd())
+    url = f"file://{os.getcwd()}/Mathematica_12.0.0_LINUX.sh"
     manual_download = True
 
     license("LicenseRef-Wolfram-Proprietary", checked_by="alecbcs")
@@ -66,8 +66,8 @@ class Mathematica(Package):
             "--",
             "-auto",
             "-verbose",
-            "-targetdir={0}".format(prefix),
-            "-execdir={0}".format(prefix.bin),
+            f"-targetdir={prefix}",
+            f"-execdir={prefix.bin}",
             "-selinux=y",
         )
         # This is what most people would use on a cluster but the installer

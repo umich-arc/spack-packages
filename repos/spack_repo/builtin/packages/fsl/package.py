@@ -20,7 +20,7 @@ class Fsl(Package, CudaPackage):
     # mirror, see https://spack.readthedocs.io/en/latest/mirrors.html
 
     homepage = "https://fsl.fmrib.ox.ac.uk"
-    url = "file://{0}/fsl-5.0.10-sources.tar.gz".format(os.getcwd())
+    url = f"file://{os.getcwd()}/fsl-5.0.10-sources.tar.gz"
     manual_download = True
 
     version("6.0.5.2", sha256="dd41fcc3f457617d750394e9872b1a87c34838003b9929808dea280cd9d7a0d2")
@@ -122,17 +122,17 @@ class Fsl(Package, CudaPackage):
         vtk_settings = FileFilter(vtk_file)
 
         build_settings.filter(r"^CUDAVER", "#CUDAVER")
-        build_settings.filter(r"(^CC)\s*=.*", r"\1 = {0}".format(spack_cc))
-        build_settings.filter(r"(^CXX)\s*=.*", r"\1 = {0}".format(spack_cxx))
-        build_settings.filter(r"(^CXX11)\s*=.*", r"\1 = {0}".format(spack_cxx))
+        build_settings.filter(r"(^CC)\s*=.*", rf"\1 = {spack_cc}")
+        build_settings.filter(r"(^CXX)\s*=.*", rf"\1 = {spack_cxx}")
+        build_settings.filter(r"(^CXX11)\s*=.*", rf"\1 = {spack_cxx}")
 
         vtk_suffix = self.spec["vtk"].version.up_to(2)
         vtk_lib_dir = self.spec["vtk"].prefix.lib64
-        vtk_include_dir = join_path(self.spec["vtk"].prefix.include, "vtk-{0}".format(vtk_suffix))
+        vtk_include_dir = join_path(self.spec["vtk"].prefix.include, f"vtk-{vtk_suffix}")
 
-        vtk_settings.filter(r"(^VTKDIR_INC)\s*=.*", r"\1 = {0}".format(vtk_include_dir))
-        vtk_settings.filter(r"(^VTKDIR_LIB)\s*=.*", r"\1 = {0}".format(vtk_lib_dir))
-        vtk_settings.filter(r"(^VTKSUFFIX)\s*=.*", r"\1 = -{0}".format(vtk_suffix))
+        vtk_settings.filter(r"(^VTKDIR_INC)\s*=.*", rf"\1 = {vtk_include_dir}")
+        vtk_settings.filter(r"(^VTKDIR_LIB)\s*=.*", rf"\1 = {vtk_lib_dir}")
+        vtk_settings.filter(r"(^VTKSUFFIX)\s*=.*", rf"\1 = -{vtk_suffix}")
 
         if self.spec.satisfies("+cuda"):
             cuda_arch = self.spec.variants["cuda_arch"].value
@@ -140,7 +140,7 @@ class Fsl(Package, CudaPackage):
             cuda_installation = self.spec["cuda"].prefix
 
             build_settings.filter(
-                r"(^CUDA_INSTALLATION)\s*=.*", r"\1 = {0}".format(cuda_installation)
+                r"(^CUDA_INSTALLATION)\s*=.*", rf"\1 = {cuda_installation}"
             )
             build_settings.filter(
                 r"(^LIB_CUDA)\s*=.*", r"\1 = {0}".format(join_path(cuda_installation, "lib64"))
@@ -154,7 +154,7 @@ class Fsl(Package, CudaPackage):
             build_settings.filter(
                 r"(^NVCC)\s*=.*", r"\1 = {0}".format(join_path(cuda_installation, "bin", "nvcc"))
             )
-            build_settings.filter(r"(^GENCODE_FLAGS)\s*=.*", r"\1 = {0}".format(cuda_gencode))
+            build_settings.filter(r"(^GENCODE_FLAGS)\s*=.*", rf"\1 = {cuda_gencode}")
 
             if self.spec.satisfies("@6:"):
                 build_settings.filter(r"(^EDDYBUILDPARAMETERS)\s*=.*", r'\1 = "cuda=1" "cpu=1"')

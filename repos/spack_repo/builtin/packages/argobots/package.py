@@ -73,7 +73,7 @@ class Argobots(AutotoolsPackage):
 
         stackguard = self.spec.variants["stackguard"].value
         if stackguard != "none":
-            args.append("--enable-stack-overflow-check={0}".format(stackguard))
+            args.append(f"--enable-stack-overflow-check={stackguard}")
 
         if self.spec.satisfies("+tool"):
             args.append("--enable-tool")

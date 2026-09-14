@@ -61,7 +61,7 @@ class Ocaml(Package):
         return url.format(str(version)[:-2], version)
 
     def install(self, spec, prefix):
-        base_args = ["-prefix", "{0}".format(prefix)]
+        base_args = ["-prefix", f"{prefix}"]
 
         if self.spec.satisfies("~force-safe-string"):
             base_args += ["--disable-force-safe-string"]
@@ -72,7 +72,7 @@ class Ocaml(Package):
         if self.spec.satisfies("%fj"):
             filter_file(
                 'aspp="${toolpref}clang -c -Wno-trigraphs"',
-                'aspp="{0} -c"'.format(spack_cc),
+                f'aspp="{spack_cc} -c"',
                 "configure",
                 string=True,
             )
@@ -90,4 +90,4 @@ class Ocaml(Package):
         configure(*(base_args))
 
         make("world.opt")
-        make("install", "PREFIX={0}".format(prefix))
+        make("install", f"PREFIX={prefix}")

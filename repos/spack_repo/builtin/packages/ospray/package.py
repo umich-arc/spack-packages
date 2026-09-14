@@ -102,10 +102,10 @@ class Ospray(CMakePackage):
         enable_apps_arg = "" if self.spec.satisfies("@2.9:") else "ENABLE_"
         args.extend(
             [
-                self.define("OSPRAY_{0}APPS_TESTING".format(enable_apps_arg), False),
-                self.define("OSPRAY_{0}APPS_EXAMPLES".format(enable_apps_arg), False),
-                self.define("OSPRAY_{0}APPS_TUTORIALS".format(enable_apps_arg), False),
-                self.define("OSPRAY_{0}APPS_BENCHMARK".format(enable_apps_arg), False),
+                self.define(f"OSPRAY_{enable_apps_arg}APPS_TESTING", False),
+                self.define(f"OSPRAY_{enable_apps_arg}APPS_EXAMPLES", False),
+                self.define(f"OSPRAY_{enable_apps_arg}APPS_TUTORIALS", False),
+                self.define(f"OSPRAY_{enable_apps_arg}APPS_BENCHMARK", False),
             ]
         )
 

@@ -70,8 +70,8 @@ class Amdblis(BlisBase):
 
         if spec.satisfies("+aocl_gemm"):
             args.append("-a aocl_gemm")
-            args.append("CC={0}".format(os.path.basename(spack_cc)))
-            args.append("CXX={0}".format(os.path.basename(spack_cxx)))
+            args.append(f"CC={os.path.basename(spack_cc)}")
+            args.append(f"CXX={os.path.basename(spack_cxx)}")
 
         if spec.satisfies("+suphandling"):
             args.append("--enable-sup-handling")
@@ -121,7 +121,7 @@ class Amdblis(BlisBase):
                 break
         # To ensure the target should always be the last argument for base and derived class
         config_args = self.configure_args() + [target]
-        configure("--prefix={0}".format(prefix), *config_args)
+        configure(f"--prefix={prefix}", *config_args)
 
     @run_after("install")
     def create_symlink(self):

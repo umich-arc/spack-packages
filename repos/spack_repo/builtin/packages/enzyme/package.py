@@ -78,9 +78,9 @@ class Enzyme(CMakePackage):
     @property
     def libs(self):
         ver = self.llvm_version.up_to(1)
-        libs = ["LLVMEnzyme-{0}".format(ver), "ClangEnzyme-{0}".format(ver)]
+        libs = [f"LLVMEnzyme-{ver}", f"ClangEnzyme-{ver}"]
         if self.version >= Version("0.0.32"):  # TODO actual lower bound
-            libs.append("LLDEnzyme-{0}".format(ver))
+            libs.append(f"LLDEnzyme-{ver}")
 
         return find_libraries(libs, root=self.prefix, recursive=True)
 
@@ -91,12 +91,12 @@ class Enzyme(CMakePackage):
         # environment variables
         ver = self.llvm_version.up_to(1)
 
-        llvm = find_libraries("LLVMEnzyme-{0}".format(ver), root=self.prefix, recursive=True)
+        llvm = find_libraries(f"LLVMEnzyme-{ver}", root=self.prefix, recursive=True)
         env.set("LLVMENZYME", ";".join(llvm))
 
-        clang = find_libraries("ClangEnzyme-{0}".format(ver), root=self.prefix, recursive=True)
+        clang = find_libraries(f"ClangEnzyme-{ver}", root=self.prefix, recursive=True)
         env.set("CLANGENZYME", ";".join(clang))
 
         if self.version >= Version("0.0.32"):  # TODO actual lower bound
-            lld = find_libraries("LLDEnzyme-{0}".format(ver), root=self.prefix, recursive=True)
+            lld = find_libraries(f"LLDEnzyme-{ver}", root=self.prefix, recursive=True)
             env.set("LLDENZYME", ";".join(lld))

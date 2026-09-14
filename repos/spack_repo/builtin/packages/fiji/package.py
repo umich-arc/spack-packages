@@ -2,8 +2,9 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-from spack.package import *
 import os
+
+from spack.package import *
 
 
 class Fiji(Package):
@@ -37,7 +38,7 @@ class Fiji(Package):
         launcher = join_path(prefix.fiji, "ImageJ-linux64")
 
         if not os.path.isfile(launcher):
-            raise InstallError("Could not find the Fiji launcher at {0}".format(launcher))
+            raise InstallError(f"Could not find the Fiji launcher at {launcher}")
 
         set_executable(launcher)
 

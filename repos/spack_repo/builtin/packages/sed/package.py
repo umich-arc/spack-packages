@@ -33,15 +33,15 @@ class Sed(AutotoolsPackage, GNUMirrorPackage):
 
     def url_for_version(self, version):
         if Version("4.2") <= version < Version("4.3.0"):
-            self.gnu_mirror_path = "sed/sed-{0}.tar.bz2".format(version)
+            self.gnu_mirror_path = f"sed/sed-{version}.tar.bz2"
         elif version < Version("4.2"):
-            self.gnu_mirror_path = "sed/sed-{0}.tar.gz".format(version)
+            self.gnu_mirror_path = f"sed/sed-{version}.tar.gz"
         return super().url_for_version(version)
 
     @classmethod
     def determine_version(cls, exe):
         output = Executable(exe)("--version", output=str, error=str)
-        version_regexp = r"{:s} \(GNU sed\) (\S+)".format(exe)
+        version_regexp = rf"{exe:s} \(GNU sed\) (\S+)"
         match = re.search(version_regexp, output)
         return match.group(1) if match else None
 

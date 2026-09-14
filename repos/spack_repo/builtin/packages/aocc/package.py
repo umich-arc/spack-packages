@@ -94,15 +94,15 @@ class Aocc(Package, LlvmDetection, CompilerPackage):
         "license-agreed",
         default=False,
         sticky=True,
-        description="Confirm acceptance of the EULA ({0})".format(license_url),
+        description=f"Confirm acceptance of the EULA ({license_url})",
     )
 
     conflicts(
         "~license-agreed",
         msg=(
-            "Installation of {0} requires acceptance of the EULA (found at {1}). Set the "
+            f"Installation of {_name} requires acceptance of the EULA (found at {license_url}). Set the "
             "+license-agreed variant to confirm acceptance of the EULA"
-        ).format(_name, license_url),
+        ),
     )
 
     @run_before("install")
@@ -110,14 +110,14 @@ class Aocc(Package, LlvmDetection, CompilerPackage):
         if self.spec.satisfies("+license-agreed"):
             tty.msg(
                 "Reminder: by setting +license-agreed you are confirming you agree to the terms "
-                "of the {0} EULA (found at {1})".format(self.spec.name, self.license_url)
+                f"of the {self.spec.name} EULA (found at {self.license_url})"
             )
         else:
             # Conflict means we should never get here...
             msg = (
-                "Installation of {0} requires acceptance of the EULA (found at {1}). Set the "
+                f"Installation of {self.spec.name} requires acceptance of the EULA (found at {self.license_url}). Set the "
                 "+license-agreed variant to confirm acceptance of the EULA"
-            ).format(self.spec.name, self.license_url)
+            )
             raise InstallError(msg)
 
     def install(self, spec, prefix):
@@ -129,9 +129,9 @@ class Aocc(Package, LlvmDetection, CompilerPackage):
         # Add path to gcc/g++ such that clang/clang++ can always find a full gcc installation
         # including libstdc++.so and header files.
         if self.spec.satisfies("%gcc") and self.compiler.cxx is not None:
-            compiler_options = "--gcc-toolchain={}".format(self.compiler.prefix)
+            compiler_options = f"--gcc-toolchain={self.compiler.prefix}"
             for compiler in ["clang", "clang++"]:
-                with open(join_path(self.prefix.bin, "{}.cfg".format(compiler)), "w") as f:
+                with open(join_path(self.prefix.bin, f"{compiler}.cfg"), "w") as f:
                     f.write(compiler_options)
 
         # help flang find gcc

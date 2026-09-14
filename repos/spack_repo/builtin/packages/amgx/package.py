@@ -54,7 +54,7 @@ class Amgx(CMakePackage, CudaPackage):
             args.append("-DWITH_CUDA=ON")
             cuda_arch = self.spec.variants["cuda_arch"].value
             if cuda_arch != "none":
-                args.append("-DCUDA_ARCH={0}".format(cuda_arch[0]))
+                args.append(f"-DCUDA_ARCH={cuda_arch[0]}")
         else:
             args.append("-DWITH_CUDA=OFF")
 

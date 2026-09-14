@@ -95,7 +95,7 @@ class Opam(AutotoolsPackage):
         env.set("OCAMLPARAM", "safe-string=0,_")  # OCaml 4.06.0 compat
 
     def configure(self, spec, prefix):
-        args = ["--prefix={0}".format(prefix)]
+        args = [f"--prefix={prefix}"]
 
         with when("@:2.2"):
             # NOTE: The config script really wants the vendored third party
@@ -120,6 +120,6 @@ class Opam(AutotoolsPackage):
         make("install")
         opam = Executable(prefix + "/bin/opam")
         if spec.satisfies("~user +sandbox"):
-            opam("init", "--root={0}/root".format(prefix), "-n")
+            opam("init", f"--root={prefix}/root", "-n")
         if spec.satisfies("~user ~sandbox"):
-            opam("init", "--root={0}/root".format(prefix), "-n", "--disable-sandboxing", "-y")
+            opam("init", f"--root={prefix}/root", "-n", "--disable-sandboxing", "-y")

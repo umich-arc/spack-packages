@@ -36,9 +36,7 @@ class Freesurfer(Package):
     # depends_on("bc")
     # depends_on("perl")
     def url_for_version(self, version):
-        return "https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/{0}/freesurfer-linux-centos7_x86_64-{1}.tar.gz".format(
-            version, version
-        )
+        return f"https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/{version}/freesurfer-linux-centos7_x86_64-{version}.tar.gz"
 
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         source_file = join_path(self.prefix, "SetUpFreeSurfer.sh")

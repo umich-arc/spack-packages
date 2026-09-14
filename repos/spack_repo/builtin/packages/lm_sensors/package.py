@@ -42,12 +42,12 @@ class LmSensors(MakefilePackage):
     def build_targets(self):
         targets = []
 
-        targets.append("CC={0}".format(spack_cc))
+        targets.append(f"CC={spack_cc}")
 
         return targets
 
     def install(self, spec, prefix):
-        make("install", "PREFIX={0}".format(prefix), "ETCDIR={0}/etc".format(prefix))
+        make("install", f"PREFIX={prefix}", f"ETCDIR={prefix}/etc")
 
     @property
     def libs(self):

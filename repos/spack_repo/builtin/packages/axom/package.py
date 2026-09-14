@@ -228,8 +228,8 @@ class Axom(CachedCMakePackage, CudaPackage):
     # Forward variants to Conduit
     with when("+conduit"):
         for _var in ["hdf5", "mpi"]:
-            depends_on("conduit+{0}".format(_var), when="+{0}".format(_var))
-            depends_on("conduit~{0}".format(_var), when="~{0}".format(_var))
+            depends_on(f"conduit+{_var}", when=f"+{_var}")
+            depends_on(f"conduit~{_var}", when=f"~{_var}")
         depends_on("conduit+fortran", when="+fortran")
 
     depends_on("hdf5", when="+hdf5")
@@ -410,13 +410,7 @@ class Axom(CachedCMakePackage, CudaPackage):
             special_case += "_nofortran"
         # if self.spec.satisfies("+rocm"):
         #    special_case += "_hip"
-        return "{0}-{1}-{2}@{3}{4}.cmake".format(
-            hostname,
-            self._get_sys_type(self.spec),
-            self.spec.compiler.name,
-            self.spec.compiler.version,
-            special_case,
-        )
+        return f"{hostname}-{self._get_sys_type(self.spec)}-{self.spec.compiler.name}@{self.spec.compiler.version}{special_case}.cmake"
 
     @property
     def cxx_std(self):
@@ -434,9 +428,9 @@ class Axom(CachedCMakePackage, CudaPackage):
                 for _libpath in [libdir, libdir + "64"]:
                     if os.path.exists(_libpath):
                         if spec.satisfies("^cuda"):
-                            flags += " -Xlinker -rpath -Xlinker {0}".format(_libpath)
+                            flags += f" -Xlinker -rpath -Xlinker {_libpath}"
                         else:
-                            flags += " -Wl,-rpath,{0}".format(_libpath)
+                            flags += f" -Wl,-rpath,{_libpath}"
                 description = "Adds a missing libstdc++ rpath"
                 if flags:
                     entries.append(cmake_cache_string("BLT_EXE_LINKER_FLAGS", flags, description))
@@ -670,8 +664,7 @@ class Axom(CachedCMakePackage, CudaPackage):
 
     def find_path_replacement(self, path1, path2, path_replacements, name, entries):
         root = os.path.commonprefix([path1, path2])
-        if root.endswith(os.path.sep):
-            root = root[: -len(os.path.sep)]
+        root = root.removesuffix(os.path.sep)
         if root:
             path_replacements[root] = "${" + name + "}"
             entries.append(cmake_cache_path(name, root))
@@ -762,7 +755,7 @@ class Axom(CachedCMakePackage, CudaPackage):
                 "libyogrt",
             )
             for dep in scr_deps:
-                if spec.satisfies("^{0}".format(dep)):
+                if spec.satisfies(f"^{dep}"):
                     dep_dir = get_spec_path(spec, dep, path_replacements)
                     entries.append(cmake_cache_path("%s_DIR" % dep.upper(), dep_dir))
         else:
@@ -847,7 +840,7 @@ class Axom(CachedCMakePackage, CudaPackage):
                 "py-pygments",
                 "py-mpi4py",
             ):
-                if spec.satisfies("^{0}".format(dep)):
+                if spec.satisfies(f"^{dep}"):
                     dep_dir = get_spec_path(spec, dep, path_replacements)
                     py_libdir = join_path(dep_dir, python_platlib)
                     entries.append(
@@ -928,9 +921,9 @@ class Axom(CachedCMakePackage, CudaPackage):
         example = join_path(self.prefix.examples.axom, "using-with-python", "example.py")
         python_runner = join_path(self.prefix.bin, "run_python_with_axom.sh")
         if not os.path.isfile(example):
-            raise RuntimeError("Missing installed python example: {0}".format(example))
+            raise RuntimeError(f"Missing installed python example: {example}")
         if not os.path.isfile(python_runner):
-            raise RuntimeError("Missing installed python runner: {0}".format(python_runner))
+            raise RuntimeError(f"Missing installed python runner: {python_runner}")
         run_python = Executable(python_runner)
         run_python(example)
 
@@ -947,9 +940,7 @@ class Axom(CachedCMakePackage, CudaPackage):
         sidre_pkg_dir = join_path(site_packages, "axom", "sidre")
         if not os.path.isdir(sidre_pkg_dir):
             raise RuntimeError(
-                "axom.sidre was not installed under the interpreter platlib: {0}".format(
-                    sidre_pkg_dir
-                )
+                f"axom.sidre was not installed under the interpreter platlib: {sidre_pkg_dir}"
             )
 
         # Assemble the Python package directories a view would merge into site-packages.
@@ -963,7 +954,7 @@ class Axom(CachedCMakePackage, CudaPackage):
                     import_path.append(conduit_py)
 
         for dep in ("py-numpy", "py-mpi4py"):
-            if self.spec.satisfies("^{0}".format(dep)):
+            if self.spec.satisfies(f"^{dep}"):
                 dep_py = join_path(self.spec[dep].prefix, python_platlib)
                 if os.path.isdir(dep_py):
                     import_path.append(dep_py)

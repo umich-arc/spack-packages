@@ -63,7 +63,7 @@ class SingularityBase(MakefilePackage):
         if not os.path.exists(self.singularity_gopath_dir):
             # Move the expanded source to its destination
             tty.debug(
-                "Moving {0} to {1}".format(self.stage.source_path, self.singularity_gopath_dir)
+                f"Moving {self.stage.source_path} to {self.singularity_gopath_dir}"
             )
             shutil.move(self.stage.source_path, self.singularity_gopath_dir)
 
@@ -120,7 +120,7 @@ class SingularityBase(MakefilePackage):
         squash_path = join_path(self.spec["squashfs"].prefix.bin, "mksquashfs")
         filter_file(
             r"^# mksquashfs path =",
-            "mksquashfs path = {0}".format(squash_path),
+            f"mksquashfs path = {squash_path}",
             join_path(prefix.etc, self.singularity_name, self.singularity_name + ".conf"),
         )
         filter_file(
@@ -147,10 +147,8 @@ class SingularityBase(MakefilePackage):
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "w") as f:
             f.write("#!/bin/sh -eu\n")
-            for chown_file in chown_files:
-                f.write(f"chown root:root {shlex.quote(chown_file)}\n")
-            for setuid_file in setuid_files:
-                f.write(f"chmod u+s {shlex.quote(setuid_file)}\n")
+            f.writelines(f"chown root:root {shlex.quote(chown_file)}\n" for chown_file in chown_files)
+            f.writelines(f"chmod u+s {shlex.quote(setuid_file)}\n" for setuid_file in setuid_files)
         os.chmod(filename, 0o755)
 
     @run_after("install", when="+suid")

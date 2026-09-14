@@ -99,7 +99,7 @@ class Amdscalapack(ScalapackBase):
                 flags += " -flang-experimental-polymorphism"
             if spec.satisfies("%clang@18:"):
                 flags += " -I{0}".format(join_path(self.stage.source_path, "FRAMEWORK"))
-            args.extend(["-DCMAKE_Fortran_FLAGS={0}".format(flags)])
+            args.extend([f"-DCMAKE_Fortran_FLAGS={flags}"])
 
         if spec.satisfies("@2.2"):
             args.extend(

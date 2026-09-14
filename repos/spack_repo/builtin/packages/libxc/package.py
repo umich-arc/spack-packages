@@ -139,13 +139,13 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
 
         if self.spec.satisfies("+cuda"):
             nvcc = self.spec["cuda"].prefix.bin.nvcc
-            env.set("CCLD", "{0} -ccbin {1}".format(nvcc, spack_cc))
-            env.set("CC", "{0} -x cu -ccbin {1}".format(nvcc, spack_cc))
+            env.set("CCLD", f"{nvcc} -ccbin {spack_cc}")
+            env.set("CC", f"{nvcc} -x cu -ccbin {spack_cc}")
 
             cuda_arch = self.spec.variants["cuda_arch"].value[0]
 
             if cuda_arch != "none":
-                env.append_flags("CFLAGS", "-arch=sm_{0}".format(cuda_arch))
+                env.append_flags("CFLAGS", f"-arch=sm_{cuda_arch}")
 
     def configure_args(self):
         args = []

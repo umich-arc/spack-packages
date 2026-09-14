@@ -68,7 +68,7 @@ class Qupath(Package):
         env.set("PYTHONNOUSERSITE", "1")
 
     def url_for_version(self, version):
-        return "https://github.com/qupath/qupath/archive/refs/tags/v{0}.tar.gz".format(version)
+        return f"https://github.com/qupath/qupath/archive/refs/tags/v{version}.tar.gz"
 
     def install(self, spec, prefix):
         java_home = spec["java"].package.home
@@ -81,9 +81,9 @@ class Qupath(Package):
             "clean",
             "jpackage",
             "-Ppackage=image",
-            "-Dorg.gradle.java.home={0}".format(java_home),
-            "-Dbadass.runtime.java.home={0}".format(java_home),
-            "-Dbadass.runtime.jpackage.home={0}".format(java_home),
+            f"-Dorg.gradle.java.home={java_home}",
+            f"-Dbadass.runtime.java.home={java_home}",
+            f"-Dbadass.runtime.jpackage.home={java_home}",
         ]
 
         if "+fiji" in spec:
@@ -96,7 +96,7 @@ class Qupath(Package):
 
         app_image = join_path("build", "dist", "QuPath")
         if not os.path.isdir(app_image):
-            raise InstallError("Expected jpackage image was not created: {0}".format(app_image))
+            raise InstallError(f"Expected jpackage image was not created: {app_image}")
 
         install_tree(app_image, prefix)
         self.install_pytorch_runtime(prefix)
@@ -109,12 +109,12 @@ class Qupath(Package):
         extension_version = self.djl_extension_versions.get(str(self.version))
         if extension_version is None:
             raise InstallError(
-                "No QuPath DJL extension version is known for {0}".format(self.version)
+                f"No QuPath DJL extension version is known for {self.version}"
             )
 
         with open("include-extra.properties", "w") as include_extra:
             include_extra.write("[dependencies]\n")
-            dependency = "io.github.qupath:qupath-extension-djl:{0}\n".format(extension_version)
+            dependency = f"io.github.qupath:qupath-extension-djl:{extension_version}\n"
             include_extra.write(dependency)
 
     def djl_args(self):
@@ -143,7 +143,7 @@ class Qupath(Package):
         pytorch_flavor = self.pytorch_flavors.get(str(self.version))
         if pytorch_flavor is None:
             raise InstallError(
-                "No PyTorch GPU runtime mapping is known for {0}".format(self.version)
+                f"No PyTorch GPU runtime mapping is known for {self.version}"
             )
 
         torch_lib = self.torch_lib_dir(prefix)
@@ -158,15 +158,15 @@ class Qupath(Package):
         mkdirp(prefix.bin)
         with open(launcher, "w") as script:
             script.write("#!/usr/bin/env bash\n\n")
-            script.write("export PYTORCH_VERSION={0}\n".format(pytorch_version))
-            script.write("export PYTORCH_FLAVOR={0}\n".format(pytorch_flavor))
-            script.write("export PYTORCH_LIBRARY_PATH={0}\n".format(torch_lib))
-            script.write('export PYTHONPATH="{0}:${{PYTHONPATH}}"\n'.format(python_path))
+            script.write(f"export PYTORCH_VERSION={pytorch_version}\n")
+            script.write(f"export PYTORCH_FLAVOR={pytorch_flavor}\n")
+            script.write(f"export PYTORCH_LIBRARY_PATH={torch_lib}\n")
+            script.write(f'export PYTHONPATH="{python_path}:${{PYTHONPATH}}"\n')
             script.write(
-                'export LD_LIBRARY_PATH="{0}:${{LD_LIBRARY_PATH}}"\n'.format(library_path)
+                f'export LD_LIBRARY_PATH="{library_path}:${{LD_LIBRARY_PATH}}"\n'
             )
-            script.write('export PATH="{0}:$PATH"\n\n'.format(self.pytorch_bin_path(prefix)))
-            script.write('exec "{0}" -Djna.library.path="{1}" "$@"\n'.format(executable, jna_path))
+            script.write(f'export PATH="{self.pytorch_bin_path(prefix)}:$PATH"\n\n')
+            script.write(f'exec "{executable}" -Djna.library.path="{jna_path}" "$@"\n')
         set_executable(launcher)
 
     def install_pytorch_runtime(self, prefix):
@@ -176,7 +176,7 @@ class Qupath(Package):
         pytorch_flavor = self.pytorch_flavors.get(str(self.version))
         if pytorch_flavor is None:
             raise InstallError(
-                "No PyTorch GPU runtime mapping is known for {0}".format(self.version)
+                f"No PyTorch GPU runtime mapping is known for {self.version}"
             )
 
         torch_version = self.spec.variants["torch_version"].value
@@ -188,10 +188,10 @@ class Qupath(Package):
             "--ignore-installed",
             "--no-warn-script-location",
             "--only-binary=:all:",
-            "--prefix={0}".format(prefix),
+            f"--prefix={prefix}",
             "--index-url",
-            "https://download.pytorch.org/whl/{0}".format(pytorch_flavor),
-            "torch=={0}".format(torch_version),
+            f"https://download.pytorch.org/whl/{pytorch_flavor}",
+            f"torch=={torch_version}",
         )
 
     def torch_lib_dir(self, prefix):

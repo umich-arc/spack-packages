@@ -474,14 +474,14 @@ RELEASES = [
 
 def simmetrix_makecomponenturl(name):
     """only supporting the linux libraries"""
-    prefix = "file://{0}/".format(os.getcwd())
+    prefix = f"file://{os.getcwd()}/"
     suffix = "-" + "linux64.tgz"
     return prefix + name + suffix
 
 
 def simmetrix_makedocurl(name):
     """doc zip files are not os/arch specific"""
-    prefix = "file://{0}/".format(os.getcwd())
+    prefix = f"file://{os.getcwd()}/"
     suffix = ".zip"
     return prefix + name + suffix
 
@@ -565,14 +565,14 @@ class SimmetrixSimmodsuite(Package):
             sha256 = atts[0]
             feature = atts[1]
             url = simmetrix_makecomponenturl(_name)
-            condition = "@{0}+{1}".format(sim_version, feature)
+            condition = f"@{sim_version}+{feature}"
             simmetrix_resource(_name, url, sha256, condition)
         # define resources for the document zip files
         for _name, atts in release["docs"].items():
             sha256 = atts[0]
             feature = atts[1]
             url = simmetrix_makedocurl(_name)
-            condition = "@{0}+{1}".format(sim_version, feature)
+            condition = f"@{sim_version}+{feature}"
             simmetrix_resource(_name, url, sha256, condition)
 
     def setup_dependent_build_environment(

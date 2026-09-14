@@ -27,7 +27,7 @@ def cmake_cache_entry(name, value, vtype=None, force=False):
         else:
             vtype = "PATH"
     force_str = " FORCE" if force else ""
-    return 'set({0} "{1}" CACHE {2} ""{3})\n\n'.format(name, value, vtype, force_str)
+    return f'set({name} "{value}" CACHE {vtype} ""{force_str})\n\n'
 
 
 class Conduit(CachedCMakePackage):
@@ -256,9 +256,7 @@ class Conduit(CachedCMakePackage):
             # (https://github.com/llnl/blt) as a submodule, since github does
             # not automatically package source from submodules, conduit
             # provides a custom src tarball
-            return "https://github.com/LLNL/conduit/releases/download/v{0}/conduit-v{1}-src-with-blt.tar.gz".format(
-                v, v
-            )
+            return f"https://github.com/LLNL/conduit/releases/download/v{v}/conduit-v{v}-src-with-blt.tar.gz"
 
     ##############################
     # Init compiler config entries
@@ -279,7 +277,7 @@ class Conduit(CachedCMakePackage):
 
         linkerflags = ""
         for rpath in rpaths:
-            linkerflags += "-Wl,-rpath,{} ".format(rpath)
+            linkerflags += f"-Wl,-rpath,{rpath} "
         entries.append(
             cmake_cache_string(
                 "CMAKE_EXE_LINKER_FLAGS", "${CMAKE_EXE_LINKER_FLAGS} " + linkerflags, force=True
@@ -308,7 +306,7 @@ class Conduit(CachedCMakePackage):
             entries.append(cmake_cache_string("BLT_FORTRAN_FLAGS", flags))
             # Grab lib directory for the current fortran compiler
             libdir = os.path.join(os.path.dirname(os.path.dirname(f_compiler)), "lib")
-            rpaths = "-Wl,-rpath,{0} -Wl,-rpath,{0}64".format(libdir)
+            rpaths = f"-Wl,-rpath,{libdir} -Wl,-rpath,{libdir}64"
 
             flags = "${BLT_EXE_LINKER_FLAGS} -lstdc++ " + rpaths
             entries.append(cmake_cache_string("BLT_EXE_LINKER_FLAGS", flags))
@@ -409,7 +407,7 @@ class Conduit(CachedCMakePackage):
         example_src_dir = join_path(install_prefix, "examples", "conduit", "using-with-cmake")
         print("Checking using-with-cmake example...")
         with working_dir("check-conduit-using-with-cmake-example", create=True):
-            cmake_args = ["-DCONDUIT_DIR={0}".format(install_prefix), example_src_dir]
+            cmake_args = [f"-DCONDUIT_DIR={install_prefix}", example_src_dir]
             cmake(*cmake_args)
             make()
             example = Executable("./conduit_example")
@@ -420,6 +418,6 @@ class Conduit(CachedCMakePackage):
         with working_dir("check-conduit-using-with-make-example", create=True):
             for example_file in example_files:
                 shutil.copy(example_file, ".")
-            make("CONDUIT_DIR={0}".format(install_prefix))
+            make(f"CONDUIT_DIR={install_prefix}")
             example = Executable("./conduit_example")
             example()

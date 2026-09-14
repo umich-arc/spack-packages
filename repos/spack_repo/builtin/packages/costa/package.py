@@ -59,10 +59,8 @@ class Costa(CMakePackage):
 
     def url_for_version(self, version):
         if version == Version("2.0"):
-            return "https://github.com/eth-cscs/COSTA/releases/download/v{0}/COSTA-v{1}.tar.gz".format(
-                version, version
-            )
-        return "https://github.com/eth-cscs/COSTA/archive/refs/tags/v{0}.tar.gz".format(version)
+            return f"https://github.com/eth-cscs/COSTA/releases/download/v{version}/COSTA-v{version}.tar.gz"
+        return f"https://github.com/eth-cscs/COSTA/archive/refs/tags/v{version}.tar.gz"
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         return

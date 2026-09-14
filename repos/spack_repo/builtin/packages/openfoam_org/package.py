@@ -174,9 +174,7 @@ class OpenfoamOrg(Package):
         else:
             version_prefix = version
 
-        url = "https://github.com/OpenFOAM/OpenFOAM-{}/archive/version-{}.tar.gz".format(
-            version_prefix, version
-        )
+        url = f"https://github.com/OpenFOAM/OpenFOAM-{version_prefix}/archive/version-{version}.tar.gz"
         return url
 
     @property
@@ -261,7 +259,7 @@ class OpenfoamOrg(Package):
         with open(join_path(self.stage.source_path, "etc/bashrc"), "r") as bashrc_file:
             import re
 
-            for line in bashrc_file.readlines():
+            for line in bashrc_file:
                 m = re.match("export WM_PROJECT_VERSION=(.*)", line)
                 if m:
                     target = f"OpenFOAM-{m.group(1)}"
@@ -273,7 +271,7 @@ class OpenfoamOrg(Package):
             if original != target and not os.path.lexists(target):
                 os.rename(original, target)
                 symlink(target, original)
-                tty.info("renamed {0} -> {1}".format(original, target))
+                tty.info(f"renamed {original} -> {target}")
 
     def patch(self):
         """Adjust OpenFOAM build for spack.

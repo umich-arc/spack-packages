@@ -26,6 +26,5 @@ class RSpatstatUnivar(RPackage):
     depends_on("r@3.5.0:", type=("build", "run"), when="@3.0-0:")
     depends_on("r-spatstat-utils@3.0-5:", type=("build", "run"), when="@2.0-3.011:")
 
-    with when("@3.2-0:"):
-        with default_args(type=("build", "run")):
-            depends_on("r-spatstat-utils@3.2-3:")
+    with when("@3.2-0:"), default_args(type=("build", "run")):
+        depends_on("r-spatstat-utils@3.2-3:")

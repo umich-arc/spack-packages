@@ -6,8 +6,8 @@ import platform
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage, generator
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-# from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
+# from spack_repo.builtin.build_systems.rocm import ROCmPackage
 from spack.package import *
 
 
@@ -165,7 +165,7 @@ class ArcaneFramework(CMakePackage, CudaPackage):
         return ";".join(
             map(
                 lambda v: v[1] if not isinstance(v[1], list) else ";".join(v[1]),
-                filter(lambda v: "+{}".format(v[0]) in self.spec, to_cmake.items()),
+                filter(lambda v: f"+{v[0]}" in self.spec, to_cmake.items()),
             )
         )
 

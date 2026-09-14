@@ -186,11 +186,11 @@ class IntelTbb(CMakePackage, MakefilePackage):
     def url_for_version(self, version):
         url = self.url_prefix + "archive/{0}.tar.gz"
         if version[0] >= 2020:
-            name = "v{0}".format(version)
+            name = f"v{version}"
         elif version[0] >= 2017 and len(version) > 1:
-            name = "{0}_U{1}".format(version[0], version[1])
+            name = f"{version[0]}_U{version[1]}"
         else:
-            name = "{0}".format(version)
+            name = f"{version}"
         return url.format(name)
 
     @property
@@ -234,14 +234,14 @@ class CMakeBuilder(cmake.CMakeBuilder, SetupEnvironment):
             mkdirp(self.prefix.lib.pkgconfig)
 
             with open(join_path(self.prefix.lib.pkgconfig, "tbb.pc"), "w") as f:
-                f.write("prefix={0}\n".format(self.prefix))
+                f.write(f"prefix={self.prefix}\n")
                 f.write("exec_prefix=${prefix}\n")
-                f.write("libdir={0}\n".format(self.prefix.lib))
-                f.write("includedir={0}\n".format(self.prefix.include))
+                f.write(f"libdir={self.prefix.lib}\n")
+                f.write(f"includedir={self.prefix.include}\n")
                 f.write("\n")
                 f.write("Name: Threading Building Blocks\n")
                 f.write("Description: Intel's parallelism library for C++\n")
-                f.write("Version: {0}\n".format(self.spec.version))
+                f.write(f"Version: {self.spec.version}\n")
                 f.write("Cflags: -I${includedir}\n")
                 f.write("Libs: -L${libdir} -ltbb -latomic\n")
 
@@ -307,7 +307,7 @@ class MakefileBuilder(makefile.MakefileBuilder, SetupEnvironment):
         # tbb does not have a configure script or make install target
         # we simply call make, and try to put the pieces together
         #
-        make_opts.append("compiler={0}".format(tbb_compiler))
+        make_opts.append(f"compiler={tbb_compiler}")
         make(*make_opts)
 
     def install(self, pkg, spec, prefix):

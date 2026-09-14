@@ -34,4 +34,4 @@ class Libaio(MakefilePackage):
 
     @property
     def install_targets(self):
-        return ["prefix={0}".format(self.spec.prefix), "install"]
+        return [f"prefix={self.spec.prefix}", "install"]

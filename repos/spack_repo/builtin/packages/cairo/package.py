@@ -217,4 +217,3 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
 
     def check(self):
         """The checks are only for the cairo devs: They write others shouldn't bother"""
-        pass

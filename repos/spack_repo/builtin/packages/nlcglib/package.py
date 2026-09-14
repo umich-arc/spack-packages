@@ -129,7 +129,7 @@ class Nlcglib(CMakePackage, CudaPackage):
             cuda_archs = self.spec.variants["cuda_arch"].value
             if "@:0.9" in self.spec:
                 cuda_flags = " ".join(
-                    ["-gencode arch=compute_{0},code=sm_{0}".format(x) for x in cuda_archs]
+                    [f"-gencode arch=compute_{x},code=sm_{x}" for x in cuda_archs]
                 )
                 options.append(self.define("CMAKE_CUDA_FLAGS", cuda_flags))
             else:

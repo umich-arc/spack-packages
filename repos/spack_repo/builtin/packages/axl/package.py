@@ -92,7 +92,7 @@ class Axl(CMakePackage):
                 apis.remove("daemon")
 
             for api in apis:
-                args.append("-DAXL_ASYNC_API={0}".format(api.upper()))
+                args.append(f"-DAXL_ASYNC_API={api.upper()}")
 
         if spec.satisfies("@0.4.0:"):
             args.append(self.define_from_variant("ENABLE_BBAPI_FALLBACK", "bbapi_fallback"))

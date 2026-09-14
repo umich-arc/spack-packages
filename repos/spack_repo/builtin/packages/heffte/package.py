@@ -6,8 +6,8 @@ import os
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-# from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
+# from spack_repo.builtin.build_systems.rocm import ROCmPackage
 from spack.package import *
 
 
@@ -110,9 +110,9 @@ class Heffte(CMakePackage, CudaPackage):
             if len(cuda_arch) > 0 or cuda_arch[0] != "none":
                 nvcc_flags = ""
                 for nvflag in self.cuda_flags(cuda_arch):
-                    nvcc_flags += "{0};".format(nvflag)
+                    nvcc_flags += f"{nvflag};"
 
-                args.append("-DCUDA_NVCC_FLAGS={0}".format(nvcc_flags))
+                args.append(f"-DCUDA_NVCC_FLAGS={nvcc_flags}")
                 archs = ";".join(cuda_arch)
                 args.append("-DCMAKE_CUDA_ARCHITECTURES=%s" % archs)
 

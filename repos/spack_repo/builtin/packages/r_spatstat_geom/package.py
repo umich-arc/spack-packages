@@ -48,10 +48,9 @@ class RSpatstatGeom(RPackage):
     depends_on("r-deldir@1.0-2:", type=("build", "run"))
     depends_on("r-polyclip@1.10-0:", type=("build", "run"))
 
-    with when("@3.8-2:"):
-        with default_args(type=("build", "run")):
-            depends_on("r-spatstat-data@3.1-9:")
-            depends_on("r-spatstat-univar@3.2-0:")
-            depends_on("r-spatstat-utils@3.2-4:")
-            depends_on("r-deldir@2.0-2:")
-            depends_on("r-polyclip@1.10:")
+    with when("@3.8-2:"), default_args(type=("build", "run")):
+        depends_on("r-spatstat-data@3.1-9:")
+        depends_on("r-spatstat-univar@3.2-0:")
+        depends_on("r-spatstat-utils@3.2-4:")
+        depends_on("r-deldir@2.0-2:")
+        depends_on("r-polyclip@1.10:")

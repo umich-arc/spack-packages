@@ -53,26 +53,22 @@ class Bowtie2(MakefilePackage):
 
     def url_for_version(self, version):
         if version >= Version("2.5.5"):
-            return "https://github.com/BenLangmead/bowtie2/archive/refs/tags/v{0}.tar.gz".format(
-                version.dotted
-            )
+            return f"https://github.com/BenLangmead/bowtie2/archive/refs/tags/v{version.dotted}.tar.gz"
         else:
-            return "https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/{0}/bowtie2-{0}-source.zip".format(
-                version.dotted
-            )
+            return f"https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/{version.dotted}/bowtie2-{version.dotted}-source.zip"
 
     def edit(self, spec, prefix):
         kwargs = {"ignore_absent": True, "backup": False, "string": False}
 
         match = "^#!/usr/bin/env perl"
         perl = spec["perl"].command
-        substitute = "#!{perl}".format(perl=perl)
+        substitute = f"#!{perl}"
         files = ["bowtie2"]
         filter_file(match, substitute, *files, **kwargs)
 
         match = "^#!/usr/bin/env python.*"
         python = spec["python"].command
-        substitute = "#!{python}".format(python=python)
+        substitute = f"#!{python}"
         files = ["bowtie2-build", "bowtie2-inspect"]
         filter_file(match, substitute, *files, **kwargs)
 
@@ -81,13 +77,13 @@ class Bowtie2(MakefilePackage):
         ):
             match = "-Ithird_party/simde"
             simdepath = spec["simde"].prefix.include
-            substitute = "-I{simdepath}".format(simdepath=simdepath)
+            substitute = f"-I{simdepath}"
             files = ["Makefile"]
             filter_file(match, substitute, *files, **kwargs)
 
     @property
     def build_targets(self):
-        make_arg = ["PREFIX={0}".format(self.prefix)]
+        make_arg = [f"PREFIX={self.prefix}"]
         if self.spec.satisfies("target=aarch64:"):
             make_arg.append("POPCNT_CAPABILITY=0")
 
@@ -99,6 +95,6 @@ class Bowtie2(MakefilePackage):
     @property
     def install_targets(self):
         if self.spec.satisfies("@:2.3.9"):
-            return ["prefix={0}".format(self.prefix), "install"]
+            return [f"prefix={self.prefix}", "install"]
         else:
-            return ["PREFIX={0}".format(self.prefix), "install"]
+            return [f"PREFIX={self.prefix}", "install"]

@@ -42,4 +42,4 @@ class PyInstaller(Package, PythonExtension):
         python(*args)
 
     def setup_dependent_package(self, module, dependent_spec):
-        setattr(module, "installer", python.with_default_args("-m", "installer"))
+        module.installer = python.with_default_args("-m", "installer")

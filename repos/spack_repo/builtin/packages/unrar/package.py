@@ -20,8 +20,8 @@ class Unrar(MakefilePackage):
 
     def edit(self, spec, prefix):
         makefile = FileFilter("makefile")
-        makefile.filter("LIBFLAGS=-fPIC", "LIBFLAGS={0}".format(self.compiler.cxx_pic_flag))
-        makefile.filter("DESTDIR=/usr", "DESTDIR={0}".format(self.prefix))
+        makefile.filter("LIBFLAGS=-fPIC", f"LIBFLAGS={self.compiler.cxx_pic_flag}")
+        makefile.filter("DESTDIR=/usr", f"DESTDIR={self.prefix}")
 
     def install(self, spec, prefix):
         mkdir(prefix.bin)

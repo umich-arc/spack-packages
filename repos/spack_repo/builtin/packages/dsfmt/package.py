@@ -35,4 +35,4 @@ class Dsfmt(MakefilePackage):
         make("build-library", "CC=cc")
 
     def install(self, spec, prefix):
-        make("PREFIX={0}".format(prefix), "install")
+        make(f"PREFIX={prefix}", "install")

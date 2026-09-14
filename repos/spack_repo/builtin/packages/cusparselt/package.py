@@ -45,7 +45,7 @@ class Cusparselt(Package):
         cudss_ver, cuda_ver = ver.split("-")
         if pkg:
             version(ver, sha256=pkg[0], url=pkg[1])
-            depends_on("cuda@{}".format(cuda_ver), when="@{}".format(ver))
+            depends_on(f"cuda@{cuda_ver}", when=f"@{ver}")
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
