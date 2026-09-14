@@ -17,7 +17,7 @@ ci = ["pytest-cov", "codecov[toml]"]
 
 [tool.ruff]
 fix = true
-line-length = 99
+line-length = 100
 
 # This is the Spack package API. We allow these functions to be imported with
 # from spack.package import *, and we should update this when the package API
