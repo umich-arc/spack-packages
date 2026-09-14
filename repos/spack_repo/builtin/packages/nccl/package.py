@@ -128,6 +128,6 @@ class Nccl(MakefilePackage, CudaPackage):
     @property
     def install_targets(self):
         if self.version >= Version("2.3.5-5"):
-            return ["PREFIX={0}".format(self.prefix), "src.install"]
+            return [f"PREFIX={self.prefix}", "src.install"]
         else:
-            return ["PREFIX={0}".format(self.prefix), "install"]
+            return [f"PREFIX={self.prefix}", "install"]

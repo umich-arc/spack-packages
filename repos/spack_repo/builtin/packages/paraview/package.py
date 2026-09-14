@@ -164,8 +164,8 @@ class Paraview(CMakePackage, CudaPackage):
     conflicts("+openpmd", when="~adios2 ~hdf5", msg="openPMD needs ADIOS2 and/or HDF5")
     conflicts("~shared", when="+cuda")
     conflicts("+cuda", when="use_vtkm=off")
-    #conflicts("+rocm", when="+cuda")
-    #conflicts("+rocm", when="use_vtkm=off")
+    # conflicts("+rocm", when="+cuda")
+    # conflicts("+rocm", when="use_vtkm=off")
     # Legacy rendering dropped in 5.5
     # See commit: https://gitlab.kitware.com/paraview/paraview/-/commit/798d328c
     conflicts("~opengl2", when="@5")
@@ -175,7 +175,7 @@ class Paraview(CMakePackage, CudaPackage):
     depends_on("fortran", type="build")  # generated
 
     depends_on("cmake@3.3:", type="build")
-    #depends_on("cmake@3.21:", type="build", when="+rocm")
+    # depends_on("cmake@3.21:", type="build", when="+rocm")
 
     extends("python", when="+python")
 
@@ -248,16 +248,16 @@ class Paraview(CMakePackage, CudaPackage):
         # We only support one single Architecture
         for _arch, _other_arch in itertools.permutations(CudaPackage.cuda_arch_values, 2):
             conflicts(
-                "cuda_arch={0}".format(_arch),
-                when="cuda_arch={0}".format(_other_arch),
+                f"cuda_arch={_arch}",
+                when=f"cuda_arch={_other_arch}",
                 msg="Paraview only accepts one architecture value",
             )
 
         # Dependencies for vendored VTK-m
-        #depends_on("hip@5.2:", when="+rocm")
+        # depends_on("hip@5.2:", when="+rocm")
         # CUDA thrust is already include in the CUDA pkg
-        #depends_on("rocthrust", when="@5.13: +rocm ^cmake@3.24:")
-        #for target in ROCmPackage.amdgpu_targets:
+        # depends_on("rocthrust", when="@5.13: +rocm ^cmake@3.24:")
+        # for target in ROCmPackage.amdgpu_targets:
         #    depends_on(
         #        "kokkos@:3.7 +rocm amdgpu_target={0}".format(target),
         #        when="+rocm amdgpu_target={0}".format(target),
@@ -297,7 +297,7 @@ class Paraview(CMakePackage, CudaPackage):
             for _arch in CudaPackage.cuda_arch_values:
                 depends_on(f"viskores cuda_arch={_arch}", when=f"cuda_arch={_arch}")
 
-        #with when("+rocm"):
+        # with when("+rocm"):
         #    depends_on("viskores +rocm")
         #    for target in ROCmPackage.amdgpu_targets:
         #        depends_on(f"viskores amdgpu_target={target}", when=f"amdgpu_target={target}")
@@ -433,7 +433,7 @@ class Paraview(CMakePackage, CudaPackage):
         if self.spec.version == Version("master"):
             return "paraview-5.11"
         else:
-            return "paraview-{0}".format(self.spec.version.up_to(2))
+            return f"paraview-{self.spec.version.up_to(2)}"
 
     def setup_dependent_build_environment(
         self, env: EnvironmentModifications, dependent_spec: Spec
@@ -486,7 +486,7 @@ class Paraview(CMakePackage, CudaPackage):
 
         if "+python" in self.spec:
             python_version = self.spec["python"].version.up_to(2)
-            pv_pydir = join_path(lib_dir, "python{0}".format(python_version), "site-packages")
+            pv_pydir = join_path(lib_dir, f"python{python_version}", "site-packages")
             if "+shared" in self.spec:
                 env.prepend_path("PYTHONPATH", pv_pydir)
                 # The Trilinos Catalyst adapter requires
@@ -561,7 +561,7 @@ class Paraview(CMakePackage, CudaPackage):
         if spec.satisfies("@5.11:"):
             cmake_args.append("-DVTK_MODULE_USE_EXTERNAL_VTK_verdict:BOOL=OFF")
 
-        #if spec.satisfies("%cce"):
+        # if spec.satisfies("%cce"):
         #    cmake_args.append("-DVTK_PYTHON_OPTIONAL_LINK:BOOL=OFF")
 
         # The assumed qt version changed to QT5 (as of paraview 5.2.1),
@@ -669,7 +669,7 @@ class Paraview(CMakePackage, CudaPackage):
         elif spec.satisfies("@6:"):
             cmake_args.append("PARAVIEW_USE_KOKKOS:BOOL=OFF")
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    if spec.satisfies("@6:"):
         #        cmake_args.append("-DPARAVIEW_KOKKOS_BACKEND:STRING=HIP")
 
@@ -715,21 +715,20 @@ class Paraview(CMakePackage, CudaPackage):
         pvserver = self.prefix.bin.pvserver
         pvpython = Executable(self.prefix.bin.pvpython)
 
-        with working_dir("smoke_test_build", create=True):
-            with Popen(
-                [mpirun, "-np", "3", pvserver, "--mpi", "--force-offscreen-rendering"]
-            ) as servers:
-                pvpython(
-                    "--force-offscreen-rendering",
-                    "-c",
-                    "from paraview.simple import *;"
-                    "Connect('127.0.0.1');"
-                    "sphere = Sphere(ThetaResolution=16, PhiResolution=32);"
-                    "sphere_remote = servermanager.Fetch(sphere);"
-                    "Show(sphere);"
-                    "Render()",
-                )
-                servers.terminate()
+        with working_dir("smoke_test_build", create=True), Popen(
+            [mpirun, "-np", "3", pvserver, "--mpi", "--force-offscreen-rendering"]
+        ) as servers:
+            pvpython(
+                "--force-offscreen-rendering",
+                "-c",
+                "from paraview.simple import *;"
+                "Connect('127.0.0.1');"
+                "sphere = Sphere(ThetaResolution=16, PhiResolution=32);"
+                "sphere_remote = servermanager.Fetch(sphere);"
+                "Show(sphere);"
+                "Render()",
+            )
+            servers.terminate()
 
     @run_after("install")
     @on_package_attributes(run_tests=True)

@@ -139,11 +139,11 @@ class AoclSparse(CMakePackage):
 
         if self.spec.variants["build_type"].value == "Debug":
             lib_path = join_path(
-                self.build_directory, "library", "libaoclsparse-d.{0}".format(dso_suffix)
+                self.build_directory, "library", f"libaoclsparse-d.{dso_suffix}"
             )
         else:
             lib_path = join_path(
-                self.build_directory, "library", "libaoclsparse.{0}".format(dso_suffix)
+                self.build_directory, "library", f"libaoclsparse.{dso_suffix}"
             )
 
         test_bench_bin = join_path(self.build_directory, "tests", "staging", "aoclsparse-bench")

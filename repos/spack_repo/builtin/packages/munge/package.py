@@ -60,7 +60,7 @@ class Munge(AutotoolsPackage):
         args = []
         localstatedir = self.spec.variants["localstatedir"].value
         if localstatedir != "PREFIX/var":
-            args.append("--localstatedir={0}".format(localstatedir))
+            args.append(f"--localstatedir={localstatedir}")
         return args
 
     def install(self, spec, prefix):

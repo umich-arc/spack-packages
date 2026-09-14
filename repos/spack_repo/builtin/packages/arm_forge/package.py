@@ -203,7 +203,7 @@ class ArmForge(Package):
                 + "to accept the license terms in:\n"
                 + "  {0}\n".format(os.path.join(license_terms_path, "license_agreement.txt"))
                 + "  {0}\n\n".format(os.path.join(license_terms_path, "supplementary_terms.txt"))
-                + "Example: '{0}'\n".format(install_example)
+                + f"Example: '{install_example}'\n"
             )
 
     def install(self, spec, prefix):

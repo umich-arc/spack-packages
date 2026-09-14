@@ -46,7 +46,7 @@ class Expect(AutotoolsPackage):
 
         args = [
             # Without this, expect binary and library are not installed
-            "--exec-prefix={0}".format(self.prefix),
+            f"--exec-prefix={self.prefix}",
             "--enable-threads",
             "--enable-shared",
             "--enable-64bit",
@@ -76,9 +76,9 @@ class Expect(AutotoolsPackage):
     def darwin_fix(self):
         # The shared library is not installed correctly on Darwin; fix this
         if self.spec.satisfies("platform=darwin"):
-            fix_darwin_install_name(join_path(self.prefix.lib, "expect{0}".format(self.version)))
+            fix_darwin_install_name(join_path(self.prefix.lib, f"expect{self.version}"))
 
-            old = "libexpect{0}.dylib".format(self.version)
+            old = f"libexpect{self.version}.dylib"
             new = glob.glob(join_path(self.prefix.lib, "expect*", "libexpect*"))[0]
             install_name_tool = Executable("install_name_tool")
             install_name_tool("-change", old, new, self.prefix.bin.expect)

@@ -53,14 +53,14 @@ class LuaLuajit(LuaImplPackage):
 
     def edit(self, spec, prefix):
         makefile = FileFilter("Makefile")
-        makefile.filter("PREFIX= .*", "PREFIX = {0}".format(prefix))
+        makefile.filter("PREFIX= .*", f"PREFIX = {prefix}")
         src_makefile = FileFilter(join_path("src", "Makefile"))
-        src_makefile.filter("^DEFAULT_CC = .*", "DEFAULT_CC = {0}".format(spack_cc))
+        src_makefile.filter("^DEFAULT_CC = .*", f"DEFAULT_CC = {spack_cc}")
         src_makefile.filter(
-            "^DYNAMIC_CC = .*", "DYNAMIC_CC = $(CC) {0}".format(self.compiler.cc_pic_flag)
+            "^DYNAMIC_CC = .*", f"DYNAMIC_CC = $(CC) {self.compiler.cc_pic_flag}"
         )
 
         # Linking with the C++ compiler is a dirty hack to deal with the fact
         # that unwinding symbols are not included by libc, this is necessary
         # on some platforms for the final link stage to work
-        src_makefile.filter("^TARGET_LD = .*", "TARGET_LD = {0}".format(spack_cxx))
+        src_makefile.filter("^TARGET_LD = .*", f"TARGET_LD = {spack_cxx}")

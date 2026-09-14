@@ -68,13 +68,13 @@ class Snappy(CMakePackage):
         mkdirp(self.prefix.lib.pkgconfig)
 
         with open(join_path(self.prefix.lib.pkgconfig, "snappy.pc"), "w") as f:
-            f.write("prefix={0}\n".format(self.prefix))
+            f.write(f"prefix={self.prefix}\n")
             f.write("exec_prefix=${prefix}\n")
-            f.write("libdir={0}\n".format(self.prefix.lib))
-            f.write("includedir={0}\n".format(self.prefix.include))
+            f.write(f"libdir={self.prefix.lib}\n")
+            f.write(f"includedir={self.prefix.include}\n")
             f.write("\n")
             f.write("Name: Snappy\n")
             f.write("Description: A fast compressor/decompressor.\n")
-            f.write("Version: {0}\n".format(self.spec.version))
+            f.write(f"Version: {self.spec.version}\n")
             f.write("Cflags: -I${includedir}\n")
             f.write("Libs: -L${libdir} -lsnappy\n")

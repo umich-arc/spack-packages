@@ -66,11 +66,11 @@ class Nlcglib(CMakePackage, CudaPackage):
     # MKLConfig.cmake introduced in 2021.3
     conflicts("intel-oneapi-mkl@:2021.2", when="^intel-oneapi-mkl")
 
-    #with when("@:0.9"):
+    # with when("@:0.9"):
     #    conflicts("+rocm")
     #    conflicts("^kokkos@4:")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    variant("magma", default=True, description="Use magma eigenvalue solver (AMDGPU)")
     #    depends_on("magma+rocm", when="+magma")
     #    depends_on("kokkos+rocm")
@@ -129,7 +129,7 @@ class Nlcglib(CMakePackage, CudaPackage):
             cuda_archs = self.spec.variants["cuda_arch"].value
             if "@:0.9" in self.spec:
                 cuda_flags = " ".join(
-                    ["-gencode arch=compute_{0},code=sm_{0}".format(x) for x in cuda_archs]
+                    [f"-gencode arch=compute_{x},code=sm_{x}" for x in cuda_archs]
                 )
                 options.append(self.define("CMAKE_CUDA_FLAGS", cuda_flags))
             else:
@@ -138,7 +138,7 @@ class Nlcglib(CMakePackage, CudaPackage):
         if "^cuda+allow-unsupported-compilers" in self.spec:
             options.append(self.define("CMAKE_CUDA_FLAGS", "--allow-unsupported-compiler"))
 
-        #if "+rocm" in self.spec:
+        # if "+rocm" in self.spec:
         #    archs = ",".join(self.spec.variants["amdgpu_target"].value)
         #    options.extend(
         #        [

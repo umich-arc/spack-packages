@@ -37,7 +37,7 @@ class Mummer(Package):
     def install(self, spec, prefix):
         if self.run_tests:
             make("check")
-        make("INSTALL_TOP_DIR={0}".format(prefix))
+        make(f"INSTALL_TOP_DIR={prefix}")
         bd = prefix.bin
         abd = join_path(prefix, "aux_bin")
         sd = join_path(prefix, "scripts")

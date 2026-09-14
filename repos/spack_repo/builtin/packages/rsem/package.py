@@ -27,7 +27,7 @@ class Rsem(MakefilePackage):
     depends_on("python+arc", type=("build", "run"))
     depends_on("bowtie")
     depends_on("bowtie2")
-    #depends_on("star") # make star deps a separate module load by a user on a per-need-basis
+    # depends_on("star") # make star deps a separate module load by a user on a per-need-basis
     # The bundled samtools-1.3/htslib-1.3 is not compatible with zlib-ng
     # https://github.com/samtools/htslib/issues/1257
     depends_on("zlib")

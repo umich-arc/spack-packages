@@ -139,14 +139,14 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder, SetupEnvironment):
         """
         rbconfig = find(self.prefix, "rbconfig.rb")[0]
         filter_file(
-            r'^(\s*CONFIG\["CXX"\]\s*=\s*).*', r'\1"{0}"'.format(self.pkg.compiler.cxx), rbconfig
+            r'^(\s*CONFIG\["CXX"\]\s*=\s*).*', rf'\1"{self.pkg.compiler.cxx}"', rbconfig
         )
         filter_file(
-            r'^(\s*CONFIG\["CC"\]\s*=\s*).*', r'\1"{0}"'.format(self.pkg.compiler.cc), rbconfig
+            r'^(\s*CONFIG\["CC"\]\s*=\s*).*', rf'\1"{self.pkg.compiler.cc}"', rbconfig
         )
         filter_file(
             r'^(\s*CONFIG\["MJIT_CC"\]\s*=\s*).*',
-            r'\1"{0}"'.format(self.pkg.compiler.cc),
+            rf'\1"{self.pkg.compiler.cc}"',
             rbconfig,
         )
 

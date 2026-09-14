@@ -101,7 +101,7 @@ class Pythia6(CMakePackage):
     for example, checksum in examples.items():
         resource(
             name=example,
-            url="https://pythia.org/download/pythia6/{0}".format(example),
+            url=f"https://pythia.org/download/pythia6/{example}",
             sha256=checksum,
             expand=False,
             destination="example",
@@ -161,7 +161,7 @@ class Pythia6(CMakePackage):
             env.append_flags("FFLAGS", "-fcommon")
 
     def cmake_args(self):
-        args = ["-DPYTHIA6_VERSION={0}".format(self.version.dotted)]
+        args = [f"-DPYTHIA6_VERSION={self.version.dotted}"]
         if self.spec.satisfies("platform=darwin"):
             args.append(self.define("CMAKE_MACOSX_RPATH", True))
         return args

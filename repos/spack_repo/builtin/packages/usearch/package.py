@@ -44,7 +44,7 @@ class Usearch(MakefilePackage):
 
     def url_for_version(self, version):
         if version <= Version("11.0.667"):
-            return "file://{0}/usearch{1}_i86linux32.gz".format(os.getcwd(), version)
+            return f"file://{os.getcwd()}/usearch{version}_i86linux32.gz"
         return super().url_for_version(version)
 
     def build(self, spec, prefix):
@@ -54,7 +54,7 @@ class Usearch(MakefilePackage):
     def install(self, spec, prefix):
         mkdirp(prefix.bin)
         if self.spec.satisfies("@:11.0.667"):
-            install("usearch{0}_i86linux32".format(self.version), prefix.bin.usearch)
+            install(f"usearch{self.version}_i86linux32", prefix.bin.usearch)
         else:
-            install("bin/usearch{0}".format(self.version.up_to(1)), prefix.bin.usearch)
+            install(f"bin/usearch{self.version.up_to(1)}", prefix.bin.usearch)
         set_executable(prefix.bin.usearch)

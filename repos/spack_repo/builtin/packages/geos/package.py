@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-from spack_repo.builtin.build_systems.cmake import CMakePackage, generator
+from spack_repo.builtin.build_systems.cmake import CMakePackage
 
 from spack.package import *
 
@@ -79,10 +79,10 @@ class Geos(CMakePackage):
     depends_on("c", type="build")
     depends_on("cxx", type="build")
 
-    #generator("ninja")
-    #depends_on("cmake@3.15:", when="@3.13:", type="build")
-    #depends_on("cmake@3.13:", when="@3.10:", type="build")
-    #depends_on("cmake@3.8:", type="build")
+    # generator("ninja")
+    # depends_on("cmake@3.15:", when="@3.13:", type="build")
+    # depends_on("cmake@3.13:", when="@3.10:", type="build")
+    # depends_on("cmake@3.8:", type="build")
 
     variant("shared", default=True, description="Build shared library")
 

@@ -43,14 +43,14 @@ class Libceed(MakefilePackage, CudaPackage):
 
     variant("shared", default=True, description="Build shared libraries")
 
-    #conflicts("+rocm", when="@:0.7")
+    # conflicts("+rocm", when="@:0.7")
 
     depends_on("c", type="build")  # generated
     depends_on("cxx", type="build")  # generated
     depends_on("fortran", type="build")  # generated
     depends_on("pkgconf", type="build")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    depends_on("hip@3.8.0:", when="@0.8:")
     #    depends_on("hipblas@3.8.0:", when="@0.8:")
 
@@ -70,7 +70,7 @@ class Libceed(MakefilePackage, CudaPackage):
     depends_on("magma~shared", when="+magma~shared")
     depends_on("magma+shared", when="+magma+shared")
 
-    #patch("libceed-v0.8-hip.patch", when="@0.8+rocm")
+    # patch("libceed-v0.8-hip.patch", when="@0.8+rocm")
     patch("pkgconfig-version-0.4.diff", when="@0.4")
     # Find the LIBXSMM 2.x headers in include/libxsmm when MKLROOT is set
     # https://github.com/CEED/libCEED/pull/2074
@@ -162,7 +162,7 @@ class Libceed(MakefilePackage, CudaPackage):
                 # Disable CUDA auto-detection:
                 makeopts += ["CUDA_DIR=/disable-cuda"]
 
-            #if spec.satisfies("+rocm"):
+            # if spec.satisfies("+rocm"):
             #    makeopts += ["HIP_DIR=%s" % spec["hip"].prefix]
             #    amdgpu_target = ",".join(spec.variants["amdgpu_target"].value)
             #    makeopts += ["HIP_ARCH=%s" % amdgpu_target]
@@ -193,7 +193,7 @@ class Libceed(MakefilePackage, CudaPackage):
 
     @property
     def install_targets(self):
-        return ["install", "prefix={0}".format(self.prefix)] + self.common_make_opts
+        return ["install", f"prefix={self.prefix}"] + self.common_make_opts
 
     def check(self):
         make("prove", *self.common_make_opts, parallel=False)

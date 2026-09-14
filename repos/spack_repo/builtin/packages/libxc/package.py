@@ -72,9 +72,9 @@ class Libxc(AutotoolsPackage, CudaPackage, CMakePackage):
     depends_on("py-pytest", type="test", when="@7.1: build_system=cmake")
 
     conflicts("+shared +cuda", when="@:7.0.0", msg="Only ~shared supported with +cuda")
-    #conflicts("+cuda +rocm", msg="CUDA and ROCm are mutually exclusive")
+    # conflicts("+cuda +rocm", msg="CUDA and ROCm are mutually exclusive")
     conflicts("+cuda", when="@:4", msg="CUDA support only in libxc 5.0.0 and above")
-    #conflicts("+rocm", when="@:7.0", msg="HIP support was added in libxc 7.1.0")
+    # conflicts("+rocm", when="@:7.0", msg="HIP support was added in libxc 7.1.0")
 
     # GitLab source archives need the Autotools-generated files.
     depends_on("autoconf", type="build", when="build_system=autotools")
@@ -139,13 +139,13 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
 
         if self.spec.satisfies("+cuda"):
             nvcc = self.spec["cuda"].prefix.bin.nvcc
-            env.set("CCLD", "{0} -ccbin {1}".format(nvcc, spack_cc))
-            env.set("CC", "{0} -x cu -ccbin {1}".format(nvcc, spack_cc))
+            env.set("CCLD", f"{nvcc} -ccbin {spack_cc}")
+            env.set("CC", f"{nvcc} -x cu -ccbin {spack_cc}")
 
             cuda_arch = self.spec.variants["cuda_arch"].value[0]
 
             if cuda_arch != "none":
-                env.append_flags("CFLAGS", "-arch=sm_{0}".format(cuda_arch))
+                env.append_flags("CFLAGS", f"-arch=sm_{cuda_arch}")
 
     def configure_args(self):
         args = []
@@ -207,7 +207,7 @@ class CMakeBuilder(cmake.CMakeBuilder):
             cuda_arch = ";".join(spec.variants["cuda_arch"].value)
             args.append(self.define("CMAKE_CUDA_ARCHITECTURES", cuda_arch))
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    hip_compiler = join_path(spec["llvm-amdgpu"].prefix.bin, "amdclang++")
         #    amdgpu_target = ";".join(spec.variants["amdgpu_target"].value)
         #    args.extend(

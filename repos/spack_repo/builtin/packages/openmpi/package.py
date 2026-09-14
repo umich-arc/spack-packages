@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 import os
 import re
-import sys
 
 from spack_repo.builtin.build_systems.autotools import AutotoolsPackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
@@ -138,7 +137,6 @@ class Openmpi(AutotoolsPackage, CudaPackage):
         "4.1.0", sha256="73866fb77090819b6a8c85cb8539638d37d6877455825b74e289d647a39fd5b5"
     )  # libmpi.so.40.30.0
 
-
     patch("ad_lustre_rwcontig_open_source.patch", when="@1.6.5")
     patch("llnl-platforms.patch", when="@1.6.5")
     patch("configure.patch", when="@1.10.1")
@@ -202,7 +200,7 @@ class Openmpi(AutotoolsPackage, CudaPackage):
 
     # Add missing header for memcpy
     # https://github.com/open-mpi/ompi/commit/aa5577441ff1ab7f97f8b63e442b37457c7bd997
-    #patch("add_string.patch", when="@5.0.1:5.0.8 +rocm")
+    # patch("add_string.patch", when="@5.0.1:5.0.8 +rocm")
 
     # GCC 16: drop __opal_attribute_always_inline__ from mca_part_persist_start
     # to fix "inlining failed in call to always_inline: recursive inlining" error
@@ -393,7 +391,7 @@ with '-Wl,-commons,use_dylibs' and without
     depends_on("fca", when="fabrics=fca")
     depends_on("hcoll", when="fabrics=hcoll")
     depends_on("ucc", when="fabrics=ucc")
-    #depends_on("ucc +rocm", when="fabrics=ucc +rocm")
+    # depends_on("ucc +rocm", when="fabrics=ucc +rocm")
     depends_on("xpmem", when="fabrics=xpmem")
     depends_on("knem", when="fabrics=knem")
 
@@ -401,14 +399,14 @@ with '-Wl,-commons,use_dylibs' and without
     depends_on("pbs", when="schedulers=tm")
     depends_on("slurm", when="schedulers=slurm")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    libfabric_requirement = ""
     #    if is_CrayEX() or check_FI_HMEM_ROCR() or slingshot_network():
     #        libfabric_requirement = "fabrics=cxi"
     #    requires("fabrics=ucx ^ucx +rocm", f"^libfabric {libfabric_requirement}", policy="one_of")
 
     depends_on("cuda", type=("build", "link", "run"), when="@5: +cuda")
-    #depends_on("hip", type=("build", "link", "run"), when="@5: +rocm")
+    # depends_on("hip", type=("build", "link", "run"), when="@5: +rocm")
 
     conflicts("+cxx_exceptions", when="%nvhpc", msg="nvc does not ignore -fexceptions, but errors")
 
@@ -417,7 +415,7 @@ with '-Wl,-commons,use_dylibs' and without
     # variant.
     conflicts("+cuda", when="@:1.6")
     # Same goes with ROCm support added in 5.0
-    #conflicts("+rocm", when="@:4")
+    # conflicts("+rocm", when="@:4")
     # PSM2 support was added in 1.10.0
     conflicts("fabrics=psm2", when="@:1.8")
     # MXM support was added in 1.5.4
@@ -525,12 +523,12 @@ with '-Wl,-commons,use_dylibs' and without
                 variants.append("~cuda")
 
             # rocm
-            #match = re.search(
+            # match = re.search(
             #    r'parameter "mpi_built_with_rocm_support" ' + r'\(current value: "(\S+)"', output
-            #)
-            #if match and is_enabled(match.group(1)):
+            # )
+            # if match and is_enabled(match.group(1)):
             #    variants.append("+rocm")
-            #else:
+            # else:
             #    variants.append("~rocm")
 
             # wrapper-rpath
@@ -694,11 +692,9 @@ with '-Wl,-commons,use_dylibs' and without
                 if cls._arc_pmix_major(prefix) == cls.arc_pmix_major:
                     return prefix
                 raise InstallError(
-                    "{0} points to PMIx {1}; ARC OpenMPI expects PMIx v{2}".format(
-                        env_var, cls._arc_pmix_version(prefix), cls.arc_pmix_major
-                    )
+                    f"{env_var} points to PMIx {cls._arc_pmix_version(prefix)}; ARC OpenMPI expects PMIx v{cls.arc_pmix_major}"
                 )
-            raise InstallError("{0} is set but is not a usable PMIx prefix".format(env_var))
+            raise InstallError(f"{env_var} is set but is not a usable PMIx prefix")
 
         root = "/opt/pmix"
         candidates = []
@@ -718,11 +714,9 @@ with '-Wl,-commons,use_dylibs' and without
 
         compatible = [x for x in candidates if cls._arc_pmix_major(x) == cls.arc_pmix_major]
         if not compatible:
-            found = ", ".join("{0} ({1})".format(x, cls._arc_pmix_version(x)) for x in candidates)
+            found = ", ".join(f"{x} ({cls._arc_pmix_version(x)})" for x in candidates)
             raise InstallError(
-                "ARC OpenMPI requires PMIx v{0} under /opt/pmix; found: {1}".format(
-                    cls.arc_pmix_major, found
-                )
+                f"ARC OpenMPI requires PMIx v{cls.arc_pmix_major} under /opt/pmix; found: {found}"
             )
 
         return sorted(compatible, key=lambda x: (cls._arc_pmix_version(x), x))[-1]
@@ -735,9 +729,7 @@ with '-Wl,-commons,use_dylibs' and without
             if recorded_prefix:
                 if not self._arc_pmix_is_usable(recorded_prefix):
                     raise InstallError(
-                        "Recorded ARC PMIx prefix is no longer usable: {0}".format(
-                            recorded_prefix
-                        )
+                        f"Recorded ARC PMIx prefix is no longer usable: {recorded_prefix}"
                     )
                 return recorded_prefix
         return self._detect_arc_pmix_prefix()
@@ -745,12 +737,12 @@ with '-Wl,-commons,use_dylibs' and without
     def _arc_slurm_mpi_type(self):
         major = self._arc_pmix_major(self._arc_pmix_prefix())
         if major:
-            return "pmix_v{0}".format(major)
+            return f"pmix_v{major}"
         return "pmix_v5"
 
     def _arc_config_args(self):
         return [
-            "--with-pmix={0}".format(self._arc_pmix_prefix()),
+            f"--with-pmix={self._arc_pmix_prefix()}",
             "--with-libevent=external",
             "--with-hwloc=external",
             "--with-slurm",
@@ -850,7 +842,7 @@ with '-Wl,-commons,use_dylibs' and without
         # In version 1.7, it was renamed to be --with-verbs.
         opt = "verbs" if self.spec.satisfies("@1.7:") else "openib"
         if not activated:
-            return "--without-{0}".format(opt)
+            return f"--without-{opt}"
         return "--with-{0}={1}".format(opt, self.spec["rdma-core"].prefix)
 
     def with_or_without_mxm(self, activated):
@@ -868,7 +860,7 @@ with '-Wl,-commons,use_dylibs' and without
         # In version 3.0.4, the old name was deprecated in favor of --with-ofi.
         opt = "ofi" if self.spec.satisfies("@3.0.4:") else "libfabric"
         if not activated:
-            return "--without-{0}".format(opt)
+            return f"--without-{opt}"
         return "--with-{0}={1}".format(opt, self.spec["libfabric"].prefix)
 
     def with_or_without_fca(self, activated):
@@ -1070,7 +1062,7 @@ with '-Wl,-commons,use_dylibs' and without
 
         # ROCm support
         # See https://docs.open-mpi.org/en/v5.0.x/tuning-apps/networking/rocm.html
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    config_args.append("--with-rocm={0}".format(spec["hip"].prefix))
         if spec.satisfies("@5:"):
             config_args.append("--without-rocm")
@@ -1149,7 +1141,7 @@ with '-Wl,-commons,use_dylibs' and without
             return
 
         with open(self._arc_pmix_record_path, "w", encoding="utf-8") as fh:
-            fh.write("{0}\n".format(self._arc_pmix_prefix()))
+            fh.write(f"{self._arc_pmix_prefix()}\n")
 
     # For v4 and lower
     @run_after("install")

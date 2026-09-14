@@ -112,7 +112,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
         make("no_test")
 
     def install(self, pkg, spec, prefix):
-        make("install", "DESTDIR={0}".format(prefix))
+        make("install", f"DESTDIR={prefix}")
 
     @run_after("install")
     def darwin_fix(self):

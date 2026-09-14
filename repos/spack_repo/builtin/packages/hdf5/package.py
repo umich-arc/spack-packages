@@ -379,7 +379,7 @@ class Hdf5(CMakePackage):
             if spec.satisfies("@:1.8.12+cxx~shared"):
                 cmake_flags.append(self.compiler.cxx_pic_flag)
         elif name == "fflags":
-            #if spec.satisfies("+fortran%cce"):
+            # if spec.satisfies("+fortran%cce"):
             #    # Cray compiler generates module files with uppercase names by
             #    # default, which is not handled by the CMake scripts. The
             #    # following flag forces the compiler to produce module files
@@ -529,7 +529,7 @@ class Hdf5(CMakePackage):
 
             match = re.search(r"Default API mapping: (\S+)", output)
             if match and match.group(1) in set(["v200", "v114", "v112", "v110", "v18", "v16"]):
-                variants.append("api={0}".format(match.group(1)))
+                variants.append(f"api={match.group(1)}")
 
             results.append(" ".join(variants))
 

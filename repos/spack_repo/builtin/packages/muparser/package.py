@@ -60,5 +60,5 @@ class AutotoolsBuilder(AutotoolsBuilder):
             "--disable-debug",
             "--disable-samples",
             "--disable-dependency-tracking",
-            "CXXFLAGS={0}".format(self.compiler.cxx11_flag),
+            f"CXXFLAGS={self.compiler.cxx11_flag}",
         ]

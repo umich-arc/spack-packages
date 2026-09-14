@@ -34,6 +34,5 @@ class RSpatstatSparse(RPackage):
     depends_on("r-spatstat-utils@3.0-2:", type=("build", "run"), when="@3.0-1:")
     depends_on("r-spatstat-utils@3.0-5:", type=("build", "run"), when="@3.1-0:")
 
-    with when("@3.2-0:"):
-        with default_args(type=("build", "run")):
-            depends_on("r-spatstat-utils@3.2-3:")
+    with when("@3.2-0:"), default_args(type=("build", "run")):
+        depends_on("r-spatstat-utils@3.2-3:")

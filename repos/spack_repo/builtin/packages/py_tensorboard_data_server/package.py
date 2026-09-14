@@ -44,7 +44,7 @@ class PyTensorboardDataServer(PythonPackage):
         with working_dir(join_path("tensorboard", "data", "server", "pip_package")):
             python(
                 "build.py",
-                "--out-dir={0}".format(self.stage.source_path),
+                f"--out-dir={self.stage.source_path}",
                 "--server-binary={0}".format(
                     join_path(
                         self.stage.source_path,

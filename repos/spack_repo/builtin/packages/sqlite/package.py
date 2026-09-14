@@ -79,7 +79,7 @@ class Sqlite(AutotoolsPackage, NMakePackage):
             when=f"@:3.48 platform={plat}",
         )
 
-        #depends_on("readline", when=f"platform={plat}")
+        # depends_on("readline", when=f"platform={plat}")
 
     variant("fts", default=True, description="Include fts4 and fts5 support")
 
@@ -97,7 +97,7 @@ class Sqlite(AutotoolsPackage, NMakePackage):
 
     depends_on("c", type="build")  # generated
 
-    #depends_on("zlib-api")
+    # depends_on("zlib-api")
     depends_on("tcl", when="platform=windows")
 
     # See https://blade.tencent.com/magellan/index_en.html
@@ -166,9 +166,7 @@ class Sqlite(AutotoolsPackage, NMakePackage):
 
             # check for fts
             def query_fts(version):
-                return "CREATE VIRTUAL TABLE name USING fts{:d}(sender, title, body);".format(
-                    version
-                )
+                return f"CREATE VIRTUAL TABLE name USING fts{version:d}(sender, title, body);"
 
             rc_fts4 = call(exe, query_fts(4))
             rc_fts5 = call(exe, query_fts(5))

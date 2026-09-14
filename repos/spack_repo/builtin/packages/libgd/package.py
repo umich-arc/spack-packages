@@ -31,17 +31,17 @@ class Libgd(AutotoolsPackage):
     # Build dependencies
     depends_on("autoconf", type="build")
     depends_on("automake", type="build")
-    #depends_on("libtool", type="build")
-    #depends_on("m4", type="build")
-    #depends_on("gettext", type="build")
+    # depends_on("libtool", type="build")
+    # depends_on("m4", type="build")
+    # depends_on("gettext", type="build")
     depends_on("pkgconfig", type="build")
 
-    #depends_on("iconv")
-    #depends_on("libpng")
-    #depends_on("jpeg")
-    #depends_on("libtiff")
-    #depends_on("fontconfig")
-    #depends_on("libx11")
+    # depends_on("iconv")
+    # depends_on("libpng")
+    # depends_on("jpeg")
+    # depends_on("libtiff")
+    # depends_on("fontconfig")
+    # depends_on("libx11")
 
     # add missing '#include <limits.h>' in gd_gd2.c, which uses the constant 'INT_MAX'
     patch(

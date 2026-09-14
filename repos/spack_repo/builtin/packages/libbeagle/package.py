@@ -29,8 +29,8 @@ class Libbeagle(AutotoolsPackage, CudaPackage):
 
     depends_on("autoconf", type="build")
     depends_on("automake", type="build")
-    #depends_on("libtool", type="build")
-    #depends_on("m4", type="build")
+    # depends_on("libtool", type="build")
+    # depends_on("m4", type="build")
 
     depends_on("subversion", type="build")
     depends_on("pkgconfig", type="build")
@@ -52,13 +52,13 @@ class Libbeagle(AutotoolsPackage, CudaPackage):
         # update cuda architecture if necessary
         if self.spec.satisfies("+cuda"):
             cuda_arch = self.spec.variants["cuda_arch"].value
-            archflag = "-arch=compute_{0}".format(cuda_arch)
+            archflag = f"-arch=compute_{cuda_arch}"
 
             filter_file(
                 "-arch compute_13", "", "libhmsbeagle/GPU/kernels/Makefile.am", string=True
             )
 
-            filter_file(r'(NVCCFLAGS="-O3).*(")', r"\1 {0}\2".format(archflag), "configure.ac")
+            filter_file(r'(NVCCFLAGS="-O3).*(")', rf"\1 {archflag}\2", "configure.ac")
 
             # point CUDA_LIBS to libcuda.so
             filter_file(

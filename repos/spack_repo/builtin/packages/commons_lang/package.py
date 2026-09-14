@@ -31,4 +31,4 @@ class CommonsLang(Package):
     depends_on("java@2:", type="run")
 
     def install(self, spec, prefix):
-        install("commons-lang-{0}.jar".format(self.version), prefix)
+        install(f"commons-lang-{self.version}.jar", prefix)

@@ -71,7 +71,7 @@ class Exacmech(CMakePackage, CudaPackage):
             self.define_from_variant("ENABLE_OPENMP", "openmp"),
             self.define_from_variant("CMAKE_CUDA_SEPARABLE_COMPILATION", "cuda"),
             self.define_from_variant("ENABLE_CUDA", "cuda"),
-            #self.define_from_variant("ENABLE_HIP", "rocm"),
+            # self.define_from_variant("ENABLE_HIP", "rocm"),
             self.define_from_variant("ENABLE_TESTS", "tests"),
         ]
 

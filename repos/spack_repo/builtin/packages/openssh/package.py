@@ -123,7 +123,7 @@ class Openssh(AutotoolsPackage):
         # OpenSSH's privilege separation path defaults to /var/empty. At
         # least newer versions want to create the directory during the
         # install step and fail if they cannot do so.
-        args = ["--with-privsep-path={0}".format(self.prefix.var.empty)]
+        args = [f"--with-privsep-path={self.prefix.var.empty}"]
         if self.spec.satisfies("+gssapi"):
             args.append("--with-kerberos5=" + self.spec["krb5"].prefix)
 

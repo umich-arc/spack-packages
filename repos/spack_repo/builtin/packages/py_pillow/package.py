@@ -111,20 +111,20 @@ class PyPillowBase(PythonPackage):
         if self.version >= Version("11"):
             setup.filter(
                 "library_dirs: list[str] = []",
-                "library_dirs: list[str] = {0}".format(library_dirs),
+                f"library_dirs: list[str] = {library_dirs}",
                 string=True,
             )
             setup.filter(
                 "include_dirs: list[str] = []",
-                "include_dirs: list[str] = {0}".format(include_dirs),
+                f"include_dirs: list[str] = {include_dirs}",
                 string=True,
             )
         else:
             setup.filter(
-                "library_dirs = []", "library_dirs = {0}".format(library_dirs), string=True
+                "library_dirs = []", f"library_dirs = {library_dirs}", string=True
             )
             setup.filter(
-                "include_dirs = []", "include_dirs = {0}".format(include_dirs), string=True
+                "include_dirs = []", f"include_dirs = {include_dirs}", string=True
             )
 
         if self.spec.satisfies("@:9"):

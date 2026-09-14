@@ -113,7 +113,7 @@ class Cudss(Package):
             ver_split = ver.split("-")
             if len(ver_split) == 2:
                 _, cuda_ver = ver_split
-                depends_on("cuda@{}".format(cuda_ver), when="@{}".format(ver))
+                depends_on(f"cuda@{cuda_ver}", when=f"@{ver}")
 
     # Versions without CUDA 13 builds
     depends_on("cuda@12", when="@:0.6")

@@ -75,7 +75,7 @@ class Tix(AutotoolsPackage):
         args = [
             "--with-tcl={0}".format(spec["tcl"].libs.directories[0]),
             "--with-tk={0}".format(spec["tk"].libs.directories[0]),
-            "--exec-prefix={0}".format(self.prefix),
+            f"--exec-prefix={self.prefix}",
         ]
         return args
 
@@ -94,7 +94,7 @@ class Tix(AutotoolsPackage):
 
     @property
     def libs(self):
-        return find_libraries(["libTix{0}".format(self.version)], root=self.prefix, recursive=True)
+        return find_libraries([f"libTix{self.version}"], root=self.prefix, recursive=True)
 
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         """Set TIX_LIBRARY to the directory containing Tix.tcl.

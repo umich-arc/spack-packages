@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-import itertools
 import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
@@ -62,8 +61,8 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage):
     version("5.7.0", sha256="daa5dc44580145e85ff8ffa7eb40a3d1ef41f3217549c01281715ff696a31588")
 
     # default to an 'auto' variant until amdgpu_targets can be given a better default than 'none'
-    #amdgpu_targets = ROCmPackage.amdgpu_targets
-    #variant(
+    # amdgpu_targets = ROCmPackage.amdgpu_targets
+    # variant(
     #    "amdgpu_target",
     #    description="AMD GPU architecture",
     #    values=disjoint_sets(("auto",), amdgpu_targets)
@@ -73,9 +72,9 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage):
     #    )
     #    .with_non_feature_values("auto", "none"),
     #    sticky=True,
-    #)
-    #variant("rocm", default=True, description="Enable ROCm support")
-    #conflicts("+cuda +rocm", msg="CUDA and ROCm support are mutually exclusive")
+    # )
+    # variant("rocm", default=True, description="Enable ROCm support")
+    # conflicts("+cuda +rocm", msg="CUDA and ROCm support are mutually exclusive")
     conflicts("~cuda", msg="CUDA support is required")
     variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
 
@@ -118,7 +117,7 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage):
         "7.14.0",
         "10.0.0",
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
-        #for tgt in itertools.chain(["auto"], amdgpu_targets):
+        # for tgt in itertools.chain(["auto"], amdgpu_targets):
         #    depends_on(
         #        f"rocfft@{ver} amdgpu_target={tgt}", when=f"@{ver} +rocm amdgpu_target={tgt}"
         #    )
@@ -137,9 +136,7 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage):
     def determine_version(cls, lib):
         match = re.search(r"lib\S*\.so\.\d+\.\d+\.(\d)(\d\d)(\d\d)", lib)
         if match:
-            ver = "{0}.{1}.{2}".format(
-                int(match.group(1)), int(match.group(2)), int(match.group(3))
-            )
+            ver = f"{int(match.group(1))}.{int(match.group(2))}.{int(match.group(3))}"
         else:
             ver = super().determine_version(lib)
         return ver
@@ -154,7 +151,7 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage):
             self.define("CMAKE_MODULE_PATH", self.spec["hip"].prefix.lib.cmake.hip),
             self.define("CMAKE_INSTALL_LIBDIR", "lib"),
         ]
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    args.append(self.define("BUILD_WITH_LIB", "ROCM"))
         if self.spec.satisfies("+cuda"):
             args.append(self.define("BUILD_WITH_LIB", "CUDA"))

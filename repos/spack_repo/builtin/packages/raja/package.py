@@ -211,11 +211,11 @@ class Raja(CachedCMakePackage, CudaPackage):
 
     # Backward compatibility is stopped from ROCm 6.0
     # Future relase will have the change from PR https://github.com/LLNL/RAJA/pull/1568
-    #patch(
+    # patch(
     #    "https://github.com/LLNL/RAJA/commit/406eb8dee05a41eb32c421c375688a4863b60642.patch?full_index=1",
     #    sha256="d9ce5ef038555cbccb330a9016b7be77e56ae0660583cba955dab9d0297a4b07",
     #    when="^hip@6.0",
-    #)
+    # )
 
     # Fix compilation issue reported by Intel from their new compiler version
     patch(
@@ -290,7 +290,7 @@ class Raja(CachedCMakePackage, CudaPackage):
     depends_on("blt@0.4.1", type="build", when="@0.14.0")
     depends_on("blt@0.4.0:0.4.1", type="build", when="@0.13.0")
     depends_on("blt@0.3.6:0.4.1", type="build", when="@:0.12.0")
-    #conflicts("^blt@:0.3.6", when="+rocm")
+    # conflicts("^blt@:0.3.6", when="+rocm")
     conflicts("^blt@:0.7.1", when="+cuda ^cuda@13:", msg="CUDA 13+ requires BLT 0.7.2 or newer")
 
     depends_on("camp")
@@ -314,17 +314,17 @@ class Raja(CachedCMakePackage, CudaPackage):
 
     depends_on("cmake@3.24:", when="@2025.09.0:", type="build")
     depends_on("cmake@3.23:", when="@2024.07.0:2025.03.2", type="build")
-    #depends_on("cmake@3.23:", when="@2022.10.0:2024.02.2+rocm", type="build")
+    # depends_on("cmake@3.23:", when="@2022.10.0:2024.02.2+rocm", type="build")
     depends_on("cmake@3.20:", when="@2022.10.0:2024.02.2", type="build")
-    #depends_on("cmake@3.20:", when="@:2022.03+rocm", type="build")
+    # depends_on("cmake@3.20:", when="@:2022.03+rocm", type="build")
     depends_on("cmake@3.14:", when="@:2022.03", type="build")
 
     depends_on("llvm-openmp", when="+openmp %apple-clang")
 
     depends_on("caliper", when="+caliper")
 
-    #depends_on("rocprim", when="+rocm")
-    #with when("+rocm @0.12.0:"):
+    # depends_on("rocprim", when="+rocm")
+    # with when("+rocm @0.12.0:"):
     #    depends_on("camp+rocm")
     #    for arch in ROCmPackage.amdgpu_targets:
     #        depends_on(
@@ -335,15 +335,15 @@ class Raja(CachedCMakePackage, CudaPackage):
     with when("+cuda @0.12.0:"):
         depends_on("camp+cuda")
         for sm_ in CudaPackage.cuda_arch_values:
-            depends_on("camp +cuda cuda_arch={0}".format(sm_), when="cuda_arch={0}".format(sm_))
+            depends_on(f"camp +cuda cuda_arch={sm_}", when=f"cuda_arch={sm_}")
 
     conflicts("+gpu-profiling", when="~cuda", msg="GPU profiling requires CUDA or ROCm")
     conflicts("+gpu-profiling +cuda", when="@:2022.02.99")
-    #conflicts("+gpu-profiling +rocm", when="@:2022.02.99")
+    # conflicts("+gpu-profiling +rocm", when="@:2022.02.99")
 
-    #conflicts("+omptarget +rocm")
+    # conflicts("+omptarget +rocm")
     conflicts("+sycl +omptarget")
-    #conflicts("+sycl +rocm")
+    # conflicts("+sycl +rocm")
     conflicts(
         "+sycl",
         when="@:2024.02.99",
@@ -374,13 +374,7 @@ class Raja(CachedCMakePackage, CudaPackage):
         hostname = socket.gethostname()
         if "SYS_TYPE" in env:
             hostname = hostname.rstrip("1234567890")
-        return "{0}-{1}-{2}@{3}-{4}.cmake".format(
-            hostname,
-            self._get_sys_type(self.spec),
-            self.spec.compiler.name,
-            self.spec.compiler.version,
-            self.spec.dag_hash(8),
-        )
+        return f"{hostname}-{self._get_sys_type(self.spec)}-{self.spec.compiler.name}@{self.spec.compiler.version}-{self.spec.dag_hash(8)}.cmake"
 
     def initconfig_compiler_entries(self):
         spec = self.spec
@@ -388,7 +382,7 @@ class Raja(CachedCMakePackage, CudaPackage):
         # Default entries are already defined in CachedCMakePackage, inherit them:
         entries = super().initconfig_compiler_entries()
 
-        #if spec.satisfies("+rocm ^blt@:0.6"):
+        # if spec.satisfies("+rocm ^blt@:0.6"):
         #    entries.insert(0, cmake_cache_path("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
 
         llnl_link_helpers(entries, spec, compiler)
@@ -419,14 +413,14 @@ class Raja(CachedCMakePackage, CudaPackage):
                 filter(gcc_toolchain_regex.match, spec.compiler_flags["cxxflags"])
             )
             if using_toolchain:
-                cuda_flags.append("-Xcompiler {}".format(using_toolchain[0]))
+                cuda_flags.append(f"-Xcompiler {using_toolchain[0]}")
 
             if cuda_flags:
                 entries.append(cmake_cache_string("CMAKE_CUDA_FLAGS", " ".join(cuda_flags)))
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    entries.append(cmake_cache_option("ENABLE_HIP", True))
-#
+        #
         #    # HIP configuration from hip_for_radiuss_projects
         #    rocm_root = spec["llvm-amdgpu"].prefix
         #    gcc_toolchain_regex = re.compile(".*gcc-toolchain.*")
@@ -461,7 +455,7 @@ class Raja(CachedCMakePackage, CudaPackage):
         #    elif self.spec.satisfies("@0.14.0:2025.09.0"):
         #        hipcc_flags.append("-std=c++14")
         #    entries.append(cmake_cache_string("HIP_HIPCC_FLAGS", " ".join(hipcc_flags)))
-        #else:
+        # else:
         entries.append(cmake_cache_option("ENABLE_HIP", False))
 
         return entries
@@ -509,9 +503,9 @@ class Raja(CachedCMakePackage, CudaPackage):
         entries.append(
             cmake_cache_option("RAJA_ENABLE_NV_TOOLS_EXT", spec.satisfies("+gpu-profiling +cuda"))
         )
-        #entries.append(
+        # entries.append(
         #    cmake_cache_option("RAJA_ENABLE_ROCTX", spec.satisfies("+gpu-profiling +rocm"))
-        #)
+        # )
 
         if spec.satisfies("+lowopttest"):
             entries.append(cmake_cache_string("CMAKE_CXX_FLAGS_RELEASE", "-O1"))
@@ -537,13 +531,13 @@ class Raja(CachedCMakePackage, CudaPackage):
 
         entries.append(
             cmake_cache_option(
-                "{}ENABLE_EXAMPLES".format(option_prefix), spec.satisfies("+examples")
+                f"{option_prefix}ENABLE_EXAMPLES", spec.satisfies("+examples")
             )
         )
         if spec.satisfies("@0.14.0:"):
             entries.append(
                 cmake_cache_option(
-                    "{}ENABLE_EXERCISES".format(option_prefix), spec.satisfies("+exercises")
+                    f"{option_prefix}ENABLE_EXERCISES", spec.satisfies("+exercises")
                 )
             )
         else:

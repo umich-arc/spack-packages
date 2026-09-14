@@ -79,9 +79,9 @@ class Elpa(AutotoolsPackage, CudaPackage):
         variant(
             "gpu_streams", default=True, when="+cuda", description="Activates GPU streams support"
         )
-        #variant(
+        # variant(
         #    "gpu_streams", default=True, when="+rocm", description="Activates GPU streams support"
-        #)
+        # )
 
     patch("fujitsu.patch", when="%fj")
     # wrong filename handling in elpa's custom preprocessor
@@ -90,7 +90,7 @@ class Elpa(AutotoolsPackage, CudaPackage):
         sha256="90f18c84e740a35d726e44078a111fac3b6278a0e750ce1f3ea154ee78e93298",
         when="@:2025.01.001",
     )
-    #patch("hipcc.patch", when="+rocm @2025.01.001:2025.06.001")
+    # patch("hipcc.patch", when="+rocm @2025.01.001:2025.06.001")
     # Suppress debug output to stderr for non-debug builds
     patch("elpa-2026.02.001-wantDebug.patch", when="@2026.02.001:")
 
@@ -105,10 +105,10 @@ class Elpa(AutotoolsPackage, CudaPackage):
     depends_on("lapack")
     depends_on("mpi", when="+mpi")
     depends_on("scalapack", when="+mpi")
-    #depends_on("rocblas", when="+rocm")
+    # depends_on("rocblas", when="+rocm")
     # elpa 2024.05.001 enables rocsolver by default
     # https://github.com/marekandreas/elpa/commit/de90ce3d634be468e71c2827d788de52ceb606bf#diff-49473dca262eeab3b4a43002adb08b4db31020d190caaad1594b47f1d5daa810R2635-R2638
-    #depends_on("rocsolver", when="+rocm @2024.05.001:")
+    # depends_on("rocsolver", when="+rocm @2024.05.001:")
     depends_on("libtool", type="build")
     depends_on("python@3:", type="build")
     depends_on("scalapack", when="+autotune")
@@ -127,7 +127,7 @@ class Elpa(AutotoolsPackage, CudaPackage):
         when="@2021.05.001: %gcc@:7",
         msg="ELPA-2021.05.001+ requires GCC-8+ for OpenMP support",
     )
-    #conflicts("+mpi", when="+rocm @:2024", msg="ROCm support and MPI are not yet compatible")
+    # conflicts("+mpi", when="+rocm @:2024", msg="ROCm support and MPI are not yet compatible")
     conflicts(
         "+gpu_streams",
         when="@:2023.11.001-patched +openmp",
@@ -157,7 +157,7 @@ class Elpa(AutotoolsPackage, CudaPackage):
 
         incdir = os.path.join(
             self.spec.prefix.include,
-            "elpa{suffix}-{version}".format(suffix=suffix, version=elpa_version),
+            f"elpa{suffix}-{elpa_version}",
         )
 
         hlist = find_all_headers(incdir)
@@ -229,8 +229,8 @@ class Elpa(AutotoolsPackage, CudaPackage):
             # Can't yet be changed to the new option --enable-nvidia-gpu-kernels
             # https://github.com/marekandreas/elpa/issues/55
             options.append(f"--enable-{cuda_flag}")
-            options.append("--with-cuda-path={0}".format(prefix))
-            options.append("--with-cuda-sdk-path={0}".format(prefix))
+            options.append(f"--with-cuda-path={prefix}")
+            options.append(f"--with-cuda-sdk-path={prefix}")
 
             if spec.satisfies("+gpu_streams"):
                 options.append("--enable-gpu-streams=nvidia")
@@ -239,12 +239,12 @@ class Elpa(AutotoolsPackage, CudaPackage):
 
             if cuda_arch != "none":
                 options.append(
-                    "--with-{0}-compute-capability=sm_{1}".format(cuda_flag.upper(), cuda_arch)
+                    f"--with-{cuda_flag.upper()}-compute-capability=sm_{cuda_arch}"
                 )
         else:
             options.append(f"--disable-{cuda_flag}" + kernels)
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    # Can't yet be changed to the new option --enable-amd-gpu-kernels
         #    # https://github.com/marekandreas/elpa/issues/55
         #    options.append("--enable-amd-gpu")

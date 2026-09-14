@@ -48,8 +48,8 @@ class Binder(CMakePackage):
 
         options.extend(
             [
-                "-DLLVM_DIR:FILEPATH={0}".format(llvm_dir),
-                "-DClang_DIR:FILEPATH={0}".format(clang_dir),
+                f"-DLLVM_DIR:FILEPATH={llvm_dir}",
+                f"-DClang_DIR:FILEPATH={clang_dir}",
                 "-DCMAKE_CXX_FLAGS=-Wl,--verbose",
                 "-DBINDER_ENABLE_TEST=OFF",
             ]

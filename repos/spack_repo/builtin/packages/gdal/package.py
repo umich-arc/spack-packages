@@ -354,7 +354,7 @@ class Gdal(CMakePackage, AutotoolsPackage, PythonExtension):
     # depends_on('mrsid', when='+mrsid')
     # depends_on('lizardtech-lidar', when='+mrsid_lidar')
     # depends_on('mssql_ncli', when='+mssql_ncli')
-    #depends_on('mssql_odbc', when='+mssql_odbc')
+    # depends_on('mssql_odbc', when='+mssql_odbc')
     depends_on("muparser", when="+muparser")
     depends_on("mysql", when="+mysql")
     depends_on("netcdf-c@4.7:", when="@3.9:+netcdf")
@@ -671,16 +671,16 @@ class AutotoolsBuilder(AutotoolsBuilder):
                     value = self.spec[package].command.path
                 elif attribute == "libs":
                     value = self.spec[package].libs.directories[0]
-                return "--with-{}={}".format(name, value)
+                return f"--with-{name}={value}"
             else:
-                return "--with-{}".format(name)
+                return f"--with-{name}"
         else:
-            return "--without-{}".format(name)
+            return f"--without-{name}"
 
     def configure_args(self):
         # https://trac.osgeo.org/gdal/wiki/BuildHints
         args = [
-            "--prefix={}".format(self.prefix),
+            f"--prefix={self.prefix}",
             # Required dependencies
             "--with-geotiff={}".format(self.spec["libgeotiff"].prefix),
             "--with-libjson-c={}".format(self.spec["json-c"].prefix),

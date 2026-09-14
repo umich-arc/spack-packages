@@ -63,8 +63,8 @@ class Tetgen(Package):
         predcflags = "-fPIC" if "+pic" in self.spec else ""
 
         mff = FileFilter("makefile")
-        mff.filter(r"^(C(XX)?FLAGS\s*=)(.*)$", r"\1 {0}".format(cflags))
-        mff.filter(r"^(PREDC(XX)?FLAGS\s*=.*)$", r"\1 {0}".format(predcflags))
+        mff.filter(r"^(C(XX)?FLAGS\s*=)(.*)$", rf"\1 {cflags}")
+        mff.filter(r"^(PREDC(XX)?FLAGS\s*=.*)$", rf"\1 {predcflags}")
 
         if "+except" in self.spec:
             hff = FileFilter("tetgen.h")

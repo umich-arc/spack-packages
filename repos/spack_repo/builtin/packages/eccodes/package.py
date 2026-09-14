@@ -153,12 +153,12 @@ class Eccodes(CMakePackage):
     for center, definitions in _definitions.items():
         kwargs = definitions.get("conflicts", None)
         if kwargs:
-            conflicts("extra_definitions={0}".format(center), **kwargs)
+            conflicts(f"extra_definitions={center}", **kwargs)
         for kwargs in definitions.get("resources", []):
             resource(
                 name=center,
                 destination="spack-definitions",
-                placement="definitions.{0}".format(center),
+                placement=f"definitions.{center}",
                 **kwargs,
             )
 
@@ -258,8 +258,8 @@ class Eccodes(CMakePackage):
         # Replace integer kinds:
         for size, r in [(2, 4), (4, 9), (8, 18)]:
             filter_file(
-                r"(^\s*integer\((?:kind=)?){0}(\).*)".format(size),
-                "\\1selected_int_kind({0})\\2".format(r),
+                rf"(^\s*integer\((?:kind=)?){size}(\).*)",
+                f"\\1selected_int_kind({r})\\2",
                 *patch_kind_files,
                 **kwargs,
             )
@@ -267,8 +267,8 @@ class Eccodes(CMakePackage):
         # Replace real kinds:
         for size, p, r in [(4, 6, 37), (8, 15, 307)]:
             filter_file(
-                r"(^\s*real\((?:kind=)?){0}(\).*)".format(size),
-                "\\1selected_real_kind({0}, {1})\\2".format(p, r),
+                rf"(^\s*real\((?:kind=)?){size}(\).*)",
+                f"\\1selected_real_kind({p}, {r})\\2",
                 *patch_kind_files,
                 **kwargs,
             )
@@ -383,7 +383,7 @@ class Eccodes(CMakePackage):
     def install_extra_definitions(self):
         for center in self.spec.variants["extra_definitions"].value:
             if center != "none":
-                center_dir = "definitions.{0}".format(center)
+                center_dir = f"definitions.{center}"
                 install_tree(
                     join_path(self.stage.source_path, "spack-definitions", center_dir),
                     join_path(self.prefix.share.eccodes, center_dir),

@@ -30,9 +30,9 @@ class Exchcxx(CMakePackage, CudaPackage):
     variant("shared", default=False, description="Build shared libraries")
     variant("pic", default=True, description="Build position independent code")
 
-    #conflicts("+cuda", when="+rocm", msg="CUDA and ROCm are mutually exclusive")
+    # conflicts("+cuda", when="+rocm", msg="CUDA and ROCm are mutually exclusive")
     conflicts("+cuda", when="+sycl", msg="CUDA and SYCL are mutually exclusive")
-    #conflicts("+rocm", when="+sycl", msg="ROCm and SYCL are mutually exclusive")
+    # conflicts("+rocm", when="+sycl", msg="ROCm and SYCL are mutually exclusive")
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
@@ -40,7 +40,7 @@ class Exchcxx(CMakePackage, CudaPackage):
     depends_on("ninja@1.10:", type="build")
     depends_on("libxc@7.0.0:", when="+libxc")
     depends_on("cuda@11:", when="+cuda")
-    #depends_on("hip", when="+rocm")
+    # depends_on("hip", when="+rocm")
     depends_on("intel-oneapi-compilers", when="+sycl")
 
     generator("ninja")
@@ -61,7 +61,7 @@ class Exchcxx(CMakePackage, CudaPackage):
             if "none" not in archs:
                 arch_str = ";".join(archs)
                 args.append(self.define("CMAKE_CUDA_ARCHITECTURES", arch_str))
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    archs = spec.variants["amdgpu_target"].value
         #    if "none" not in archs:
         #        arch_str = ";".join(archs)

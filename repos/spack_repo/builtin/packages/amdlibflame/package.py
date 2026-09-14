@@ -156,7 +156,7 @@ class CMakeBuilder(cmake.CMakeBuilder):
         spec = self.spec
         args = [self.define("LIBAOCLUTILS_INCLUDE_PATH", spec["aocl-utils"].prefix.include)]
         aocl_utils_lib_path = spec["aocl-utils"].libs
-        args.append("-DLIBAOCLUTILS_LIBRARY_PATH={0}".format(aocl_utils_lib_path))
+        args.append(f"-DLIBAOCLUTILS_LIBRARY_PATH={aocl_utils_lib_path}")
         # From 3.2 version, amd optimized flags are encapsulated under:
         # ENABLE_AMD_AOCC_FLAGS for AOCC compiler
         # ENABLE_AMD_FLAGS for all other compilers
@@ -276,7 +276,7 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
         if spec.satisfies("@4.1:"):
             args.append("CFLAGS=-I{0}".format(spec["aocl-utils"].prefix.include))
             aocl_utils_lib_path = spec["aocl-utils"].libs
-            args.append("LIBAOCLUTILS_LIBRARY_PATH={0}".format(aocl_utils_lib_path))
+            args.append(f"LIBAOCLUTILS_LIBRARY_PATH={aocl_utils_lib_path}")
 
         if spec.satisfies("+tracing"):
             filter_file(
@@ -297,7 +297,7 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
     @when("@4.1:")
     def build(self, pkg, spec, prefix):
         aocl_utils_lib_path = spec["aocl-utils"].libs
-        make("all", "LIBAOCLUTILS_LIBRARY_PATH={0}".format(aocl_utils_lib_path))
+        make("all", f"LIBAOCLUTILS_LIBRARY_PATH={aocl_utils_lib_path}")
 
     @run_after("build")
     @on_package_attributes(run_tests=True)
@@ -305,9 +305,9 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
         """make check for single and multithread"""
         blas_flags = self.spec["blas"].libs.ld_flags
         if self.spec.variants["threads"].value != "none":
-            make("check", "LIBBLAS = -fopenmp {0}".format(blas_flags), parallel=False)
+            make("check", f"LIBBLAS = -fopenmp {blas_flags}", parallel=False)
         else:
-            make("check", "LIBBLAS = {0}".format(blas_flags), parallel=False)
+            make("check", f"LIBBLAS = {blas_flags}", parallel=False)
 
     def install(self, pkg, spec, prefix):
         """make install function"""

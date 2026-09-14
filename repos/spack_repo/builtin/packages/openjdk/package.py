@@ -468,7 +468,7 @@ class Openjdk(Package):
 
     preferred_defined = False
     for ver, packages in _versions.items():
-        key = "{0}-{1}".format(platform.system(), platform.machine())
+        key = f"{platform.system()}-{platform.machine()}"
         pkg = packages.get(key)
         if pkg:
             is_preferred = not preferred_defined and ver.startswith(preferred_prefix)
@@ -476,7 +476,6 @@ class Openjdk(Package):
                 preferred_defined = True
 
             version(ver, sha256=pkg[0], url=pkg[1], preferred=is_preferred)
-
 
     variant(
         "certs",

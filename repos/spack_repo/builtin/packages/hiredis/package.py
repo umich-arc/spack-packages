@@ -51,16 +51,16 @@ class MakefileBuilder(makefile.MakefileBuilder):
     def build_targets(self):
         use_ssl = 1 if self.spec.satisfies("+ssl") else 0
         run_test_async = 1 if self.spec.satisfies("+test_async") else 0
-        return ["USE_SSL={0}".format(use_ssl), "TEST_ASYNC={0}".format(run_test_async)]
+        return [f"USE_SSL={use_ssl}", f"TEST_ASYNC={run_test_async}"]
 
     def install(self, pkg, spec, prefix):
-        make("PREFIX={0}".format(prefix), "install")
+        make(f"PREFIX={prefix}", "install")
         if (
             self.spec.satisfies("+test")
             or self.spec.satisfies("+test_async")
             or self.spec.satisfies("+test_ssl")
         ):
-            make("PREFIX={0}".format(prefix), "test")
+            make(f"PREFIX={prefix}", "test")
 
     @run_after("install")
     def darwin_fix(self):

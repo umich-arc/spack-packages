@@ -119,7 +119,7 @@ class PyJaxlib(PythonPackage, CudaPackage):
         depends_on("nccl@2.16:", when="@0.4.18:")
         depends_on("nccl")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    for pkg_dep in rocm_dependencies:
     #        depends_on(f"{pkg_dep}@6:", when="@0.4.28:")
     #        depends_on(f"{pkg_dep}@6.3:", when="@0.6:")
@@ -167,7 +167,7 @@ class PyJaxlib(PythonPackage, CudaPackage):
         depends_on("python@:3.13", when="@:0.7.0")
         depends_on("python@:3.12", when="@:0.4.33")
         depends_on("python@:3.11", when="@:0.4.16")
-        #depends_on("python@:3.12", when="+rocm")
+        # depends_on("python@:3.12", when="+rocm")
 
         # jaxlib/setup.py
         depends_on("py-scipy@1.14:", when="@0.10:")
@@ -233,19 +233,11 @@ class PyJaxlib(PythonPackage, CudaPackage):
     # backports https://github.com/abseil/abseil-cpp/pull/1732
     patch("jaxxlatsl.patch", when="@0.4.28:0.4.32 target=aarch64:")
 
-    patch(
-        "https://github.com/openxla/xla/commit/d4a61075c1eba08e4f419e7d7572c75685796dfe.patch?full_index=1",
-        sha256="0c953475f54ec1c7f64e4191344c7e1a47bd8d1c00854118a0a0664101904940",
-        when="@0.11.1 +rocm",
-        working_dir="xla",
-    )
-
-    with when("@0.7.1:"):
-        with default_args(msg="Clang is the only acceptable compiler."):
-            requires("%c,cxx=llvm", when="platform=linux")
-            # Order here is important. Place the most common compiler first so that the
-            # concretizer will not try to use v0.7.0 to avoid taking a penalty on requirements
-            requires("%c,cxx=apple-clang", "%c,cxx=llvm", when="platform=darwin")
+    with when("@0.7.1:"), default_args(msg="Clang is the only acceptable compiler."):
+        requires("%c,cxx=llvm", when="platform=linux")
+        # Order here is important. Place the most common compiler first so that the
+        # concretizer will not try to use v0.7.0 to avoid taking a penalty on requirements
+        requires("%c,cxx=apple-clang", "%c,cxx=llvm", when="platform=darwin")
 
     conflicts(
         "cuda_arch=none",
@@ -264,7 +256,7 @@ class PyJaxlib(PythonPackage, CudaPackage):
     # (-mavx512fp16 exists in gcc@12:)
     conflicts("%gcc@:11", when="@0.5:")
 
-    #resource(
+    # resource(
     #    name="xla",
     #    url="https://github.com/ROCm/xla/archive/07543ab117699a57c1267b453a62f89b1d5953fd.tar.gz",
     #    sha256="cee377479654201c61cc3f230d89603cd589525fea2faf44564a23c70ba1448d",
@@ -272,7 +264,7 @@ class PyJaxlib(PythonPackage, CudaPackage):
     #    destination="",
     #    placement="xla",
     #    when="@0.4.38:0.5.2 +rocm",
-    #)
+    # )
 
     def url_for_version(self, version):
         url = "https://github.com/jax-ml/jax/archive/refs/tags/{}-v{}.tar.gz"
@@ -284,7 +276,7 @@ class PyJaxlib(PythonPackage, CudaPackage):
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         spec = self.spec
-        #if spec.satisfies("@0.4.38: +rocm") and not spec["hip"].external:
+        # if spec.satisfies("@0.4.38: +rocm") and not spec["hip"].external:
         #    if spec.satisfies("^hip@6.2:"):
         #        rocm_dependencies.append("rocprofiler-register")
         #    if spec.satisfies("^hip@6.3:"):
@@ -324,7 +316,7 @@ class PyJaxlib(PythonPackage, CudaPackage):
 
             if spec.satisfies("+cuda"):
                 args.append("--wheels=jaxlib,jax-cuda-plugin,jax-cuda-pjrt")
-            #elif spec.satisfies("+rocm"):
+            # elif spec.satisfies("+rocm"):
             #    args.append("--wheels=jaxlib,jax-rocm-plugin,jax-rocm-pjrt")
             else:
                 args.append("--wheels=jaxlib")
@@ -360,7 +352,7 @@ class PyJaxlib(PythonPackage, CudaPackage):
         if "+nccl" in spec and spec.satisfies("@0.4.32:"):
             args.append(f"--bazel_options=--repo_env=LOCAL_NCCL_PATH={spec['nccl'].prefix}")
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    args.append(f"--rocm_path={self.spec['hip'].prefix}")
         #    if spec.satisfies("@:0.4.35"):
         #        args.append("--enable_rocm")

@@ -153,16 +153,14 @@ class Opencascade(CMakePackage):
             else:
                 enabled = True
             args = []
-            args.append("-DUSE_{}={}".format(feature.upper(), enabled))
+            args.append(f"-DUSE_{feature.upper()}={enabled}")
             if enabled:
                 args.append(
-                    "-D3RDPARTY_{}_DIR={}".format(feature.upper(), spec[depends_on].prefix)
+                    f"-D3RDPARTY_{feature.upper()}_DIR={spec[depends_on].prefix}"
                 )
                 for dir in extra_dirs:
                     args.append(
-                        "-D3RDPARTY_{}_{}_DIR={}".format(
-                            feature.upper(), dir.upper(), join_path(spec[depends_on].prefix, dir)
-                        )
+                        f"-D3RDPARTY_{feature.upper()}_{dir.upper()}_DIR={join_path(spec[depends_on].prefix, dir)}"
                     )
             return args
 

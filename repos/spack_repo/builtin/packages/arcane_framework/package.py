@@ -6,8 +6,8 @@ import platform
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage, generator
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-#from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
+# from spack_repo.builtin.build_systems.rocm import ROCmPackage
 from spack.package import *
 
 
@@ -133,8 +133,8 @@ class ArcaneFramework(CMakePackage, CudaPackage):
     depends_on("petsc +mpi", when="+petsc")
 
     depends_on("cuda", when="+cuda")
-    #depends_on("hip", when="+rocm")
-    #conflicts("+cuda", when="+rocm")
+    # depends_on("hip", when="+rocm")
+    # conflicts("+cuda", when="+rocm")
 
     depends_on("llvm+clang+cuda", when="+cuda +cuda_clang")
 
@@ -150,7 +150,7 @@ class ArcaneFramework(CMakePackage, CudaPackage):
             "mkl": "MKL",
             "otf2": "Otf2",
             "cuda": "CUDAToolkit",
-            #"rocm": "Hip",
+            # "rocm": "Hip",
             "parmetis": "Parmetis",
             "scotch": "PTScotch",
             "zoltan": "Zoltan",
@@ -165,7 +165,7 @@ class ArcaneFramework(CMakePackage, CudaPackage):
         return ";".join(
             map(
                 lambda v: v[1] if not isinstance(v[1], list) else ";".join(v[1]),
-                filter(lambda v: "+{}".format(v[0]) in self.spec, to_cmake.items()),
+                filter(lambda v: f"+{v[0]}" in self.spec, to_cmake.items()),
             )
         )
 
@@ -198,7 +198,7 @@ class ArcaneFramework(CMakePackage, CudaPackage):
             args.append(self.define("ALIEN_DEFAULT_OPTIONS", False))
             args.append(self.define_from_variant("ALIEN_PLUGIN_HYPRE", "hypre"))
 
-        #if "+rocm" in self.spec:
+        # if "+rocm" in self.spec:
         #    args.append(self.define("ARCANE_ACCELERATOR_MODE", "ROCM"))
         #    amd_arch = self.spec.variants["amdgpu_target"].value
         #    if amd_arch:

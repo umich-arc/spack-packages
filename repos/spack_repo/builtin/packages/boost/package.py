@@ -188,7 +188,7 @@ class Boost(Package):
 
     for lib in all_libs:
         lib_opts = all_libs_opts.get(lib, {})
-        variant(lib, default=False, description="Compile with {0} library".format(lib), **lib_opts)
+        variant(lib, default=False, description=f"Compile with {lib} library", **lib_opts)
 
     @property
     def libs(self):
@@ -460,12 +460,12 @@ class Boost(Package):
 
     # Fix float128 support when building with CUDA and Cray compiler
     # See https://github.com/boostorg/config/pull/378
-    #patch(
+    # patch(
     #    "https://github.com/boostorg/config/commit/fee1ad07968386b6d547f089311b7a2c1bf7fa55.patch?full_index=1",
     #    sha256="666eec8cfb0f71a87443ab27d179a9771bda32bcb8ff5e16afa3767f7b7f1e70",
     #    when="@:1.76%cce",
     #    level=2,
-    #)
+    # )
 
     # Fix building with Intel compilers
     patch(
@@ -601,7 +601,7 @@ class Boost(Package):
             # compilers.yaml. Make sure this does not happen:
             if not spec.satisfies("platform=windows"):
                 # Skip this on Windows since we don't have a cl.exe wrapper in spack
-                f.write("using {0} : : {1} ;\n".format(boost_toolset_id, spack_cxx))
+                f.write(f"using {boost_toolset_id} : : {spack_cxx} ;\n")
 
             if spec.satisfies("+mpi"):
                 # Use the correct mpi compiler.  If the compiler options are
@@ -714,7 +714,7 @@ class Boost(Package):
             options.append("cxxstd={0}".format(spec.variants["cxxstd"].value))
         else:  # Add to cxxflags for older Boost.
             cxxstd = spec.variants["cxxstd"].value
-            flag = getattr(self.compiler, "cxx{0}_flag".format(cxxstd))
+            flag = getattr(self.compiler, f"cxx{cxxstd}_flag")
             if flag:
                 cxxflags.append(flag)
 
@@ -831,7 +831,7 @@ class Boost(Package):
         # strip the toolchain to avoid double include errors (intel) or
         # user-config being overwritten (again intel, but different boost version)
         filter_file(
-            r"^\s*using {0}.*".format(self.determine_toolset(spec)),
+            rf"^\s*using {self.determine_toolset(spec)}.*",
             "",
             os.path.join(self.stage.source_path, "project-config.jam"),
         )

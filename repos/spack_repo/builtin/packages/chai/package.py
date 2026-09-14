@@ -202,7 +202,7 @@ class Chai(CachedCMakePackage, CudaPackage):
     depends_on("blt@0.4.1:0.5.3", type="build", when="@2.4.0")
     depends_on("blt@0.4.0:0.5.3", type="build", when="@2.3.0")
     depends_on("blt@0.3.6:0.5.3", type="build", when="@:2.2.2")
-    #conflicts("^blt@:0.3.6", when="+rocm")
+    # conflicts("^blt@:0.3.6", when="+rocm")
 
     depends_on("umpire")
     depends_on("umpire@2026.07.1:", when="@2026.07:")
@@ -223,11 +223,11 @@ class Chai(CachedCMakePackage, CudaPackage):
     with when("+cuda"):
         depends_on("umpire+cuda")
         for sm_ in CudaPackage.cuda_arch_values:
-            depends_on("umpire+cuda cuda_arch={0}".format(sm_), when="cuda_arch={0}".format(sm_))
+            depends_on(f"umpire+cuda cuda_arch={sm_}", when=f"cuda_arch={sm_}")
         with when("@2024.02.0:"):
             depends_on("umpire~fmt_header_only")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    depends_on("umpire+rocm")
     #    for arch in ROCmPackage.amdgpu_targets:
     #        depends_on(
@@ -256,8 +256,8 @@ class Chai(CachedCMakePackage, CudaPackage):
         with when("+cuda"):
             depends_on("raja+cuda")
             for sm_ in CudaPackage.cuda_arch_values:
-                depends_on("raja+cuda cuda_arch={0}".format(sm_), when="cuda_arch={0}".format(sm_))
-        #with when("+rocm"):
+                depends_on(f"raja+cuda cuda_arch={sm_}", when=f"cuda_arch={sm_}")
+        # with when("+rocm"):
         #    depends_on("raja+rocm")
         #    for arch in ROCmPackage.amdgpu_targets:
         #        depends_on(
@@ -278,13 +278,7 @@ class Chai(CachedCMakePackage, CudaPackage):
         hostname = socket.gethostname()
         if "SYS_TYPE" in env:
             hostname = hostname.rstrip("1234567890")
-        return "{0}-{1}-{2}@{3}-{4}.cmake".format(
-            hostname,
-            self._get_sys_type(self.spec),
-            self.spec.compiler.name,
-            self.spec.compiler.version,
-            self.spec.dag_hash(8),
-        )
+        return f"{hostname}-{self._get_sys_type(self.spec)}-{self.spec.compiler.name}@{self.spec.compiler.version}-{self.spec.dag_hash(8)}.cmake"
 
     def initconfig_compiler_entries(self):
         spec = self.spec
@@ -292,7 +286,7 @@ class Chai(CachedCMakePackage, CudaPackage):
         # Default entries are already defined in CachedCMakePackage, inherit them:
         entries = super().initconfig_compiler_entries()
 
-        #if spec.satisfies("+rocm ^blt@:0.6"):
+        # if spec.satisfies("+rocm ^blt@:0.6"):
         #    entries.insert(0, cmake_cache_path("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
 
         llnl_link_helpers(entries, spec, compiler)
@@ -325,14 +319,14 @@ class Chai(CachedCMakePackage, CudaPackage):
                 filter(gcc_toolchain_regex.match, spec.compiler_flags["cxxflags"])
             )
             if using_toolchain:
-                cuda_flags.append("-Xcompiler {}".format(using_toolchain[0]))
+                cuda_flags.append(f"-Xcompiler {using_toolchain[0]}")
 
             if cuda_flags:
                 entries.append(cmake_cache_string("CMAKE_CUDA_FLAGS", " ".join(cuda_flags)))
         else:
             entries.append(cmake_cache_option("ENABLE_CUDA", False))
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    entries.append(cmake_cache_option("ENABLE_HIP", True))
 
         #    # HIP configuration from hip_for_radiuss_projects
@@ -360,14 +354,14 @@ class Chai(CachedCMakePackage, CudaPackage):
         #                "CMAKE_EXE_LINKER_FLAGS", "-Wl,-rpath={0}/llvm/lib/".format(rocm_root)
         #            )
         #        )
-        #else:
+        # else:
         entries.append(cmake_cache_option("ENABLE_HIP", False))
 
         return entries
 
     def initconfig_mpi_entries(self):
         spec = self.spec
-        entries = super(Chai, self).initconfig_mpi_entries()
+        entries = super().initconfig_mpi_entries()
 
         entries.append(cmake_cache_option("ENABLE_MPI", spec.satisfies("+mpi")))
 
@@ -393,10 +387,10 @@ class Chai(CachedCMakePackage, CudaPackage):
 
         # - RAJA
         if spec.satisfies("+raja"):
-            entries.append(cmake_cache_option("{}ENABLE_RAJA_PLUGIN".format(option_prefix), True))
+            entries.append(cmake_cache_option(f"{option_prefix}ENABLE_RAJA_PLUGIN", True))
             entries.append(cmake_cache_path("RAJA_DIR", spec["raja"].prefix))
         else:
-            entries.append(cmake_cache_option("{}ENABLE_RAJA_PLUGIN".format(option_prefix), False))
+            entries.append(cmake_cache_option(f"{option_prefix}ENABLE_RAJA_PLUGIN", False))
 
         # - Umpire
         entries.append(cmake_cache_path("umpire_DIR", spec["umpire"].prefix))
@@ -424,12 +418,12 @@ class Chai(CachedCMakePackage, CudaPackage):
         # Prefixed options that used to be name without one
         entries.append(
             cmake_cache_option(
-                "{}ENABLE_PICK".format(option_prefix), spec.satisfies("+enable_pick")
+                f"{option_prefix}ENABLE_PICK", spec.satisfies("+enable_pick")
             )
         )
 
         entries.append(
-            cmake_cache_option("{}DISABLE_RM".format(option_prefix), spec.satisfies("+disable_rm"))
+            cmake_cache_option(f"{option_prefix}DISABLE_RM", spec.satisfies("+disable_rm"))
         )
 
         return entries

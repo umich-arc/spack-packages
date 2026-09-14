@@ -61,7 +61,6 @@ class GtkDoc(AutotoolsPackage):
 
     def installcheck(self):
         """gtk-doc does not support installcheck properly, skip it"""
-        pass
 
     def url_for_version(self, version):
         url = "https://download.gnome.org/sources/gtk-doc/{0}/gtk-doc-{1}.tar.xz"

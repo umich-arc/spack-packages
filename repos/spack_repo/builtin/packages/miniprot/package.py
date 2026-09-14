@@ -31,7 +31,7 @@ class Miniprot(Package):
     depends_on("zlib-api")
 
     def install(self, spec, prefix):
-        filter_file("^CC=.*", "CC={0}".format(self.compiler.cc), "Makefile")
+        filter_file("^CC=.*", f"CC={self.compiler.cc}", "Makefile")
         make()
 
         mkdirp(prefix.bin)
