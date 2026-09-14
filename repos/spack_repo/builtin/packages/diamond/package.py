@@ -45,7 +45,7 @@ class Diamond(CMakePackage):
     depends_on("blast-plus", when="+blast")
     depends_on("eigen", when="+eigen")
     depends_on("lapack", when="+eigen")
-    #depends_on("zlib-api")
+    # depends_on("zlib-api")
     depends_on("zstd@:1.4.0", when="+zstd")
 
     variant("zstd", default=False, description="Bulid with zstd support", when="@2.1.0:")

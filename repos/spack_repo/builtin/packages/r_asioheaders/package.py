@@ -13,5 +13,3 @@ class RAsioheaders(RPackage):
     cran = "AsioHeaders"
 
     version("1.30.2-1", sha256="1be43b48a4cc704ef84b5673b4fc78323709fd0d61c18dbd364ac89a38e2ab31")
-
-

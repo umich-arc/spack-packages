@@ -162,7 +162,9 @@ class Qupath(Package):
             script.write("export PYTORCH_FLAVOR={0}\n".format(pytorch_flavor))
             script.write("export PYTORCH_LIBRARY_PATH={0}\n".format(torch_lib))
             script.write('export PYTHONPATH="{0}:${{PYTHONPATH}}"\n'.format(python_path))
-            script.write('export LD_LIBRARY_PATH="{0}:${{LD_LIBRARY_PATH}}"\n'.format(library_path))
+            script.write(
+                'export LD_LIBRARY_PATH="{0}:${{LD_LIBRARY_PATH}}"\n'.format(library_path)
+            )
             script.write('export PATH="{0}:$PATH"\n\n'.format(self.pytorch_bin_path(prefix)))
             script.write('exec "{0}" -Djna.library.path="{1}" "$@"\n'.format(executable, jna_path))
         set_executable(launcher)

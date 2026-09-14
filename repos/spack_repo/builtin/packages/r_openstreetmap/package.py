@@ -9,10 +9,10 @@ from spack.package import *
 
 class ROpenstreetmap(RPackage):
     """Accesses high resolution raster maps using the OpenStreetMap protocol.
-       Dozens of road, satellite, and topographic map servers are directly supported.
-       Additionally raster maps may be constructed using custom tile servers.
-       Maps can be plotted using either base graphics, or ggplot2.
-       This package is not affiliated with the OpenStreetMap.org mapping project."""
+    Dozens of road, satellite, and topographic map servers are directly supported.
+    Additionally raster maps may be constructed using custom tile servers.
+    Maps can be plotted using either base graphics, or ggplot2.
+    This package is not affiliated with the OpenStreetMap.org mapping project."""
 
     cran = "OpenStreetMap"
 

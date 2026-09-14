@@ -147,7 +147,7 @@ class MakefileBuilder(makefile.MakefileBuilder, SetupEnvironment):
         options = []
         if "+shared" in self.spec:
             options.append(self.pkg.compiler.cc_pic_flag)
-        #if self.spec.satisfies("%cce@17:"):
+        # if self.spec.satisfies("%cce@17:"):
         #    options.append("-std=c89")
         return options
 

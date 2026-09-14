@@ -294,7 +294,7 @@ class Conduit(CachedCMakePackage):
                 )
             )
 
-        #if spec.satisfies("%cce"):
+        # if spec.satisfies("%cce"):
         #    entries.append(
         #        cmake_cache_string("CMAKE_Fortran_FLAGS", "${CMAKE_Fortran_FLAGS} -ef", force=True)
         #    )

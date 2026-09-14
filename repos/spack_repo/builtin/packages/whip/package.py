@@ -30,11 +30,11 @@ class Whip(CMakePackage, CudaPackage):
     depends_on("cmake@3.22:", type="build")
 
     # Exactly one of +cuda and +rocm need to be set
-    #conflicts("~cuda ~rocm")
-    #conflicts("+cuda +rocm")
+    # conflicts("~cuda ~rocm")
+    # conflicts("+cuda +rocm")
 
     def cmake_args(self):
         if self.spec.satisfies("+cuda"):
             return [self.define("WHIP_BACKEND", "CUDA")]
-        #else:
+        # else:
         #    return [self.define("WHIP_BACKEND", "HIP")]

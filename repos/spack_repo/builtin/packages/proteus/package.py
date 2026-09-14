@@ -57,10 +57,10 @@ class Proteus(CMakePackage, CudaPackage):
     variant("impl_headers", default=False, description="Install implementation headers")
 
     # Disallow enabling both CUDA and HIP at the same time.
-    #conflicts(
+    # conflicts(
     #    "+cuda +rocm",
     #    msg="Proteus cannot be built with both +cuda and +rocm simultaneously",
-    #)
+    # )
     # Require the Clang compiler since tests use the Proteus LLVM plugin.
     requires("%clang@18:20", when="+tests")
 
@@ -74,17 +74,17 @@ class Proteus(CMakePackage, CudaPackage):
     depends_on("llvm@18:20 +clang targets=all", when="+cuda")
 
     # ROCm enabled, use the AMDGPU LLVM build.
-    #depends_on("llvm-amdgpu@6.2:", when="+rocm")
+    # depends_on("llvm-amdgpu@6.2:", when="+rocm")
 
     # Host-only (no CUDA or HIP).
     depends_on("llvm@18:20+clang", when="~cuda")
 
-    #requires("%[virtuals=c,cxx] llvm-amdgpu", when="+rocm")
+    # requires("%[virtuals=c,cxx] llvm-amdgpu", when="+rocm")
     requires("%[virtuals=c,cxx] llvm", when="+cuda")
 
     # CUDA and HIP dependencies.
     depends_on("cuda@12:", when="+cuda")
-    #depends_on("hip@6.2:", when="+rocm")
+    # depends_on("hip@6.2:", when="+rocm")
 
     # MPI dependency.
     depends_on("mpi", when="+mpi")
@@ -116,7 +116,7 @@ class Proteus(CMakePackage, CudaPackage):
         args.append(self.define_from_variant("ENABLE_TESTS", "tests"))
 
         # PROTEUS_ENABLE_HIP / PROTEUS_ENABLE_CUDA.
-        #args.append(self.define_from_variant("PROTEUS_ENABLE_HIP", "rocm"))
+        # args.append(self.define_from_variant("PROTEUS_ENABLE_HIP", "rocm"))
         args.append(self.define_from_variant("PROTEUS_ENABLE_CUDA", "cuda"))
 
         # ENABLE_DEVELOPER_COMPILER_FLAGS.

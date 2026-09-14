@@ -135,7 +135,7 @@ class Seissol(CMakePackage, CudaPackage):
     depends_on("hipsycl@0.9.3: +cuda", when="+cuda sycl_backend=acpp")
 
     # TODO: this one needs to be +rocm as well--but that's not implemented yet
-    #depends_on("hipsycl@develop", when="+rocm sycl_backend=acpp")
+    # depends_on("hipsycl@develop", when="+rocm sycl_backend=acpp")
 
     # TODO: extend as soon as level zero is available
     depends_on("hipsycl@develop", when="+intel_gpu sycl_backend=acpp")
@@ -149,11 +149,11 @@ class Seissol(CMakePackage, CudaPackage):
         msg="A value for cuda_arch must be specified. Add cuda_arch=XX",
     )
 
-    #conflicts(
+    # conflicts(
     #    "amdgpu_target=none",
     #    when="+rocm",
     #    msg="A value for amdgpu_arch must be specified. Add amdgpu_arch=XX",
-    #)
+    # )
 
     conflicts(
         "intel_gpu_arch=none",
@@ -186,7 +186,7 @@ class Seissol(CMakePackage, CudaPackage):
         for var in ["openmpi", "mpich", "mvapich-plus"]:
             depends_on(f"{var} +cuda", when=f"^[virtuals=mpi] {var}")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    for var in ["openmpi@5:", "mpich", "mvapich-plus"]:
     #        depends_on(f"{var} +rocm", when=f"^[virtuals=mpi] {var}")
 
@@ -194,7 +194,7 @@ class Seissol(CMakePackage, CudaPackage):
     # https://github.com/llvm/llvm-project/issues/61340
     conflicts("cuda@12", when="+cuda ^llvm@14:15")
     depends_on("cuda@11:", when="+cuda")
-    #depends_on("hip", when="+rocm")
+    # depends_on("hip", when="+rocm")
 
     # graph partitioning
     with when("graph_partitioning_libs=parmetis"):
@@ -271,7 +271,7 @@ class Seissol(CMakePackage, CudaPackage):
 
         with_gpu = (
             self.spec.satisfies("+cuda")
-            #or self.spec.satisfies("+rocm")
+            # or self.spec.satisfies("+rocm")
             or self.spec.satisfies("+intel_gpu")
         )
 
@@ -285,7 +285,7 @@ class Seissol(CMakePackage, CudaPackage):
                     args.append("-DDEVICE_BACKEND=cuda")
 
             # ROCm/AMD GPUs
-            #if self.spec.satisfies("+rocm"):
+            # if self.spec.satisfies("+rocm"):
             #    amdgpu_target = self.spec.variants["amdgpu_target"].value[0]
             #    args.append(f"-DDEVICE_ARCH={amdgpu_target}")
             #    args.append("-DENABLE_PROFILING_MARKERS=ON")

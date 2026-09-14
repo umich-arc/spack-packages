@@ -96,18 +96,18 @@ class Strumpack(CMakePackage, CudaPackage):
     depends_on("cuda", when="@4.0.0: +cuda")
     depends_on("zfp@0.5.5", when="@:7.0.1 +zfp")
     depends_on("zfp", when="@7.0.2: +zfp")
-    #depends_on("hipblas", when="+rocm")
-    #depends_on("hipblas@:6", when="@:8.0.0 +rocm")
-    #depends_on("hipsparse", type="link", when="@7.0.1: +rocm")
-    #depends_on("rocsolver", when="+rocm")
-    #depends_on("rocthrust", when="+rocm")
+    # depends_on("hipblas", when="+rocm")
+    # depends_on("hipblas@:6", when="@:8.0.0 +rocm")
+    # depends_on("hipsparse", type="link", when="@7.0.1: +rocm")
+    # depends_on("rocsolver", when="+rocm")
+    # depends_on("rocthrust", when="+rocm")
     depends_on("slate", when="+slate")
     depends_on("magma+cuda", when="+magma+cuda")
-    #depends_on("magma+rocm", when="+magma+rocm")
+    # depends_on("magma+rocm", when="+magma+rocm")
     with when("+slate+cuda"):
         for val in CudaPackage.cuda_arch_values:
             depends_on(f"slate +cuda cuda_arch={val}", when=f"cuda_arch={val}")
-    #with when("+slate+rocm"):
+    # with when("+slate+rocm"):
     #    for val in ROCmPackage.amdgpu_targets:
     #        depends_on(f"slate +rocm amdgpu_target={val}", when=f"amdgpu_target={val}")
 
@@ -116,8 +116,8 @@ class Strumpack(CMakePackage, CudaPackage):
     conflicts("+butterflypack", when="@:3.2.0")
     conflicts("+zfp", when="@:3.9")
     conflicts("+cuda", when="@:3.9")
-    #conflicts("+rocm", when="@:5.0")
-    #conflicts("+rocm", when="+cuda")
+    # conflicts("+rocm", when="@:5.0")
+    # conflicts("+rocm", when="+cuda")
     conflicts("+slate", when="@:5.1.1")
     conflicts("+slate", when="~mpi")
     conflicts("+magma", when="~cuda")
@@ -126,7 +126,7 @@ class Strumpack(CMakePackage, CudaPackage):
     patch("shared-rocm.patch", when="@5.1.1")
 
     # https://github.com/pghysels/STRUMPACK/commit/e4b110b2d823c51a90575b77ec1531c699097a9f
-    #patch("strumpack-7.0.1-mpich-hipcc.patch", when="@7.0.1 +rocm ^mpich")
+    # patch("strumpack-7.0.1-mpich-hipcc.patch", when="@7.0.1 +rocm ^mpich")
 
     # https://github.com/pghysels/STRUMPACK/pull/142
     patch(
@@ -194,7 +194,7 @@ class Strumpack(CMakePackage, CudaPackage):
                 else:
                     args.append(f"-DCUDA_NVCC_FLAGS={' '.join(self.cuda_flags(cuda_archs))}")
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    args.append(f"-DCMAKE_CXX_COMPILER={spec['hip'].hipcc}")
         #    args.append(f"-DHIP_ROOT_DIR={spec['hip'].prefix}")
         #    rocm_archs = spec.variants["amdgpu_target"].value
@@ -205,7 +205,7 @@ class Strumpack(CMakePackage, CudaPackage):
         #        hipcc_flags.append(f"--amdgpu-target={','.join(rocm_archs)}")
         #    args.append(f"-DHIP_HIPCC_FLAGS={' '.join(hipcc_flags)}")
 
-        #if "%cce" in spec:
+        # if "%cce" in spec:
         #    # Assume the proper Cray CCE module (cce) is loaded:
         #    craylibs_var = "CRAYLIBS_" + str(spec.target.family).upper()
         #    craylibs_path = env.get(craylibs_var, None)

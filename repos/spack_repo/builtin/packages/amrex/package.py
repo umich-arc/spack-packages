@@ -175,12 +175,12 @@ class Amrex(CMakePackage, CudaPackage):
         description="Enable relocatable GPU device code support",
         when="+cuda",
     )
-    #variant(
+    # variant(
     #    "gpu_rdc",
     #    default=True,
     #    description="Enable relocatable GPU device code support",
     #    when="+rocm",
-    #)
+    # )
 
     # Build dependencies
     depends_on("c", type="build")  # generated
@@ -188,10 +188,10 @@ class Amrex(CMakePackage, CudaPackage):
     depends_on("fortran", type="build")  # generated
 
     depends_on("mpi", when="+mpi")
-    #with when("+linear_solvers"):
+    # with when("+linear_solvers"):
     #    depends_on("rocsparse", when="@25.01: +rocm")
     with when("+fft"):
-        #depends_on("rocfft", when="+rocm")
+        # depends_on("rocfft", when="+rocm")
         depends_on("fftw@3", when="~cuda ~sycl")
         depends_on("pkgconfig", type="build")
     with when("+ascent"):
@@ -216,7 +216,7 @@ class Amrex(CMakePackage, CudaPackage):
             "sundials@6.0.0: +ARKODE +CVODE +cuda cuda_arch=%s" % arch,
             when="@22.05: +sundials +cuda cuda_arch=%s" % arch,
         )
-    #for tgt in ROCmPackage.amdgpu_targets:
+    # for tgt in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "sundials@5.7.0: +ARKODE +CVODE +rocm amdgpu_target=%s" % tgt,
     #        when="@21.07:22.04 +sundials +rocm amdgpu_target=%s" % tgt,
@@ -232,7 +232,7 @@ class Amrex(CMakePackage, CudaPackage):
         depends_on("cuda@11.0.0:", when="@22.12:")
         depends_on("cuda@12.2:", when="@26.05:")
         depends_on("cuda@:12", when="@:25.09")  # enforce cuda < 13 before 25.10
-    #depends_on("hip@6.0:", when="@26.05: +rocm")
+    # depends_on("hip@6.0:", when="@26.05: +rocm")
     depends_on("python@2.7:", type="build", when="@:20.04")
     depends_on("cmake@3.5:", type="build", when="@:18.10")
     depends_on("cmake@3.13:", type="build", when="@18.11:19.03")
@@ -241,12 +241,12 @@ class Amrex(CMakePackage, CudaPackage):
     depends_on("cmake@3.18:", type="build", when="@23.02:")
     # cmake @3.17: is necessary to handle cuda @11: correctly
     depends_on("cmake@3.17:", type="build", when="^cuda @11:")
-    #depends_on("cmake@3.20:", type="build", when="+rocm")
+    # depends_on("cmake@3.20:", type="build", when="+rocm")
     depends_on("cmake@3.22:", type="build", when="+sycl")
     depends_on("hdf5@1.10.4: +mpi", when="+hdf5")
-    #depends_on("rocrand", type="build", when="+rocm")
-    #depends_on("hiprand", type="build", when="+rocm")
-    #depends_on("rocprim", type="build", when="@21.05: +rocm")
+    # depends_on("rocrand", type="build", when="+rocm")
+    # depends_on("hiprand", type="build", when="+rocm")
+    # depends_on("rocprim", type="build", when="@21.05: +rocm")
     with when("+hypre"):
         depends_on("hypre@2.18.2:", type="link", when="@:21.02")
         depends_on("hypre@2.19.0:", type="link", when="@21.03: ~cuda")
@@ -310,18 +310,18 @@ class Amrex(CMakePackage, CudaPackage):
     conflicts("cuda_arch=21", when="+cuda", msg="AMReX only supports compute capabilities >= 3.5")
     conflicts("cuda_arch=30", when="+cuda", msg="AMReX only supports compute capabilities >= 3.5")
     conflicts("cuda_arch=32", when="+cuda", msg="AMReX only supports compute capabilities >= 3.5")
-    #conflicts(
+    # conflicts(
     #    "+rocm", when="@:20.11", msg="AMReX HIP support needs AMReX newer than version 20.11"
-    #)
-    #conflicts(
+    # )
+    # conflicts(
     #    "%rocm@4.2.0:4.2",
     #    when="+rocm",
     #    msg="AMReX does not support rocm-4.2 due to a compiler bug",
-    #)
+    # )
     # GPU vendor support is mutually exclusive
-    #conflicts("+cuda", when="+rocm", msg="CUDA and HIP support are exclusive")
+    # conflicts("+cuda", when="+rocm", msg="CUDA and HIP support are exclusive")
     conflicts("+cuda", when="+sycl", msg="CUDA and SYCL support are exclusive")
-    #conflicts("+rocm", when="+sycl", msg="HIP and SYCL support are exclusive")
+    # conflicts("+rocm", when="+sycl", msg="HIP and SYCL support are exclusive")
 
     conflicts(
         "+sycl", when="@:21.05", msg="For SYCL support, AMReX version 21.06 and newer suggested."
@@ -392,7 +392,7 @@ class Amrex(CMakePackage, CudaPackage):
             args.append("-DAMReX_CUDA_ARCH=" + self.get_cuda_arch_string(cuda_arch))
             args.append(self.define_from_variant("AMReX_GPU_RDC", "gpu_rdc"))
 
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    args.append("-DCMAKE_CXX_COMPILER={0}".format(self.spec["hip"].hipcc))
         #    args.append("-DAMReX_GPU_BACKEND=HIP")
         #    targets = self.spec.variants["amdgpu_target"].value

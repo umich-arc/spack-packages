@@ -53,7 +53,7 @@ class Libtiff(CMakePackage, AutotoolsPackage):
     )
     version("4.5.1", sha256="d7f38b6788e4a8f5da7940c5ac9424f494d8a79eba53d555f4a507167dca5e2b")
     version("4.0.10", sha256="2c52d11ccaf767457db0c46795d9c7d1a8d8f76f68b0b800a3dfe45786b996e4")
-    
+
     # GUI
     variant("opengl", default=False, description="use OpenGL (required for tiffgt viewer)")
 
@@ -89,8 +89,8 @@ class Libtiff(CMakePackage, AutotoolsPackage):
     with when("build_system=cmake"):
         depends_on("cmake@3.9:", type="build")
 
-    #depends_on("zlib-api", when="+zlib")
-    #depends_on("zlib-api", when="+pixarlog")
+    # depends_on("zlib-api", when="+zlib")
+    # depends_on("zlib-api", when="+pixarlog")
     depends_on("jpeg@5:", when="+jpeg")
     depends_on("jbigkit", when="+jbig")
     depends_on("lerc", when="+lerc")

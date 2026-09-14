@@ -33,7 +33,7 @@ class Raxml(Package):
     patch("nox86.patch")
 
     # Compiles with either GCC or ICC.
-    #conflicts("%cce")
+    # conflicts("%cce")
     conflicts("%apple-clang")
     conflicts("%clang")
     conflicts("%nag")

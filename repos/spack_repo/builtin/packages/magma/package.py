@@ -52,15 +52,15 @@ class Magma(CMakePackage, CudaPackage):
     depends_on("blas")
     depends_on("lapack")
     depends_on("cuda@8:", when="@2.5.1: +cuda")  # See PR #14471
-    #depends_on("hipblas", when="+rocm")
-    #depends_on("hipblas@:6", when="@:2.9.0 +rocm")
-    #depends_on("hipsparse", when="+rocm")
-    #depends_on("rocm-core", when="@2.8.0: +rocm")
+    # depends_on("hipblas", when="+rocm")
+    # depends_on("hipblas@:6", when="@:2.9.0 +rocm")
+    # depends_on("hipsparse", when="+rocm")
+    # depends_on("rocm-core", when="@2.8.0: +rocm")
     depends_on("python", when="@master", type="build")
 
-    #conflicts("~cuda", when="~rocm", msg="magma: Either CUDA or HIP support must be enabled")
-    #conflicts("+rocm", when="+cuda", msg="magma: CUDA must be disabled to support HIP (ROCm)")
-    #conflicts("+rocm", when="@:2.5.4", msg="magma: HIP support starts in version 2.6.0")
+    # conflicts("~cuda", when="~rocm", msg="magma: Either CUDA or HIP support must be enabled")
+    # conflicts("+rocm", when="+cuda", msg="magma: CUDA must be disabled to support HIP (ROCm)")
+    # conflicts("+rocm", when="@:2.5.4", msg="magma: HIP support starts in version 2.6.0")
     conflicts(
         "cuda_arch=none", when="+cuda", msg="magma: Please indicate a CUDA arch value or values"
     )
@@ -102,7 +102,7 @@ class Magma(CMakePackage, CudaPackage):
     patch("magma-2.5.0.patch", when="@2.5.0")
     patch("magma-2.5.0-cmake.patch", when="@2.5.0")
     patch("cmake-W.patch", when="@2.5.0:%nvhpc")
-    #patch("0001-fix-magma-build-error-with-rocm-6.0.0.patch", when="@2.7.2 ^hip@6.0 + rocm")
+    # patch("0001-fix-magma-build-error-with-rocm-6.0.0.patch", when="@2.7.2 ^hip@6.0 + rocm")
 
     @run_before("cmake")
     def generate_gpu_config(self):
@@ -121,7 +121,7 @@ class Magma(CMakePackage, CudaPackage):
         if "+cuda" in spec:
             cuda_archs = spec.variants["cuda_arch"].value
             gpu_target = " ".join(f"sm_{i}" for i in cuda_archs)
-        #else:
+        # else:
         #    gpu_target = spec.variants["amdgpu_target"].value
 
         with open("make.inc", "w") as inc:
@@ -145,14 +145,14 @@ class Magma(CMakePackage, CudaPackage):
             self.define_from_variant("BUILD_SHARED_LIBS", "shared"),
         ]
 
-        #if spec.satisfies("%cce"):
+        # if spec.satisfies("%cce"):
         #    options.append(define("CUDA_NVCC_FLAGS", "-allow-unsupported-compiler"))
 
         if "+fortran" in spec:
             options.append(define("USE_FORTRAN", True))
             if spec.satisfies("%xl") or spec.satisfies("%xl_r"):
                 options.append(define("CMAKE_Fortran_COMPILER", self.compiler.f77))
-            #if spec.satisfies("%cce"):
+            # if spec.satisfies("%cce"):
             #    options.append(define("CMAKE_Fortran_FLAGS", "-ef"))
 
         if "+cuda" in spec:
@@ -169,7 +169,7 @@ class Magma(CMakePackage, CudaPackage):
             if spec.satisfies("%xl") or spec.satisfies("%xl_r"):
                 options.append(define("CMAKE_DISABLE_FIND_PACKAGE_OpenMP", True))
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    options.append(define("MAGMA_ENABLE_HIP", True))
         #    options.append(define("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
         #    # See https://github.com/ROCm/rocFFT/issues/322
@@ -177,7 +177,7 @@ class Magma(CMakePackage, CudaPackage):
         #        options.append(define("__skip_rocmclang", True))
         #    if spec.satisfies("@2.8.0:"):
         #        options.append(define("ROCM_CORE", spec["rocm-core"].prefix))
-        #else:
+        # else:
         options.append(define("MAGMA_ENABLE_CUDA", True))
 
         return options

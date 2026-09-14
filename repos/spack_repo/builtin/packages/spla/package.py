@@ -41,10 +41,10 @@ class Spla(CMakePackage):
     variant("openmp", default=True, when="@:1.5.5", description="Build with OpenMP support")
     variant("static", default=False, description="Build as static library")
     variant("cuda", default=False, description="CUDA backend")
-    #variant("rocm", default=False, description="ROCm backend")
+    # variant("rocm", default=False, description="ROCm backend")
     variant("fortran", default=False, description="Build fortran module")
 
-    #conflicts("+cuda", when="+rocm", msg="+cuda and +rocm are mutually exclusive")
+    # conflicts("+cuda", when="+rocm", msg="+cuda and +rocm are mutually exclusive")
     conflicts(
         "%gcc@13.0:",
         when="@1.5.0:1.5.4",
@@ -63,10 +63,10 @@ class Spla(CMakePackage):
     depends_on("cuda", when="+cuda")
     depends_on("cuda@11:", when="@1.6.0: +cuda")
 
-    #depends_on("hip", when="+rocm")
-    #depends_on("rocblas", when="+rocm")
-    #conflicts("^rocblas@6.0.0:", when="@:1.5.5 +rocm")
-    #conflicts("^hip@6.0.0:", when="@:1.6.0 +rocm")  # v1.6.1 includes fix for hip 6.0
+    # depends_on("hip", when="+rocm")
+    # depends_on("rocblas", when="+rocm")
+    # conflicts("^rocblas@6.0.0:", when="@:1.5.5 +rocm")
+    # conflicts("^hip@6.0.0:", when="@:1.6.0 +rocm")  # v1.6.1 includes fix for hip 6.0
 
     # Propagate openmp to blas
     with when("+openmp"):
@@ -89,7 +89,7 @@ class Spla(CMakePackage):
 
         if "+cuda" in spec:
             args += ["-DSPLA_GPU_BACKEND=CUDA"]
-        #elif "+rocm" in spec:
+        # elif "+rocm" in spec:
         #    args += ["-DSPLA_GPU_BACKEND=ROCM"]
         else:
             args += ["-DSPLA_GPU_BACKEND=OFF"]

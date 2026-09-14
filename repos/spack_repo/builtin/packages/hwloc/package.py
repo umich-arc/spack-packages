@@ -99,7 +99,7 @@ class Hwloc(AutotoolsPackage, CudaPackage):
         "netloc", default=False, when="@2.0.0:2.9.3", description="Enable netloc [requires MPI]"
     )
     variant("opencl", default=False, description="Support an OpenCL library at run time")
-    #variant("rocm", default=False, description="Support ROCm devices")
+    # variant("rocm", default=False, description="Support ROCm devices")
     variant("level_zero", default=False, description="Support Intel OneAPI Level Zero devices")
 
     depends_on("c", type="build")
@@ -141,7 +141,7 @@ class Hwloc(AutotoolsPackage, CudaPackage):
     # See https://github.com/spack/spack/issues/15836 for details
     depends_on("mpi", when="+netloc")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    depends_on("rocm-smi-lib")
     #    depends_on("rocm-opencl", when="+opencl")
     #    # Avoid a circular dependency since the openmp
@@ -195,10 +195,10 @@ class Hwloc(AutotoolsPackage, CudaPackage):
         # librocm_smi support.
         # This can fail the config tests while building
         # OpenMPI due to lack of rpath to librocm_smi
-        #if "+rocm" not in self.spec:
+        # if "+rocm" not in self.spec:
         #    args.append("--disable-rsmi")
 
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    args.append(f"--with-rocm={self.spec['hip'].prefix}")
         #    args.append(f"--with-rocm-version={self.spec['hip'].version}")
 

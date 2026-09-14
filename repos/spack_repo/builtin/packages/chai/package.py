@@ -202,7 +202,7 @@ class Chai(CachedCMakePackage, CudaPackage):
     depends_on("blt@0.4.1:0.5.3", type="build", when="@2.4.0")
     depends_on("blt@0.4.0:0.5.3", type="build", when="@2.3.0")
     depends_on("blt@0.3.6:0.5.3", type="build", when="@:2.2.2")
-    #conflicts("^blt@:0.3.6", when="+rocm")
+    # conflicts("^blt@:0.3.6", when="+rocm")
 
     depends_on("umpire")
     depends_on("umpire@2026.07.1:", when="@2026.07:")
@@ -227,7 +227,7 @@ class Chai(CachedCMakePackage, CudaPackage):
         with when("@2024.02.0:"):
             depends_on("umpire~fmt_header_only")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    depends_on("umpire+rocm")
     #    for arch in ROCmPackage.amdgpu_targets:
     #        depends_on(
@@ -257,7 +257,7 @@ class Chai(CachedCMakePackage, CudaPackage):
             depends_on("raja+cuda")
             for sm_ in CudaPackage.cuda_arch_values:
                 depends_on("raja+cuda cuda_arch={0}".format(sm_), when="cuda_arch={0}".format(sm_))
-        #with when("+rocm"):
+        # with when("+rocm"):
         #    depends_on("raja+rocm")
         #    for arch in ROCmPackage.amdgpu_targets:
         #        depends_on(
@@ -292,7 +292,7 @@ class Chai(CachedCMakePackage, CudaPackage):
         # Default entries are already defined in CachedCMakePackage, inherit them:
         entries = super().initconfig_compiler_entries()
 
-        #if spec.satisfies("+rocm ^blt@:0.6"):
+        # if spec.satisfies("+rocm ^blt@:0.6"):
         #    entries.insert(0, cmake_cache_path("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
 
         llnl_link_helpers(entries, spec, compiler)
@@ -332,7 +332,7 @@ class Chai(CachedCMakePackage, CudaPackage):
         else:
             entries.append(cmake_cache_option("ENABLE_CUDA", False))
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    entries.append(cmake_cache_option("ENABLE_HIP", True))
 
         #    # HIP configuration from hip_for_radiuss_projects
@@ -360,7 +360,7 @@ class Chai(CachedCMakePackage, CudaPackage):
         #                "CMAKE_EXE_LINKER_FLAGS", "-Wl,-rpath={0}/llvm/lib/".format(rocm_root)
         #            )
         #        )
-        #else:
+        # else:
         entries.append(cmake_cache_option("ENABLE_HIP", False))
 
         return entries

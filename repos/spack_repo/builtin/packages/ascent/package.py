@@ -28,7 +28,7 @@ def cmake_cache_entry(name, value, vtype=None):
     return 'set({0} "{1}" CACHE {2} "")\n\n'.format(name, value, vtype)
 
 
-#def propagate_hip_arch(package, spec=""):
+# def propagate_hip_arch(package, spec=""):
 #    for hip_arch in ROCmPackage.amdgpu_targets:
 #        depends_on(
 #            f"{package} +rocm amdgpu_target={hip_arch}",
@@ -233,8 +233,8 @@ class Ascent(CMakePackage, CudaPackage):
         depends_on("raja@2024.02.1:2025.03.1", when="@0.9.3:")
         depends_on("raja+openmp", when="+openmp")
         depends_on("raja~openmp", when="~openmp")
-        #depends_on("raja+rocm", when="+rocm")
-        #depends_on("raja~rocm", when="~rocm")
+        # depends_on("raja+rocm", when="+rocm")
+        # depends_on("raja~rocm", when="~rocm")
 
     with when("+umpire"):
         depends_on("umpire")
@@ -264,11 +264,11 @@ class Ascent(CMakePackage, CudaPackage):
         depends_on("vtk-m~openmp", when="@0.9.0: ~openmp")
         depends_on("vtk-m~cuda", when="@0.9.0: ~cuda")
         depends_on("vtk-m+cuda", when="@0.9.0: +cuda")
-        #depends_on("vtk-m~rocm", when="@0.9.0: ~rocm")
+        # depends_on("vtk-m~rocm", when="@0.9.0: ~rocm")
         depends_on("vtk-m+fpic", when="@0.8.0:")
         depends_on("vtk-m~shared+fpic", when="@0.8.0: ~shared")
 
-        #with when("+rocm"):
+        # with when("+rocm"):
         #    depends_on("kokkos@3.7.02:+rocm")
         #    depends_on("vtk-m+kokkos+rocm")
 
@@ -290,10 +290,10 @@ class Ascent(CMakePackage, CudaPackage):
         depends_on("vtk-m@:1.7", when="@:0.8.0")
         depends_on("vtk-m+testlib", when="@:0.8.0 +test")
 
-    #propagate_hip_arch("vtk-m", "+vtkh")
-    #propagate_hip_arch("kokkos", "+vtkh")
-    #propagate_hip_arch("raja", "+raja")
-    #propagate_hip_arch("umpire", "+umpire")
+    # propagate_hip_arch("vtk-m", "+vtkh")
+    # propagate_hip_arch("kokkos", "+vtkh")
+    # propagate_hip_arch("raja", "+raja")
+    # propagate_hip_arch("umpire", "+umpire")
     propagate_cuda_arch("vtk-h", "@:0.8.0 +vtkh")
 
     # mfem
@@ -350,11 +350,11 @@ class Ascent(CMakePackage, CudaPackage):
         "~fides", when="@0.9: +adios2", msg="Ascent >= 0.9 assumes FIDES when building ADIOS2"
     )
 
-    #conflicts("+fortran", when="+rocm")
-    #conflicts("+rocm", when="@:0.9.2")
+    # conflicts("+fortran", when="+rocm")
+    # conflicts("+rocm", when="@:0.9.2")
 
-    #@when("+rocm")
-    #def patch(self):
+    # @when("+rocm")
+    # def patch(self):
     #    # VTK-m external interface sets -std=c++14 (VTK-m 2.2), we need
     #    # to override this since Kokkos requires -std=c++17.
     #    with open("src/libs/vtkh/vtkm_filters/CMakeLists.txt", "a") as f:
@@ -664,7 +664,7 @@ class Ascent(CMakePackage, CudaPackage):
 
         cfg.write("# HIP Support\n")
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    cfg.write(cmake_cache_entry("ENABLE_HIP", "ON"))
         #    cfg.write(cmake_cache_entry("KOKKOS_DIR", spec["kokkos"].prefix))
 
@@ -685,7 +685,6 @@ class Ascent(CMakePackage, CudaPackage):
         #            "CMAKE_HIP_FLAGS", f"-include {spec['hip'].prefix.include}/hip/hip_runtime.h"
         #        )
         #    )
-
 
         cfg.write(cmake_cache_entry("ENABLE_HIP", "OFF"))
 

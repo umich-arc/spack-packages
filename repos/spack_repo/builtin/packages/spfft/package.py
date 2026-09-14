@@ -59,16 +59,16 @@ class Spfft(CMakePackage, CudaPackage):
     depends_on("mpi", when="+mpi")
     depends_on("cmake@3.11:", type="build")
     depends_on("cmake@3.18:", type="build", when="@1.1.0:")
-    #depends_on("cmake@3.21:", type="build", when="@1.1.0: +rocm")
+    # depends_on("cmake@3.21:", type="build", when="@1.1.0: +rocm")
 
     depends_on("cuda@9:10", when="@:0.9.11 +cuda")
     depends_on("cuda@9:", when="@0.9.12:1.0.6 +cuda")
     depends_on("cuda@11:", when="@1.1.0: +cuda")
 
     # Workaround for compiler bug in ROCm 4.5+ added in SpFFT 1.0.6
-    #conflicts("+rocm", when="@:1.0.5")
+    # conflicts("+rocm", when="@:1.0.5")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    depends_on("rocfft")
     #    depends_on("hipfft+rocm")
     #    # hip 6.0 requires v1.1.0 and later
@@ -103,13 +103,13 @@ class Spfft(CMakePackage, CudaPackage):
             if cuda_arch[0] != "none":
                 args += [self.define("CMAKE_CUDA_ARCHITECTURES", cuda_arch)]
 
-        #if spec.satisfies("@1.1.0: +rocm"):
+        # if spec.satisfies("@1.1.0: +rocm"):
         #    # v1.1.0 switched to CMake HIP language feature
         #    args += ["-DSPFFT_GPU_BACKEND=ROCM"]
         #    rocm_arch = self.spec.variants["amdgpu_target"].value
         #    if rocm_arch[0] != "none":
         #        args += [self.define("CMAKE_HIP_ARCHITECTURES", rocm_arch)]
-        #elif spec.satisfies("+rocm"):
+        # elif spec.satisfies("+rocm"):
         #    archs = ",".join(self.spec.variants["amdgpu_target"].value)
         #    args += [
         #        "-DSPFFT_GPU_BACKEND=ROCM",

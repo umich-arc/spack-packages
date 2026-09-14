@@ -240,7 +240,6 @@ class NetcdfC(AutotoolsPackage):
     # JNA was added in 4.3.2 and removed in 4.9.3:
     conflicts("+jna", when="@:4.7.0,4.9.3:")
 
-
     # NCZarr was added in version 4.8.0 as an experimental feature and became a supported one in
     # version 4.8.1:
     conflicts("+nczarr_zip", when="@:4.8.0")
@@ -272,6 +271,7 @@ class NetcdfC(AutotoolsPackage):
                 if "+optimize" in self.spec:
                     flags.append("-O2")
         return flags, None, None
+
     def patch(self):
         # Needed due to the patch applied to fix CVE-2025-14933.
         # A `#include <stdint.h>` is introduced in version 4.8.1.

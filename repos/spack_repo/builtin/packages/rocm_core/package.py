@@ -56,15 +56,15 @@ class RocmCore(ROCmLibrary, CMakePackage):
     version("5.7.1", sha256="fc4915019ddfd126e8ef6a15006bce3aa7bd5fd11dc8eb04ce2ee6bdf9c6ae7f")
     version("5.7.0", sha256="722689bfec46c35f5428a41c5aacfc31efec2294fc3b0112861c562f8a71ac93")
 
-    #variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
+    # variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
 
-    #conflicts("+asan", when="os=rhel9")
-    #conflicts("+asan", when="os=centos7")
-    #conflicts("+asan", when="os=centos8")
+    # conflicts("+asan", when="os=rhel9")
+    # conflicts("+asan", when="os=centos7")
+    # conflicts("+asan", when="os=centos8")
 
     depends_on("cxx", type="build")  # generated
 
-    #for ver in [
+    # for ver in [
     #    "6.1.0",
     #    "6.1.1",
     #    "6.1.2",
@@ -88,7 +88,7 @@ class RocmCore(ROCmLibrary, CMakePackage):
     #    "7.2.3",
     #    "7.13.0",
     #    "7.14.0",
-    #]:
+    # ]:
     #    depends_on("llvm-amdgpu", when=f"@{ver}+asan")
 
     @classmethod
@@ -109,14 +109,14 @@ class RocmCore(ROCmLibrary, CMakePackage):
         else:
             return "projects/rocm-core"
 
-    #def setup_build_environment(self, env: EnvironmentModifications) -> None:
-        #if self.spec.satisfies("+asan"):
-        #    env.set("CC", self.spec["llvm-amdgpu"].prefix + "/bin/clang")
-        #    env.set("CXX", self.spec["llvm-amdgpu"].prefix + "/bin/clang++")
-        #    env.set("ASAN_OPTIONS", "detect_leaks=0")
-        #    env.set("CFLAGS", "-fsanitize=address -shared-libasan")
-        #    env.set("CXXFLAGS", "-fsanitize=address -shared-libasan")
-        #    env.set("LDFLAGS", "-fuse-ld=lld")
+    # def setup_build_environment(self, env: EnvironmentModifications) -> None:
+    # if self.spec.satisfies("+asan"):
+    #    env.set("CC", self.spec["llvm-amdgpu"].prefix + "/bin/clang")
+    #    env.set("CXX", self.spec["llvm-amdgpu"].prefix + "/bin/clang++")
+    #    env.set("ASAN_OPTIONS", "detect_leaks=0")
+    #    env.set("CFLAGS", "-fsanitize=address -shared-libasan")
+    #    env.set("CXXFLAGS", "-fsanitize=address -shared-libasan")
+    #    env.set("LDFLAGS", "-fuse-ld=lld")
 
     def cmake_args(self):
         args = [self.define("ROCM_VERSION", self.spec.version)]

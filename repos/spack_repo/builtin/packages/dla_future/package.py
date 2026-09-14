@@ -91,9 +91,9 @@ class DlaFuture(CMakePackage, CudaPackage):
 
     depends_on("umpire~examples")
     depends_on("umpire~cuda", when="~cuda")
-    #depends_on("umpire~rocm", when="~rocm")
+    # depends_on("umpire~rocm", when="~rocm")
     depends_on("umpire+cuda~shared", when="+cuda")
-    #depends_on("umpire+rocm~shared", when="+rocm")
+    # depends_on("umpire+rocm~shared", when="+rocm")
     depends_on("umpire@4.1.0:")
 
     depends_on("pika@0.15.1:", when="@0.1")
@@ -106,20 +106,20 @@ class DlaFuture(CMakePackage, CudaPackage):
     depends_on("pika-algorithms@0.1:", when="@:0.2")
     depends_on("pika +mpi")
     depends_on("pika +cuda", when="+cuda")
-    #depends_on("pika +rocm", when="+rocm")
+    # depends_on("pika +rocm", when="+rocm")
 
     for cxxstd in ("20", "23"):
         conflicts(f"^pika cxxstd={cxxstd}", when="@:0.6 +cuda ^pika@:0.29")
     conflicts("^pika +stdexec", when="@:0.6 +cuda")
 
     depends_on("whip +cuda", when="+cuda")
-    #depends_on("whip +rocm", when="+rocm")
+    # depends_on("whip +rocm", when="+rocm")
 
-    #depends_on("rocblas", when="+rocm")
-    #depends_on("rocsolver", when="+rocm")
+    # depends_on("rocblas", when="+rocm")
+    # depends_on("rocsolver", when="+rocm")
 
-    #depends_on("rocprim", when="@:0.3 +rocm")
-    #depends_on("rocthrust", when="@:0.3 +rocm")
+    # depends_on("rocprim", when="@:0.3 +rocm")
+    # depends_on("rocthrust", when="@:0.3 +rocm")
 
     # nvcc 11.2 and older is unable to detect fmt::formatter specializations.
     # DLA-Future 0.3.1 includes a workaround to avoid including fmt in device
@@ -139,9 +139,9 @@ class DlaFuture(CMakePackage, CudaPackage):
 
     depends_on("hdf5 +cxx+mpi+threadsafe+shared", when="+hdf5")
 
-    #conflicts("+cuda", when="+rocm")
+    # conflicts("+cuda", when="+rocm")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    for arch in ROCmPackage.amdgpu_targets:
     #        depends_on(f"pika amdgpu_target={arch}", when=f"amdgpu_target={arch}")
     #        depends_on(f"rocsolver amdgpu_target={arch}", when=f"amdgpu_target={arch}")
@@ -149,7 +149,7 @@ class DlaFuture(CMakePackage, CudaPackage):
     #        depends_on(f"whip amdgpu_target={arch}", when=f"amdgpu_target={arch}")
     #        depends_on(f"umpire amdgpu_target={arch}", when=f"amdgpu_target={arch}")
 
-    #with when("@:0.3 +rocm"):
+    # with when("@:0.3 +rocm"):
     #    for arch in ROCmPackage.amdgpu_targets:
     #        depends_on(f"rocprim amdgpu_target={arch}", when=f"amdgpu_target={arch}")
     #        depends_on(f"rocthrust amdgpu_target={arch}", when=f"amdgpu_target={arch}")
@@ -167,7 +167,7 @@ class DlaFuture(CMakePackage, CudaPackage):
         when="@:0.3 %gcc@13:",
     )
     # https://github.com/spack/spack/issues/41511
-    #patch("hip_complex_operator_overloads.patch", when="@:0.6 +rocm")
+    # patch("hip_complex_operator_overloads.patch", when="@:0.6 +rocm")
 
     def cmake_args(self):
         spec = self.spec
@@ -237,7 +237,7 @@ class DlaFuture(CMakePackage, CudaPackage):
         # CUDA/HIP
         args.append(self.define_from_variant("DLAF_WITH_CUDA", "cuda"))
         args.append(self.define("DLAF_WITH_HIP", "OFF"))
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    archs = spec.variants["amdgpu_target"].value
         #    if "none" not in archs:
         #        arch_str = ";".join(archs)

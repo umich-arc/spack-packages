@@ -69,8 +69,8 @@ class Arborx(CMakePackage, CudaPackage):
     depends_on("cmake@3.16:", type="build")
     depends_on("cmake@3.22:", type="build", when="@2.0:")
     depends_on("mpi", when="+mpi")
-    #depends_on("rocthrust", when="+rocm")
-    #patch("0001-update-major-version-required-for-rocm-6.0.patch", when="@:1.5+rocm ^hip@6.0:")
+    # depends_on("rocthrust", when="+rocm")
+    # patch("0001-update-major-version-required-for-rocm-6.0.patch", when="@:1.5+rocm ^hip@6.0:")
 
     # Standalone Kokkos
     depends_on("kokkos@3.1.00:", when="~trilinos")
@@ -89,7 +89,7 @@ class Arborx(CMakePackage, CudaPackage):
         depends_on(f"kokkos {cuda_dep}", when=f"~trilinos {cuda_dep}")
         depends_on(f"trilinos {cuda_dep}", when=f"+trilinos {cuda_dep}")
 
-    #for arch in ROCmPackage.amdgpu_targets:
+    # for arch in ROCmPackage.amdgpu_targets:
     #    rocm_dep = f"+rocm amdgpu_target={arch}"
     #    depends_on(f"kokkos {rocm_dep}", when=f"~trilinos {rocm_dep}")
     #    depends_on(f"trilinos {rocm_dep}", when=f"+trilinos {rocm_dep}")
@@ -120,7 +120,7 @@ class Arborx(CMakePackage, CudaPackage):
         ]
         if self.spec.satisfies("+cuda"):
             options.append(self.define("CMAKE_CXX_COMPILER", kokkos_pkg.kokkos_cxx))
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    options.append(self.define("CMAKE_CXX_COMPILER", self.spec["hip"].hipcc))
 
         return options

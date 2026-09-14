@@ -51,8 +51,8 @@ class R(AutotoolsPackage):
     depends_on("c", type="build")
     depends_on("cxx", type="build")
     depends_on("fortran", type="build")
-    #depends_on("findutils", type="build")
-    #depends_on("texinfo", type="build")
+    # depends_on("findutils", type="build")
+    # depends_on("texinfo", type="build")
 
     depends_on("blas")
     requires("^openblas symbol_suffix=none", when="^openblas")
@@ -61,47 +61,47 @@ class R(AutotoolsPackage):
     requires("+X", when="+arc", msg="+arc follows ARC's X11-enabled R build")
     requires("+java", when="+arc", msg="+arc follows ARC's Java-enabled R build")
 
-    #depends_on("zlib-api")
-    #depends_on("zlib@1.2.5:", when="^[virtuals=zlib-api] zlib")
-    #depends_on("bzip2")
-    #depends_on("xz")
-    #depends_on("zstd", when="@4.5:")
-    #depends_on("libdeflate", when="@4.4:")
-    #depends_on("curl+libidn2")
-    #depends_on("libtirpc")
-    #depends_on("ncurses")
-    #depends_on("readline")
-    #depends_on("pcre2")
-    #depends_on("gettext")
-    #depends_on("icu4c")
-    #depends_on("which", type=("build", "run"))
+    # depends_on("zlib-api")
+    # depends_on("zlib@1.2.5:", when="^[virtuals=zlib-api] zlib")
+    # depends_on("bzip2")
+    # depends_on("xz")
+    # depends_on("zstd", when="@4.5:")
+    # depends_on("libdeflate", when="@4.4:")
+    # depends_on("curl+libidn2")
+    # depends_on("libtirpc")
+    # depends_on("ncurses")
+    # depends_on("readline")
+    # depends_on("pcre2")
+    # depends_on("gettext")
+    # depends_on("icu4c")
+    # depends_on("which", type=("build", "run"))
     depends_on("java", when="+java", type=("build", "run"))
 
     with when("+arc"):
-        #depends_on("pkgconfig", type="build")
-        #depends_on("git", type=("build", "run"))
-        #depends_on("libgit2@1.0:")
-        #depends_on("libxml2")
-        #depends_on("openssl@1.0.2:")
+        # depends_on("pkgconfig", type="build")
+        # depends_on("git", type=("build", "run"))
+        # depends_on("libgit2@1.0:")
+        # depends_on("libxml2")
+        # depends_on("openssl@1.0.2:")
         depends_on("fontconfig")
         depends_on("freetype")
         depends_on("libwebp+libwebpmux")
         depends_on("protobuf")
-        #depends_on("fribidi")
-        #depends_on("pandoc", type=("build", "run"))
+        # depends_on("fribidi")
+        # depends_on("pandoc", type=("build", "run"))
 
     with when("+X"):
-        #depends_on("cairo+X+gobject+pdf")
-        #depends_on("pango+X")
-        #depends_on("harfbuzz+graphite2")
+        # depends_on("cairo+X+gobject+pdf")
+        # depends_on("pango+X")
+        # depends_on("harfbuzz+graphite2")
         depends_on("jpeg")
         depends_on("libpng")
         depends_on("libtiff")
-        #depends_on("libx11")
-        #depends_on("libxt")
-        #depends_on("libxmu")
-        #depends_on("tcl")
-        #depends_on("tk")
+        # depends_on("libx11")
+        # depends_on("libxt")
+        # depends_on("libxmu")
+        # depends_on("tcl")
+        # depends_on("tk")
 
     # Make R use a symlink to which in Sys.which, otherwise an absolute path
     # gets stored as compressed byte code, which is not relocatable
@@ -119,9 +119,24 @@ class R(AutotoolsPackage):
     build_directory = "spack-build"
     arc_cran_mirror = "https://cran.r-project.org"
     arc_r_packages = (
-        "doParallel", "flexiblas", "stringi", "utf8", "credentials", "zip",
-        "httpuv", "later", "promises", "sourcetools", "systemfonts",
-        "textshaping", "usethis", "miniUI", "pkgdown", "profvis", "roxygen2", "devtools"
+        "doParallel",
+        "flexiblas",
+        "stringi",
+        "utf8",
+        "credentials",
+        "zip",
+        "httpuv",
+        "later",
+        "promises",
+        "sourcetools",
+        "systemfonts",
+        "textshaping",
+        "usethis",
+        "miniUI",
+        "pkgdown",
+        "profvis",
+        "roxygen2",
+        "devtools",
     )
 
     @classmethod
@@ -161,10 +176,8 @@ class R(AutotoolsPackage):
             env.set("R_PAPERSIZE", "letter")
             env.set("FLEXIBLAS_ROOT", self.spec["blas"].prefix)
 
-            
         if self.spec.satisfies("+java"):
             env.set("JAVA_HOME", self.spec["java"].prefix)
-        
 
     @run_after("install")
     def install_rmath(self):
@@ -242,7 +255,8 @@ class R(AutotoolsPackage):
         if "+arc" in self.spec:
             with working_dir(self.build_directory):
                 make("check", parallel=False)
-    '''
+
+    """
     @run_after("install")
     def copy_makeconf(self):
         # Ensure full library flags are included in Makeconf
@@ -264,7 +278,7 @@ class R(AutotoolsPackage):
         src_makeconf = join_path(self.etcdir, "Makeconf")
         dst_makeconf = join_path(self.etcdir, "Makeconf.spack")
         install(src_makeconf, dst_makeconf)
-    '''
+    """
     # To respect order of execution, we should filter after we made the copy above
     filter_compiler_wrappers("Makeconf", relative_root=os.path.join("rlib", "R", "etc"))
 

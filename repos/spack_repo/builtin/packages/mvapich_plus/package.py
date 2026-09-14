@@ -47,7 +47,7 @@ class MvapichPlus(Package, CudaPackage):
 
     variant("wrapperrpath", default=True, description="Enable wrapper rpath")
     variant("debug", default=False, description="Enable debug info and error messages at run-time")
-    #variant("apu", default=False, description="Enable APU enhancements")
+    # variant("apu", default=False, description="Enable APU enhancements")
 
     variant("regcache", default=True, description="Enable memory registration cache")
 
@@ -141,7 +141,7 @@ class MvapichPlus(Package, CudaPackage):
         if spec.satisfies("^cuda"):
             gpu = "cuda"
             gpu_ver = str(spec["cuda"].version)[:4]
-        #elif spec.satisfies("+rocm") or spec.satisfies("^hip"):
+        # elif spec.satisfies("+rocm") or spec.satisfies("^hip"):
         #    gpu = "rocm"
         #    gpu_ver = spec["hip"].version
         #    if spec.satisfies("+apu"):

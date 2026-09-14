@@ -49,7 +49,7 @@ class Apex(CMakePackage):
 
     # Disable by default
     variant("cuda", default=False, description="Enables CUDA support")
-    #variant("hip", default=False, description="Enables ROCm/HIP support")
+    # variant("hip", default=False, description="Enables ROCm/HIP support")
     variant("sycl", default=False, description="Enables Intel SYCL support (Level0)")
     variant("jemalloc", default=False, description="Enables JEMalloc support")
     variant("lmsensors", default=False, description="Enables LM-Sensors support")
@@ -79,10 +79,10 @@ class Apex(CMakePackage):
     depends_on("lm-sensors", when="+lmsensors")
     depends_on("papi@5.7.0:", when="+papi")
     depends_on("cuda", when="+cuda")
-    #depends_on("hip", when="+hip")
+    # depends_on("hip", when="+hip")
     depends_on("sycl", when="+sycl")
-    #depends_on("roctracer-dev", when="+hip")
-    #depends_on("rocm-smi-lib", when="+hip")
+    # depends_on("roctracer-dev", when="+hip")
+    # depends_on("rocm-smi-lib", when="+hip")
 
     # Conflicts
     conflicts("+jemalloc", when="+gperftools")
@@ -148,7 +148,7 @@ class Apex(CMakePackage):
         if spec.satisfies("+jemalloc"):
             args.append("-DJEMALLOC_ROOT={0}".format(spec["jemalloc"].prefix))
 
-        #if spec.satisfies("+hip"):
+        # if spec.satisfies("+hip"):
         #    args.append("-DROCM_ROOT={0}".format(spec["hip"].prefix))
         #    args.append("-DROCTRACER_ROOT={0}".format(spec["roctracer-dev"].prefix))
         #    args.append("-DROCTX_ROOT={0}".format(spec["roctracer-dev"].prefix))

@@ -19,6 +19,4 @@ class Bioinformatics(BundlePackage):
         )
 
     def setup_run_environment(self, env):
-        env.prepend_path(
-            "MODULEPATH", join_path(self.modules_root, self.module_arch, "Core")
-        )
+        env.prepend_path("MODULEPATH", join_path(self.modules_root, self.module_arch, "Core"))
