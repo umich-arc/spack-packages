@@ -192,7 +192,7 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage):
         if match:
             ver = f"{int(match.group(1))}.{int(match.group(2))}.{int(match.group(3))}"
         else:
-            ver = super().determine_version(lib)
+            ver = None
         return ver
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
