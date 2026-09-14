@@ -150,13 +150,16 @@ class Lci(CMakePackage):
     depends_on("python@3.8:", type="build", when="@2:")
 
     def cmake_args(self):
+        # The deprecated variants override the bootstrap value used below.
+        bootstrap = self.spec.variants["bootstrap"].value
+
         if not self.spec.satisfies("enable-pm=auto"):
             warnings.warn(
                 "The 'enable-pm' variant is deprecated, use 'bootstrap' instead.",
                 DeprecationWarning,
                 stacklevel=2,
             )
-            self.spec.variants["bootstrap"].value = self.spec.variants["enable-pm"].value
+            bootstrap = self.spec.variants["enable-pm"].value
 
         if not self.spec.satisfies("default-pm=auto"):
             warnings.warn(
@@ -164,7 +167,7 @@ class Lci(CMakePackage):
                 DeprecationWarning,
                 stacklevel=2,
             )
-            self.spec.variants["bootstrap"].value = self.spec.variants["default-pm"].value
+            bootstrap = self.spec.variants["default-pm"].value
 
         args = [
             self.define_from_variant("LCI_WITH_EXAMPLES", "examples"),
