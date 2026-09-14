@@ -729,7 +729,7 @@ with '-Wl,-commons,use_dylibs' and without
             if recorded_prefix:
                 if not self._arc_pmix_is_usable(recorded_prefix):
                     raise InstallError(
-                        f"Recorded ARC PMIx prefix is no longer usable: {recorded_prefix}"
+                        "Recorded ARC PMIx prefix is no longer usable: {0}".format(recorded_prefix)
                     )
                 return recorded_prefix
         return self._detect_arc_pmix_prefix()

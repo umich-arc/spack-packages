@@ -36,6 +36,7 @@ class Root(CMakePackage):
     version("develop", branch="master")
 
     # Production release series
+    version("6.40.04", sha256="44ada253b1935d34b6801222232d50731fe7c5e3cbcfab47734c85031cfbe4d3")
     version("6.40.02", sha256="f631eebee3dbea128f1415f4b784f5e83637a2b431193bce75f10385f71efc56")
     version("6.40.00", sha256="676f8fde8926ce05902be7f44ce7d492a4a2060022fcab0e3d1c44f6dc0fbde8")
     version("6.36.12", sha256="1243fc48b7c1358ebf69e6140a13d9c27e0fd84663632cc6217beda875a4a317")
@@ -886,7 +887,7 @@ class Root(CMakePackage):
 
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         env.set("ROOTSYS", self.prefix)
-        env.set("ROOT_VERSION", f"v{self.version.up_to(1)}")
+        env.set("ROOT_VERSION", "v{0}".format(self.version.up_to(1)))
         env.prepend_path("PYTHONPATH", self.prefix.lib.root)
         # the following vars are copied from thisroot.sh; silence a cppyy warning
         env.set("CLING_STANDARD_PCH", "none")
@@ -901,7 +902,7 @@ class Root(CMakePackage):
 
     def setup_dependent_build_environment(self, env: EnvironmentModifications, dependent_spec):
         env.set("ROOTSYS", self.prefix)
-        env.set("ROOT_VERSION", f"v{self.version.up_to(1)}")
+        env.set("ROOT_VERSION", "v{0}".format(self.version.up_to(1)))
         env.prepend_path("PYTHONPATH", self.prefix.lib.root)
         env.prepend_path("PATH", self.prefix.bin)
         env.append_path("CMAKE_MODULE_PATH", self.prefix.cmake)

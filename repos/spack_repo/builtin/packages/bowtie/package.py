@@ -81,4 +81,4 @@ class Bowtie(MakefilePackage):
             make("NO_TBB=1")
 
     def install(self, spec, prefix):
-        make(f"prefix={self.prefix}", "install")
+        make("prefix={0}".format(self.prefix), "install")

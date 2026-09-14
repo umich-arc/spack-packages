@@ -301,7 +301,7 @@ class Gromacs(CMakePackage, CudaPackage):
         depends_on("plumed+mpi", when="+mpi")
         depends_on("plumed~mpi", when="~mpi")
         for gmx_ver, plumed_vers in plumed_patches.items():
-            depends_on(f"plumed@{plumed_vers}", when=f"@{gmx_ver}+plumed")
+            depends_on("plumed@{0}".format(plumed_vers), when="@{0}+plumed".format(gmx_ver))
 
     variant(
         "intel_provided_gcc",
@@ -569,7 +569,7 @@ class CMakeBuilder(cmake.CMakeBuilder):
                 ".".join([os.environ["SPACK_CXX"], "cfg"])
             ):
                 with open(".".join([os.environ["SPACK_CXX"], "cfg"]), "r") as f:
-                    options.append(f"-DCMAKE_CXX_FLAGS={f.read()}")
+                    options.append("-DCMAKE_CXX_FLAGS={}".format(f.read()))
             elif self.spec["cxx"].name == "gcc":
                 options.append("-DGMX_GPLUSPLUS_PATH=%s/g++" % self.spec["gcc"].prefix.bin)
 
@@ -699,7 +699,7 @@ class CMakeBuilder(cmake.CMakeBuilder):
             feature_set = False
             for feature, flag in reversed(simd_features):
                 if feature in target:
-                    options.append(f"-DGMX_SIMD:STRING={flag}")
+                    options.append("-DGMX_SIMD:STRING={0}".format(flag))
                     feature_set = True
                     break
 

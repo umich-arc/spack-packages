@@ -8,6 +8,7 @@ import shutil
 import socket
 import sys
 
+from spack_repo.builtin.build_systems.cached_cmake import cmake_cache_path, cmake_cache_string
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
 
@@ -24,7 +25,7 @@ def cmake_cache_entry(name, value, vtype=None):
             vtype = "BOOL"
         else:
             vtype = "PATH"
-    return f'set({name} "{value}" CACHE {vtype} "")\n\n'
+    return 'set({0} "{1}" CACHE {2} "")\n\n'.format(name, value, vtype)
 
 
 # def propagate_hip_arch(package, spec=""):
@@ -40,8 +41,8 @@ def propagate_cuda_arch(package, spec=None):
         spec = ""
     for cuda_arch in CudaPackage.cuda_arch_values:
         depends_on(
-            f"{package} +cuda cuda_arch={cuda_arch}",
-            when=f"{spec} +cuda cuda_arch={cuda_arch}",
+            "{0} +cuda cuda_arch={1}".format(package, cuda_arch),
+            when="{0} +cuda cuda_arch={1}".format(spec, cuda_arch),
         )
 
 
@@ -392,7 +393,7 @@ class Ascent(CMakePackage, CudaPackage):
         print("Checking using-with-cmake example...")
         with working_dir("check-ascent-using-with-cmake-example", create=True):
             cmake_args = [
-                f"-DASCENT_DIR={install_prefix}",
+                "-DASCENT_DIR={0}".format(install_prefix),
                 "-DCONDUIT_DIR={0}".format(spec["conduit"].prefix),
                 "-DVTKM_DIR={0}".format(spec["vtk-m"].prefix),
                 "-DVTKH_DIR={0}".format(spec["vtk-h"].prefix),
@@ -408,7 +409,7 @@ class Ascent(CMakePackage, CudaPackage):
         with working_dir("check-ascent-using-with-make-example", create=True):
             for example_file in example_files:
                 shutil.copy(example_file, ".")
-            make(f"ASCENT_DIR={install_prefix}")
+            make("ASCENT_DIR={0}".format(install_prefix))
             example = Executable("./ascent_render_example")
             example()
 
@@ -477,7 +478,7 @@ class Ascent(CMakePackage, CudaPackage):
         cfg.write("##################################\n")
         cfg.write("# spack generated host-config\n")
         cfg.write("##################################\n")
-        cfg.write(f"# {sys_type}-{spec.compiler}\n")
+        cfg.write("# {0}-{1}\n".format(sys_type, spec.compiler))
         cfg.write("##################################\n\n")
 
         # Include path to cmake for reference

@@ -620,6 +620,7 @@ class PyTorch(PythonPackage, CudaPackage):
     def setup_dependent_run_environment(self, env, dependent_spec):
         """So dependents (e.g. py-torch-nvidia-apex, py-torchaudio) can find
         libamdhip64.so when importing torch or running code that uses ROCm."""
+        pass
         # if "+rocm" in self.spec:
         #    env.prepend_path("LD_LIBRARY_PATH", self.spec["hip"].prefix.lib)
 

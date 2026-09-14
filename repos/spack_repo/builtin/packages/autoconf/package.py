@@ -54,7 +54,7 @@ class Autoconf(AutotoolsPackage, GNUMirrorPackage):
     )
 
     depends_on("perl", type=("build", "run"))
-    
+
     build_directory = "spack-build"
 
     tags = ["build-tools"]

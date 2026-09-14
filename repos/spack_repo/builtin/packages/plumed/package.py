@@ -235,12 +235,12 @@ class Plumed(AutotoolsPackage):
     def patch(self):
         # Ensure Spack's wrappers are used to compile the Python interface
         env = (
-            f'CC="{spack_cc}" LDSHARED="{spack_cc} -pthread -shared" '
-            f'CXX="{spack_cxx}" LDCXXSHARED="{spack_cxx} -pthread -shared"'
+            'CC="{0}" LDSHARED="{0} -pthread -shared" '
+            'CXX="{1}" LDCXXSHARED="{1} -pthread -shared"'.format(spack_cc, spack_cxx)
         )
         filter_file(
             "plumed_program_name=plumed",
-            f"{env} plumed_program_name=plumed",
+            "{0} plumed_program_name=plumed".format(env),
             "src/lib/Makefile",
             "python/Makefile",
         )
@@ -297,17 +297,23 @@ class Plumed(AutotoolsPackage):
         # Set flags to help with PyTorch
         if enable_libtorch:
             pytorch_path = Path(spec["py-torch"].package.cmake_prefix_paths[0]).parent.parent
+
             extra_ldflags.append(spec["py-torch"].libs.search_flags)
-            extra_libs.append(spec["py-torch"].libs.link_flags)
-            extra_ldflags.append(spec["python"].libs.search_flags)
-            extra_libs.append(spec["python"].libs.link_flags)
+
+            # PLUMED only needs libtorch (PyTorch C++ API)
+            # Here we manually remove the torch_python library to avoid linking against it
+            # Linking against torch_python requires linking against Python as well,
+            # which is not needed and can cause issues with some workflows
+            # (e.g. GIL-related when mixing Spack installed-PLUMED with external Python
+            # installations)
+            extra_libs.append(spec["py-torch"].libs.link_flags.replace("-ltorch_python ", ""))
+
             # Add include paths manually
             # Spack HeaderList.cpp_flags does not support include paths within include paths
             extra_cppflags.extend(
                 [
                     f"-I{pytorch_path / 'include'}",
                     f"-I{pytorch_path / 'include' / 'torch' / 'csrc' / 'api' / 'include'}",
-                    spec["python"].headers.include_flags,
                 ]
             )
         if enable_libmetatomic:
@@ -356,8 +362,8 @@ class Plumed(AutotoolsPackage):
 
             selected_modules = "none"
             for mod in optional_modules:
-                selected_modules += f":+{mod}"
+                selected_modules += ":+{0}".format(mod)
 
-        configure_opts.append(f"--enable-modules={selected_modules}")
+        configure_opts.append("--enable-modules={0}".format(selected_modules))
 
         return configure_opts

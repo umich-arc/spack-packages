@@ -158,15 +158,15 @@ class Qupath(Package):
         mkdirp(prefix.bin)
         with open(launcher, "w") as script:
             script.write("#!/usr/bin/env bash\n\n")
-            script.write(f"export PYTORCH_VERSION={pytorch_version}\n")
-            script.write(f"export PYTORCH_FLAVOR={pytorch_flavor}\n")
-            script.write(f"export PYTORCH_LIBRARY_PATH={torch_lib}\n")
-            script.write(f'export PYTHONPATH="{python_path}:${{PYTHONPATH}}"\n')
+            script.write("export PYTORCH_VERSION={0}\n".format(pytorch_version))
+            script.write("export PYTORCH_FLAVOR={0}\n".format(pytorch_flavor))
+            script.write("export PYTORCH_LIBRARY_PATH={0}\n".format(torch_lib))
+            script.write('export PYTHONPATH="{0}:${{PYTHONPATH}}"\n'.format(python_path))
             script.write(
-                f'export LD_LIBRARY_PATH="{library_path}:${{LD_LIBRARY_PATH}}"\n'
+                'export LD_LIBRARY_PATH="{0}:${{LD_LIBRARY_PATH}}"\n'.format(library_path)
             )
-            script.write(f'export PATH="{self.pytorch_bin_path(prefix)}:$PATH"\n\n')
-            script.write(f'exec "{executable}" -Djna.library.path="{jna_path}" "$@"\n')
+            script.write('export PATH="{0}:$PATH"\n\n'.format(self.pytorch_bin_path(prefix)))
+            script.write('exec "{0}" -Djna.library.path="{1}" "$@"\n'.format(executable, jna_path))
         set_executable(launcher)
 
     def install_pytorch_runtime(self, prefix):

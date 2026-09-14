@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
+import itertools
 import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
@@ -135,9 +136,11 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage):
     def determine_version(cls, lib):
         match = re.search(r"lib\S*\.so\.\d+\.\d+\.(\d)(\d\d)(\d\d)", lib)
         if match:
-            ver = f"{int(match.group(1))}.{int(match.group(2))}.{int(match.group(3))}"
+            ver = "{0}.{1}.{2}".format(
+                int(match.group(1)), int(match.group(2)), int(match.group(3))
+            )
         else:
-            ver = super().determine_version(lib)
+            ver = None
         return ver
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:

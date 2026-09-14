@@ -32,26 +32,26 @@ class Lmdb(MakefilePackage):
 
     @property
     def build_targets(self):
-        return [f"CC={spack_cc}"]
+        return ["CC={0}".format(spack_cc)]
 
     @property
     def install_targets(self):
-        return [f"prefix={self.prefix}", "install"]
+        return ["prefix={0}".format(self.prefix), "install"]
 
     @run_after("install")
     def install_pkgconfig(self):
         mkdirp(self.prefix.lib.pkgconfig)
 
         with open(join_path(self.prefix.lib.pkgconfig, "lmdb.pc"), "w") as f:
-            f.write(f"prefix={self.prefix}\n")
+            f.write("prefix={0}\n".format(self.prefix))
             f.write("exec_prefix=${prefix}\n")
-            f.write(f"libdir={self.prefix.lib}\n")
-            f.write(f"includedir={self.prefix.include}\n")
+            f.write("libdir={0}\n".format(self.prefix.lib))
+            f.write("includedir={0}\n".format(self.prefix.include))
             f.write("\n")
             f.write("Name: LMDB\n")
             f.write(
                 "Description: Symas LMDB is an extraordinarily fast, memory-efficient database.\n"
             )
-            f.write(f"Version: {self.spec.version}\n")
+            f.write("Version: {0}\n".format(self.spec.version))
             f.write("Cflags: -I${includedir}\n")
             f.write("Libs: -L${libdir} -llmdb\n")
