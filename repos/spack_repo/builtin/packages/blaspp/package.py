@@ -71,7 +71,7 @@ class Blaspp(CMakePackage, CudaPackage):
     depends_on("blas")
     depends_on("lapack")
     depends_on("llvm-openmp", when="+openmp %apple-clang")
-    #depends_on("rocblas", when="+rocm")
+    # depends_on("rocblas", when="+rocm")
     depends_on("intel-oneapi-mkl", when="+sycl")
     depends_on("intel-oneapi-mkl threads=openmp", when="+sycl")
 
@@ -83,18 +83,18 @@ class Blaspp(CMakePackage, CudaPackage):
     conflicts("^openblas@0.3.6 threads=none", msg="BLAS++ requires a threadsafe openblas")
     conflicts("^openblas@0.3.7: ~locking", msg="BLAS++ requires a threadsafe openblas")
 
-    #conflicts(
+    # conflicts(
     #    "+rocm", when="@:2020.10.02", msg="ROCm support requires BLAS++ 2021.04.00 or greater"
-    #)
+    # )
     backend_msg = "BLAS++ supports only one GPU backend at a time"
-    #conflicts("+rocm", when="+cuda", msg=backend_msg)
-    #conflicts("+rocm", when="+sycl", msg=backend_msg)
+    # conflicts("+rocm", when="+cuda", msg=backend_msg)
+    # conflicts("+rocm", when="+sycl", msg=backend_msg)
     conflicts("+cuda", when="+sycl", msg=backend_msg)
     conflicts("+sycl", when="@:2023.06.00", msg="SYCL support requires BLAS++ version 2023.08.25")
 
     requires("%oneapi", when="+sycl", msg="blaspp+sycl must be compiled with %oneapi")
 
-    #patch("0001-fix-blaspp-build-error-with-rocm-6.0.0.patch", when="@2023.06.00: ^hip@6.0 +rocm")
+    # patch("0001-fix-blaspp-build-error-with-rocm-6.0.0.patch", when="@2023.06.00: ^hip@6.0 +rocm")
 
     def cmake_args(self):
         spec = self.spec
@@ -103,7 +103,7 @@ class Blaspp(CMakePackage, CudaPackage):
             backend = "none"
             if spec.satisfies("+cuda"):
                 backend = "cuda"
-            #if spec.satisfies("+rocm"):
+            # if spec.satisfies("+rocm"):
             #    backend = "hip"
             if spec.satisfies("+sycl"):
                 backend = "sycl"

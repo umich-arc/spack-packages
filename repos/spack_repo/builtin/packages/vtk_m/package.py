@@ -12,7 +12,10 @@ from spack_repo.builtin.build_systems.cuda import CudaPackage
 from spack.package import *
 
 
-class VtkM(CMakePackage, CudaPackage,):
+class VtkM(
+    CMakePackage,
+    CudaPackage,
+):
     """VTK-m is a toolkit of scientific visualization algorithms for emerging
     processor architectures. VTK-m supports the fine-grained concurrency for
     data analysis and visualization algorithms required to drive extreme scale
@@ -93,7 +96,7 @@ class VtkM(CMakePackage, CudaPackage,):
     depends_on("cxx", type="build")
 
     depends_on("cmake@3.12:", type="build")  # CMake >= 3.12
-    #depends_on("cmake@3.18:", when="+rocm", type="build")  # CMake >= 3.18
+    # depends_on("cmake@3.18:", when="+rocm", type="build")  # CMake >= 3.18
 
     conflicts("%gcc@:4.10", msg="vtk-m requires gcc >= 5. Please install a newer version")
     conflicts("%gcc@11:", when="@:1.5.2", msg="DIY has a issue building with gcc 11")
@@ -119,26 +122,26 @@ class VtkM(CMakePackage, CudaPackage,):
     # VTK-m uses the Kokkos HIP backend.
     # If Kokkos provides multiple backends, the HIP backend may or
     # may not be used for VTK-m depending on the default selected by Kokkos
-    #depends_on("kokkos +rocm", when="+kokkos +rocm")
+    # depends_on("kokkos +rocm", when="+kokkos +rocm")
     # Propagate AMD GPU target to kokkos for +rocm
-    #for amdgpu_value in ROCmPackage.amdgpu_targets:
+    # for amdgpu_value in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "kokkos amdgpu_target=%s" % amdgpu_value,
     #        when="+kokkos +rocm amdgpu_target=%s" % amdgpu_value,
     #    )
 
-    #depends_on("hip@3.7:", when="+rocm")
+    # depends_on("hip@3.7:", when="+rocm")
     # CUDA thrust is already include in the CUDA pkg
-    #depends_on("rocthrust", when="@2.2: +kokkos+rocm ^cmake@3.24:")
+    # depends_on("rocthrust", when="@2.2: +kokkos+rocm ^cmake@3.24:")
 
     # The rocm variant is only valid options for >= 1.7. It would be better if
     # this could be expressed as a when clause to disable the rocm variant,
     # but that is not currently possible since when clauses are stacked,
     # not overwritten.
-    #conflicts("+rocm", when="@:1.6")
-    #conflicts("+rocm", when="+cuda")
-    #conflicts("+rocm", when="~kokkos", msg="VTK-m does not support HIP without Kokkos")
-    #conflicts("+rocm", when="+virtuals", msg="VTK-m does not support virtual functions with ROCm")
+    # conflicts("+rocm", when="@:1.6")
+    # conflicts("+rocm", when="+cuda")
+    # conflicts("+rocm", when="~kokkos", msg="VTK-m does not support HIP without Kokkos")
+    # conflicts("+rocm", when="+virtuals", msg="VTK-m does not support virtual functions with ROCm")
 
     # VTK-m uses the Kokkos SYCL backend.
     # If Kokkos provides multiple backends, the SYCL backend may or
@@ -243,7 +246,7 @@ class VtkM(CMakePackage, CudaPackage,):
                 # vtk-m detectes tbb via TBB_ROOT env var
                 os.environ["TBB_ROOT"] = spec["tbb"].prefix
 
-            #if "+kokkos" in spec and "+rocm" in spec and spec.satisfies("^kokkos@4:"):
+            # if "+kokkos" in spec and "+rocm" in spec and spec.satisfies("^kokkos@4:"):
             #    options.append(f"-DCMAKE_CXX_COMPILER:FILEPATH={spec['hip'].prefix.bin.hipcc}")
 
             # Support for relocatable code
@@ -275,7 +278,7 @@ class VtkM(CMakePackage, CudaPackage,):
                 options.append("-DVTKm_ENABLE_CUDA:BOOL=OFF")
 
             # hip support
-            #if "+rocm" in spec:
+            # if "+rocm" in spec:
             #    options.append(CMakeBuilder.define_hip_architectures(self))
 
         return options

@@ -34,12 +34,12 @@ class TiledMm(CMakePackage, CudaPackage):
 
     depends_on("cxx", type="build")  # generated
 
-    #depends_on("rocblas", when="+rocm")
+    # depends_on("rocblas", when="+rocm")
     depends_on("cxxopts", when="+tests")
     depends_on("cxxopts", when="+examples")
 
     conflicts("~cuda")
-    #conflicts("+cuda", when="+rocm")
+    # conflicts("+cuda", when="+rocm")
 
     def cmake_args(self):
         args = [
@@ -48,7 +48,7 @@ class TiledMm(CMakePackage, CudaPackage):
             self.define_from_variant("TILEDMM_WITH_TESTS", "tests"),
         ]
 
-        #if "+rocm" in self.spec:
+        # if "+rocm" in self.spec:
         #    args.extend([self.define("TILEDMM_GPU_BACKEND", "ROCM")])
 
         if "+cuda" in self.spec:

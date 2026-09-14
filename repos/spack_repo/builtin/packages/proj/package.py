@@ -75,7 +75,6 @@ class Proj(CMakePackage, AutotoolsPackage):
     depends_on("sqlite@3.11:", when="@6:")
     depends_on("libtiff@4:", when="@7:+tiff")
 
-
     # https://proj.org/install.html#build-requirements
     with when("build_system=cmake"):
         # https://github.com/OSGeo/PROJ/pull/3374
@@ -153,7 +152,7 @@ class CMakeBuilder(AnyBuilder, cmake.CMakeBuilder):
         else:
             test_flag = "PROJ4_TESTS"
         args.append(self.define(test_flag, self.pkg.run_tests))
-        
+
         return args
 
 
@@ -167,7 +166,6 @@ class AutotoolsBuilder(AnyBuilder, autotools.AutotoolsBuilder):
         if self.spec.satisfies("@7:"):
             args.extend(self.enable_or_disable("tiff"))
 
-           
         args.extend(self.enable_or_disable("shared"))
         args.extend(self.with_or_without("pic"))
 

@@ -390,7 +390,7 @@ class Visit(CMakePackage):
 
         if "@3.3.3: +vtkm" in spec:
             lib_dirs = [spec["libx11"].prefix.lib]
-            #if self.spec.satisfies("^vtkm+rocm"):
+            # if self.spec.satisfies("^vtkm+rocm"):
             #    lib_dirs.append(spec["hip"].prefix.lib)
             args.append(self.define("VISIT_VTKM_DIR", spec["vtk-m"].prefix))
             args.append(

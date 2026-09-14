@@ -53,17 +53,17 @@ class Cosma(CMakePackage):
     variant("apps", default=False, description="Build miniapp")
     variant("profiling", default=False, description="Enable profiling")
     variant("gpu_direct", default=False, description="GPU aware MPI")
-    #variant(
+    # variant(
     #    "unified_memory",
     #    default=False,
     #    description="Enable unified memory support",
     #    when="@2.8.2:+rocm",
-    #)
+    # )
 
     with when("+cuda"):
         variant("nccl", default=False, description="Use cuda nccl")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    variant("rccl", default=False, description="Use rocm rccl")
 
     depends_on("cxx", type="build")
@@ -75,16 +75,16 @@ class Cosma(CMakePackage):
     depends_on("blas", when="~cuda")
     depends_on("scalapack", when="+scalapack")
     depends_on("cuda", when="+cuda")
-    #depends_on("rocblas", when="+rocm")
+    # depends_on("rocblas", when="+rocm")
     depends_on("nccl", when="+nccl")
-    #depends_on("rccl", when="+rccl")
+    # depends_on("rccl", when="+rccl")
 
     with when("@2.6.3:"):
         depends_on("tiled-mm@2.2:+cuda", when="+cuda")
-        #depends_on("tiled-mm@2.2:+rocm", when="+rocm")
+        # depends_on("tiled-mm@2.2:+rocm", when="+rocm")
 
     with when("@2.6.1:2.6.2"):
-        #depends_on("tiled-mm@2.0+rocm", when="+rocm")
+        # depends_on("tiled-mm@2.0+rocm", when="+rocm")
         depends_on("tiled-mm@2.0+cuda", when="+cuda")
 
     with when("@2.6.1:"):
@@ -106,7 +106,7 @@ class Cosma(CMakePackage):
     def cosma_blas_cmake_arg(self):
         query_to_cmake_arg = [
             ("+cuda", "CUDA"),
-            #("+rocm", "ROCM"),
+            # ("+rocm", "ROCM"),
             ("^[virtuals=blas] intel-oneapi-mkl", "MKL"),
             ("^[virtuals=blas] cray-libsci", "CRAY_LIBSCI"),
             ("^[virtuals=blas] netlib-lapack", "CUSTOM"),

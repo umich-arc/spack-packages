@@ -37,9 +37,7 @@ class Fiji(Package):
         launcher = join_path(prefix.fiji, "ImageJ-linux64")
 
         if not os.path.isfile(launcher):
-            raise InstallError(
-                "Could not find the Fiji launcher at {0}".format(launcher)
-            )
+            raise InstallError("Could not find the Fiji launcher at {0}".format(launcher))
 
         set_executable(launcher)
 

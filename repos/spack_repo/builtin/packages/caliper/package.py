@@ -74,7 +74,7 @@ class Caliper(CachedCMakePackage, CudaPackage):
     depends_on("cxx", type="build")
     depends_on("fortran", when="+fortran", type="build")
 
-    #depends_on("rocprofiler-sdk", when="@2.14: +rocm")
+    # depends_on("rocprofiler-sdk", when="@2.14: +rocm")
 
     depends_on("adiak@0.1:0", when="@:2.10 +adiak")
     depends_on("adiak@0.4:0", when="@2.11: +adiak")
@@ -96,11 +96,11 @@ class Caliper(CachedCMakePackage, CudaPackage):
     depends_on("python@3", when="+python", type=("build", "link", "run"))
     depends_on("py-pybind11", when="+python", type=("build", "link", "run"))
 
-    #conflicts("+rocm+cuda")
+    # conflicts("+rocm+cuda")
     # Legacy nvtx is only supported until cuda@12.8, newer cuda only provides nvtx3.
     depends_on("cuda@:12.8", when="@:2.13.1 +cuda")
     # rocprofiler-sdk is only supported since rocm@6.2.4.
-    #depends_on("llvm-amdgpu@6.2.4:", when="@2.14: +rocm")
+    # depends_on("llvm-amdgpu@6.2.4:", when="@2.14: +rocm")
 
     patch("libunwind.patch", when="@:2.13")
     patch(
@@ -137,7 +137,7 @@ class Caliper(CachedCMakePackage, CudaPackage):
         spec = self.spec
         entries = super().initconfig_compiler_entries()
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    entries.insert(0, cmake_cache_path("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
 
         entries.append(cmake_cache_option("WITH_FORTRAN", spec.satisfies("+fortran")))
@@ -180,7 +180,7 @@ class Caliper(CachedCMakePackage, CudaPackage):
             entries.append(cmake_cache_option("WITH_CUPTI", False))
             entries.append(cmake_cache_option("WITH_NVTX", False))
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    # HIP configuration from hip_for_radiuss_projects
         #    rocm_root = spec["llvm-amdgpu"].prefix
         #    gcc_toolchain_regex = re.compile(".*gcc-toolchain.*")
@@ -215,7 +215,7 @@ class Caliper(CachedCMakePackage, CudaPackage):
         #        entries.append(cmake_cache_option("WITH_ROCPROFILER", False))
         #        entries.append(cmake_cache_option("WITH_ROCTRACER", True))
         #        entries.append(cmake_cache_option("WITH_ROCTX", True))
-        #else:
+        # else:
         entries.append(cmake_cache_option("WITH_ROCPROFILER", False))
         entries.append(cmake_cache_option("WITH_ROCTRACER", False))
         entries.append(cmake_cache_option("WITH_ROCTX", False))

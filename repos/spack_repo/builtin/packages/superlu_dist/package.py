@@ -76,11 +76,11 @@ class SuperluDist(CMakePackage, CudaPackage):
         depends_on("metis@5: ~int64", when="~int64")
         depends_on("parmetis ~int64", when="~int64")
     depends_on("cmake@3.18.1:", type="build", when="@7.1.0:")
-    #depends_on("hipblas", when="+rocm")
-    #depends_on("hipblas@:6", when="@:9.1.0 +rocm")
-    #depends_on("rocsolver", when="+rocm")
+    # depends_on("hipblas", when="+rocm")
+    # depends_on("hipblas@:6", when="@:9.1.0 +rocm")
+    # depends_on("rocsolver", when="+rocm")
 
-    #conflicts("+rocm", when="+cuda")
+    # conflicts("+rocm", when="+cuda")
     conflicts("+cuda", when="@:6.3")
     # See https://github.com/xiaoyeli/superlu_dist/issues/87
     conflicts("^cuda@11.5.0:", when="@7.1.0:7.1 +cuda")
@@ -89,7 +89,7 @@ class SuperluDist(CMakePackage, CudaPackage):
 
     patch("xl-611.patch", when="@:6.1.1 %xl")
     patch("xl-611.patch", when="@:6.1.1 %xl_r")
-    #patch("superlu-cray-ftn-case.patch", when="@7.1.1 %cce")
+    # patch("superlu-cray-ftn-case.patch", when="@7.1.1 %cce")
     patch("CMAKE_INSTALL_LIBDIR.patch", when="@7.0.0:7.2.0")
     patch(
         "https://github.com/xiaoyeli/superlu_dist/commit/5a1946f347e6d813a250af874dee0942f4fdfc44.patch?full_index=1",
@@ -141,7 +141,7 @@ class SuperluDist(CMakePackage, CudaPackage):
             if spec.satisfies("^cuda@13:"):
                 append_define("CMAKE_CXX_STANDARD", "17")
 
-        #if "+rocm" in spec and (spec.satisfies("@amd") or spec.satisfies("@8:")):
+        # if "+rocm" in spec and (spec.satisfies("@amd") or spec.satisfies("@8:")):
         #    append_define("TPL_ENABLE_HIPLIB", True)
         #    append_define("HIP_ROOT_DIR", spec["hip"].prefix)
         #    rocm_archs = spec.variants["amdgpu_target"].value

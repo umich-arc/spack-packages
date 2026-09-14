@@ -72,7 +72,7 @@ class Clingo(CMakePackage):
         depends_on("bison@2.5:", type="build", when="platform=darwin")
         depends_on("bison@2.5:", type="build", when="platform=freebsd")
 
-    #with when("platform=windows"):
+    # with when("platform=windows"):
     #    depends_on("re2c@0.13:", type="build")
     #    depends_on("winbison@2.4.12:")
 

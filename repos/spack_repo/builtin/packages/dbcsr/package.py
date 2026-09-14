@@ -144,7 +144,7 @@ class Dbcsr(CMakePackage, CudaPackage):
     depends_on("pkgconfig", type="build")
     depends_on("python@3.6:", type="build", when="+cuda")
 
-    #depends_on("hipblas", when="+rocm")
+    # depends_on("hipblas", when="+rocm")
     depends_on("libxs@1:+fortran", when="@2.10: smm=libxs")
     depends_on(
         "libxsmm@2: build_system=cmake",
@@ -193,15 +193,15 @@ class Dbcsr(CMakePackage, CudaPackage):
     amd_msg = f"""DBCSR supports these AMD gpu targets:  {", ".join(dbcsr_amdgpu_targets)}.
                   Set amdgpu_target explicitly to one of the supported targets"""
 
-    #for arch in ROCmPackage.amdgpu_targets:
+    # for arch in ROCmPackage.amdgpu_targets:
     #    if arch not in dbcsr_amdgpu_targets:
     #        conflicts("+rocm", when=f"amdgpu_target={arch}", msg=amd_msg)
 
     # GPU runtimes are usually mutually exclusive
     accel_msg = "CUDA and OpenCL are mutually exlusive"
-    #conflicts("+cuda", when="+rocm", msg=accel_msg)
+    # conflicts("+cuda", when="+rocm", msg=accel_msg)
     conflicts("+cuda", when="+opencl", msg=accel_msg)
-    #conflicts("+rocm", when="+opencl", msg=accel_msg)
+    # conflicts("+rocm", when="+opencl", msg=accel_msg)
 
     # Require OpenMP threading by making other options conflict
     conflicts("^intel-oneapi-mkl threads=none", when="+openmp")
@@ -220,8 +220,8 @@ class Dbcsr(CMakePackage, CudaPackage):
     generator("ninja")
     depends_on("ninja@1.10:", type="build")
 
-    #@when("+rocm")
-    #def patch(self):
+    # @when("+rocm")
+    # def patch(self):
     #    for directory, subdirectory, files in os.walk(os.getcwd()):
     #        for i in files:
     #            file_path = os.path.join(directory, i)
@@ -238,7 +238,7 @@ class Dbcsr(CMakePackage, CudaPackage):
         if "+cuda" in spec and len(spec.variants["cuda_arch"].value) > 1:
             raise InstallError("dbcsr supports only one cuda_arch at a time")
 
-        #if "+rocm" in spec and len(spec.variants["amdgpu_target"].value) > 1:
+        # if "+rocm" in spec and len(spec.variants["amdgpu_target"].value) > 1:
         #    raise InstallError("DBCSR supports only one amdgpu_arch at a time")
 
         args = [
@@ -290,7 +290,7 @@ class Dbcsr(CMakePackage, CudaPackage):
 
             args += ["-DWITH_GPU=%s" % gpuver, "-DUSE_ACCEL=cuda"]
 
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    amd_arch = self.spec.variants["amdgpu_target"].value[0]
         #    gpuver = {
         #        "gfx906": "Mi50",
