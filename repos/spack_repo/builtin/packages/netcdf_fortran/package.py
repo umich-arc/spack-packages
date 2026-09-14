@@ -51,6 +51,6 @@ class NetcdfFortran(AutotoolsPackage):
             "LDFLAGS={0}".format(ldflags),
             "FC={0}".format(self.compiler.fc),
             "F77={0}".format(self.compiler.f77),
-            #"FCFLAGS={0}".format(fflags),
-            #"FFLAGS={0}".format(fflags),
+            # "FCFLAGS={0}".format(fflags),
+            # "FFLAGS={0}".format(fflags),
         ]

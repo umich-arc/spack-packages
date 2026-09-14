@@ -29,7 +29,7 @@ class Ucc(AutotoolsPackage, CudaPackage):
 
     variant("cuda", default=False, description="Enable CUDA TL")
     variant("nccl", default=False, description="Enable NCCL TL", when="+cuda")
-    #variant("rccl", default=False, description="Enable RCCL TL", when="+rocm")
+    # variant("rccl", default=False, description="Enable RCCL TL", when="+rocm")
 
     # https://github.com/openucx/ucc/pull/847
     patch(
@@ -48,7 +48,7 @@ class Ucc(AutotoolsPackage, CudaPackage):
     depends_on("ucx")
 
     depends_on("nccl", when="+nccl")
-    #depends_on("rccl", when="+rccl")
+    # depends_on("rccl", when="+rccl")
 
     with when("+nccl"):
         for arch in CudaPackage.cuda_arch_values:
@@ -69,7 +69,7 @@ class Ucc(AutotoolsPackage, CudaPackage):
                 gencode_args = self.cuda_flags(self.spec.variants["cuda_arch"].values)
                 args.append(f"--with-nvcc-gencode={' '.join(gencode_args)}")
 
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    cppflags = " ".join(
         #        "-I" + include_dir
         #        for include_dir in (
@@ -89,6 +89,6 @@ class Ucc(AutotoolsPackage, CudaPackage):
         #    args.append("--with-rocm=" + self.spec["hip"].prefix)
         #    args.append("--with-ucx=" + self.spec["ucx"].prefix)
         #    args.extend(self.with_or_without("rccl", activation_value="prefix"))
-        #else:
+        # else:
         args.append("--without-rocm")
         return args

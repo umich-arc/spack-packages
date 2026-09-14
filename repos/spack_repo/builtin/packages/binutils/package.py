@@ -181,7 +181,7 @@ class Binutils(AutotoolsPackage, GNUMirrorPackage):
             spec.satisfies("@:2.31.1") and self.compiler.name in ("fj", "clang", "apple-clang")
         ):
             iflags.append("-Wno-narrowing")
-        #elif name == "cflags":
+        # elif name == "cflags":
         #    if spec.satisfies("@:2.34 %gcc@10:") or spec.satisfies("%cce"):
         #        iflags.append("-fcommon")
         elif name == "ldflags":
@@ -292,7 +292,7 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
 
     def flag_handler(self, name, flags):
         spec = self.spec
-        #if name == "ldflags":
+        # if name == "ldflags":
         #    if spec.satisfies("%cce"):
         #        flags.append("-Wl,-z,muldefs")
         if name == "ldlibs":

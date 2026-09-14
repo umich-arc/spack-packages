@@ -125,13 +125,13 @@ class Sirius(CMakePackage, CudaPackage):
         depends_on("spfft@0.9.13:")
         depends_on("spfft+single_precision", when="+single_precision")
         depends_on("spfft+cuda", when="+cuda")
-        #depends_on("spfft+rocm", when="+rocm")
+        # depends_on("spfft+rocm", when="+rocm")
         depends_on("spfft+openmp", when="+openmp")
 
     with when("@7.0.2:"):
         depends_on("spla@1.1.0:")
         depends_on("spla+cuda", when="+cuda")
-        #depends_on("spla+rocm", when="+rocm")
+        # depends_on("spla+rocm", when="+rocm")
         # spla removed the openmp option in 1.6.0
         conflicts("^spla@:1.5~openmp", when="+openmp")
 
@@ -146,7 +146,7 @@ class Sirius(CMakePackage, CudaPackage):
     )
 
     depends_on("nlcglib", when="+nlcglib")
-    #depends_on("nlcglib+rocm", when="+nlcglib+rocm")
+    # depends_on("nlcglib+rocm", when="+nlcglib+rocm")
     depends_on("nlcglib+cuda", when="+nlcglib+cuda")
 
     depends_on("libvdwxc@0.3.0:+mpi", when="+vdwxc")
@@ -157,16 +157,16 @@ class Sirius(CMakePackage, CudaPackage):
         depends_on("dla-future@0.3.0:")
         depends_on("dla-future +scalapack", when="+scalapack")
         depends_on("dla-future +cuda", when="+cuda")
-        #depends_on("dla-future +rocm", when="+rocm")
+        # depends_on("dla-future +rocm", when="+rocm")
 
         conflicts("^pika@:0.22.1", when="+cuda")
-        #conflicts("^pika@:0.22.1", when="+rocm")
+        # conflicts("^pika@:0.22.1", when="+rocm")
 
-    #depends_on("rocblas", when="+rocm")
-    #depends_on("rocsolver", when="@7.5.0: +rocm")
+    # depends_on("rocblas", when="+rocm")
+    # depends_on("rocsolver", when="@7.5.0: +rocm")
 
     # FindHIP cmake script only works for < 4.1, but HIP 4.1 is not provided by spack anymore
-    #conflicts("+rocm", when="@:7.2.0")
+    # conflicts("+rocm", when="@:7.2.0")
 
     conflicts("^libxc@5.0.0")  # known to produce incorrect results
     conflicts("+single_precision", when="@:7.2.4")
@@ -202,7 +202,7 @@ class Sirius(CMakePackage, CudaPackage):
     with when("@7.5: +memory_pool"):
         depends_on("umpire~cuda", when="~cuda")
         depends_on("umpire+cuda~device_alloc", when="+cuda")
-        #depends_on("umpire+rocm~device_alloc", when="+rocm")
+        # depends_on("umpire+rocm~device_alloc", when="+rocm")
 
     patch("fj.patch", when="@7.3.2: %fj")
 
@@ -322,7 +322,7 @@ class Sirius(CMakePackage, CudaPackage):
                 else:
                     args.append(self.define("CMAKE_CUDA_ARCHITECTURES", ";".join(cuda_arch)))
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    archs = ",".join(self.spec.variants["amdgpu_target"].value)
         #    args.extend([self.define("CMAKE_HIP_ARCHITECTURES", archs)])
 

@@ -196,7 +196,7 @@ class Umpire(CachedCMakePackage, CudaPackage):
     # require adapting umpire build system.
     patch("dual_blt_import_umpire_2022.10_2023.06.patch", when="@2023.06.0")
     patch("export_includes.patch", when="@2022.10.0")
-    #patch("std-filesystem-pr784.patch", when="@2022.03.1 +rocm ^blt@0.5.2:")
+    # patch("std-filesystem-pr784.patch", when="@2022.03.1 +rocm ^blt@0.5.2:")
     patch("camp_target_umpire_3.0.0.patch", when="@3.0.0")
     patch("cmake_version_check.patch", when="@4.1")
     patch("missing_header_for_numeric_limits.patch", when="@4.1:5.0.1")
@@ -294,9 +294,9 @@ class Umpire(CachedCMakePackage, CudaPackage):
     depends_on("fortran", type="build", when="+fortran")
 
     depends_on("cmake@3.23:", when="@2024.07.0:", type="build")
-    #depends_on("cmake@3.23:", when="@2022.10.0: +rocm", type="build")
+    # depends_on("cmake@3.23:", when="@2022.10.0: +rocm", type="build")
     depends_on("cmake@3.20:", when="@2022.10.0:2024.02.1", type="build")
-    #depends_on("cmake@:3.20", when="@2022.03.0:2022.03 +rocm", type="build")
+    # depends_on("cmake@:3.20", when="@2022.03.0:2022.03 +rocm", type="build")
     depends_on("cmake@3.14:", when="@2022.03.0:", type="build")
     depends_on("cmake@3.9:", when="+cuda", type="build")
     depends_on("cmake@3.8:", type="build")
@@ -312,12 +312,12 @@ class Umpire(CachedCMakePackage, CudaPackage):
     depends_on("blt@0.4.1", type="build", when="@6.0.0")
     depends_on("blt@0.4.0:0.4.1", type="build", when="@4.1.3:5.0.1")
     depends_on("blt@0.3.6:0.4.1", type="build", when="@:4.1.2")
-    #conflicts("^blt@:0.3.6", when="+rocm")
+    # conflicts("^blt@:0.3.6", when="+rocm")
 
     depends_on("camp")
     depends_on("camp+openmp", when="+openmp")
     depends_on("camp~cuda", when="~cuda")
-    #depends_on("camp~rocm", when="~rocm")
+    # depends_on("camp~rocm", when="~rocm")
     depends_on("camp@2026.07.1:", when="@2026.07:")
     depends_on("camp@2025.12", when="@2025.12")
     depends_on("camp@2025.09", when="@2025.09")
@@ -347,7 +347,7 @@ class Umpire(CachedCMakePackage, CudaPackage):
             for sm_ in CudaPackage.cuda_arch_values:
                 depends_on("camp+cuda cuda_arch={0}".format(sm_), when="cuda_arch={0}".format(sm_))
 
-        #with when("+rocm"):
+        # with when("+rocm"):
         #    depends_on("camp+rocm")
         #    for arch_ in ROCmPackage.amdgpu_targets:
         #        depends_on(
@@ -361,15 +361,15 @@ class Umpire(CachedCMakePackage, CudaPackage):
     # device allocator must be used with more current umpire versions, rocm 5.4.0 and greater,
     # and with either rocm or cuda enabled
     conflicts("+device_alloc", when="@:2022.03.0")
-    #conflicts("+device_alloc", when="^hip@:5.3.99")
+    # conflicts("+device_alloc", when="^hip@:5.3.99")
     conflicts("+device_alloc", when="~cuda")
 
     conflicts("+deviceconst", when="~cuda")
     conflicts("~openmp", when="+omptarget", msg="OpenMP target requires OpenMP")
-    #conflicts("+cuda", when="+rocm")
-    #conflicts(
+    # conflicts("+cuda", when="+rocm")
+    # conflicts(
     #    "+rocm", when="+omptarget", msg="Cant support both rocm and openmp device backends at once"
-    #)
+    # )
     conflicts("+ipc_shmem", when="@:5.0.1")
     conflicts("+mpi3_shmem", when="@:2024.07.0")
     conflicts("+mpi3_shmem", when="~mpi")
@@ -414,7 +414,7 @@ class Umpire(CachedCMakePackage, CudaPackage):
         # Default entries are already defined in CachedCMakePackage, inherit them:
         entries = super().initconfig_compiler_entries()
 
-        #if spec.satisfies("+rocm ^blt@:0.6"):
+        # if spec.satisfies("+rocm ^blt@:0.6"):
         #    entries.insert(0, cmake_cache_path("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
 
         option_prefix = "UMPIRE_" if spec.satisfies("@2022.03.0:") else ""
@@ -464,7 +464,7 @@ class Umpire(CachedCMakePackage, CudaPackage):
         else:
             entries.append(cmake_cache_option("ENABLE_CUDA", False))
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    entries.append(cmake_cache_option("ENABLE_HIP", True))
 
         #    # HIP configuration from hip_for_radiuss_projects
@@ -491,7 +491,7 @@ class Umpire(CachedCMakePackage, CudaPackage):
         #                "CMAKE_EXE_LINKER_FLAGS", "-Wl,-rpath={0}/llvm/lib/".format(rocm_root)
         #            )
         #        )
-        #else:
+        # else:
         entries.append(cmake_cache_option("ENABLE_HIP", False))
 
         entries.append(

@@ -59,8 +59,8 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage):
     version("5.7.0", sha256="8c6cd2ffa4ce6ab03e05feffe074685b5525610870aebe9d78f817b3037f33a4")
 
     # default to an 'auto' variant until amdgpu_targets can be given a better default than 'none'
-    #amdgpu_targets = ROCmPackage.amdgpu_targets
-    #variant(
+    # amdgpu_targets = ROCmPackage.amdgpu_targets
+    # variant(
     #    "amdgpu_target",
     #    description="AMD GPU architecture",
     #    values=disjoint_sets(("auto",), amdgpu_targets)
@@ -70,10 +70,10 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage):
     #    )
     #    .with_non_feature_values("auto", "none"),
     #    sticky=True,
-    #)
-    #variant("rocm", default=True, description="Enable ROCm support")
+    # )
+    # variant("rocm", default=True, description="Enable ROCm support")
     variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
-    #conflicts("+cuda +rocm", msg="CUDA and ROCm support are mutually exclusive")
+    # conflicts("+cuda +rocm", msg="CUDA and ROCm support are mutually exclusive")
     conflicts("~cuda", msg="CUDA support is required")
 
     depends_on("c", type="build")  # generated
@@ -93,12 +93,12 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage):
 
     depends_on("hip +cuda", when="+cuda")
 
-    #for ver in ["5.7.0", "5.7.1"]:
+    # for ver in ["5.7.0", "5.7.1"]:
     #    depends_on(f"rocm-cmake@{ver}", when=f"+rocm @{ver}")
     #    depends_on(f"rocsolver@{ver}", when=f"+rocm @{ver}")
     #    depends_on(f"rocblas@{ver}", when=f"+rocm @{ver}")
 
-    #for ver in [
+    # for ver in [
     #    "6.0.0",
     #    "6.0.2",
     #    "6.1.0",
@@ -124,12 +124,12 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage):
     #    "7.2.3",
     #    "7.13.0",
     #    "7.14.0",
-    #]:
+    # ]:
     #    depends_on(f"rocm-cmake@{ver}", when=f"+rocm @{ver}")
     #    depends_on(f"rocsolver@{ver}", when=f"+rocm @{ver}")
     #    depends_on(f"rocblas@{ver}", when=f"+rocm @{ver}")
 
-    #for ver in [
+    # for ver in [
     #    "6.0.0",
     #    "6.0.2",
     #    "6.1.0",
@@ -150,10 +150,10 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage):
     #    "7.0.2",
     #    "7.1.0",
     #    "7.1.1",
-    #]:
+    # ]:
     #    depends_on(f"rocm-openmp-extras@{ver}", type="test", when=f"+rocm @{ver}")
 
-    #for tgt in itertools.chain(["auto"], amdgpu_targets):
+    # for tgt in itertools.chain(["auto"], amdgpu_targets):
     #    depends_on(f"rocblas amdgpu_target={tgt}", when=f"+rocm amdgpu_target={tgt}")
     #    depends_on(f"rocsolver amdgpu_target={tgt}", when=f"+rocm amdgpu_target={tgt}")
 

@@ -141,7 +141,7 @@ class Trilinos(CMakePackage, CudaPackage):
         description="Enable relaxed constexpr functions for CUDA build",
     )
     variant("cuda_rdc", default=False, description="Turn on RDC for CUDA build")
-    #variant("rocm_rdc", default=False, description="Turn on RDC for ROCm build")
+    # variant("rocm_rdc", default=False, description="Turn on RDC for ROCm build")
     variant(
         "cxxstd",
         default="20",
@@ -345,7 +345,7 @@ class Trilinos(CMakePackage, CudaPackage):
     # Tpetra stack
     with when("~kokkos"):
         conflicts("+cuda")
-        #conflicts("+rocm")
+        # conflicts("+rocm")
         conflicts("+tpetra")
         conflicts("+intrepid2")
         conflicts("+phalanx")
@@ -415,12 +415,12 @@ class Trilinos(CMakePackage, CudaPackage):
     conflicts("+stokhos", when="~kokkos")
     conflicts("+muelu", when="@17: ~ifpack2")
 
-    #conflicts("+rocm~rocm_rdc", when="@:16 +stk")
-    #conflicts("+rocm~rocm_rdc", when="@17: +stk ^hip@:6.2")
+    # conflicts("+rocm~rocm_rdc", when="@:16 +stk")
+    # conflicts("+rocm~rocm_rdc", when="@17: +stk ^hip@:6.2")
     # rocm@7 conflicts with cxxstd=20 per https://github.com/llvm/llvm-project/issues/184856
     # this conflict can be updated once https://github.com/llvm/llvm-project/pull/184894
     # makes it into hip
-    #conflicts("cxxstd=20", when="+rocm ^hip@7:")
+    # conflicts("cxxstd=20", when="+rocm ^hip@7:")
 
     # TRIbits dependencies only relied on by testing are invoked regardless,
     # whether +test or ~test. see https://github.com/TriBITSPub/TriBITS/issues/56
@@ -478,7 +478,7 @@ class Trilinos(CMakePackage, CudaPackage):
     )
     conflicts("+cuda_rdc", when="~cuda")
     conflicts("+cusparse", when="~cuda")
-    #conflicts("+rocm_rdc", when="~rocm")
+    # conflicts("+rocm_rdc", when="~rocm")
     conflicts("+wrapper", when="~cuda")
     conflicts("+wrapper", when="%clang")
 
@@ -517,12 +517,12 @@ class Trilinos(CMakePackage, CudaPackage):
     # External Kokkos
     with when("@14.4: +kokkos"):
         depends_on("kokkos~cuda", when="~cuda")
-        #depends_on("kokkos~rocm", when="~rocm")
+        # depends_on("kokkos~rocm", when="~rocm")
         depends_on("kokkos+wrapper", when="+wrapper")
         depends_on("kokkos~wrapper", when="~wrapper")
         depends_on("kokkos+pic", when="+shared")
         depends_on("kokkos+cuda_relocatable_device_code", when="+cuda_rdc")
-        #depends_on("kokkos+hip_relocatable_device_code", when="+rocm_rdc")
+        # depends_on("kokkos+hip_relocatable_device_code", when="+rocm_rdc")
         depends_on("kokkos-kernels+cusparse", when="+cusparse")
         depends_on("kokkos~complex_align")
         depends_on("kokkos@=5.2.1", when="@master:")
@@ -557,7 +557,7 @@ class Trilinos(CMakePackage, CudaPackage):
         for a in CudaPackage.cuda_arch_values:
             arch_str = f"+cuda cuda_arch={a}"
             depends_on(f"kokkos{arch_str}", when=arch_str)
-        #for a in ROCmPackage.amdgpu_targets:
+        # for a in ROCmPackage.amdgpu_targets:
         #    arch_str = f"+rocm amdgpu_target={a}"
         #    depends_on(f"kokkos{arch_str}", when=arch_str)
 
@@ -635,8 +635,8 @@ class Trilinos(CMakePackage, CudaPackage):
         patch("xlf_seacas.patch", when="@12.10.1:12.12.1 %" + _compiler)
         patch("xlf_tpetra.patch", when="@12.12.1 %" + _compiler)
     patch("fix_clang_errors_12_18_1.patch", when="@12.18.1%clang")
-    #patch("cray_secas_12_12_1.patch", when="@12.12.1%cce")
-    #patch("cray_secas.patch", when="@12.14.1:12%cce")
+    # patch("cray_secas_12_12_1.patch", when="@12.12.1%cce")
+    # patch("cray_secas.patch", when="@12.14.1:12%cce")
     patch(
         "https://github.com/trilinos/Trilinos/commit/c8b788d7e6e213a2828201ebdc00cde181e3b71b.patch?full_index=1",
         sha256="62272054f7cc644583c269e692c69f0a26af19e5a5bd262db3ea3de3447b3358",
@@ -646,11 +646,11 @@ class Trilinos(CMakePackage, CudaPackage):
     # workaround an NVCC bug with c++14 (https://github.com/trilinos/Trilinos/issues/6954)
     # avoid calling deprecated functions with CUDA-11
     patch("fix_cxx14_cuda11.patch", when="@13.0.0:13.0.1 cxxstd=14 ^cuda@11:")
-    #patch(
+    # patch(
     #    "0001-use-the-gcnArchName-inplace-of-gcnArch-as-gcnArch-is.patch",
     #    when="@15.0.0 ^hip@6.0 +rocm",
-    #)
-    #patch("cstdint_gcc13.patch", when="@13.4.0:13.4.1 %gcc@13.0.0:")
+    # )
+    # patch("cstdint_gcc13.patch", when="@13.4.0:13.4.1 %gcc@13.0.0:")
 
     # Allow building with +teko gotype=long
     patch(
@@ -695,7 +695,7 @@ class Trilinos(CMakePackage, CudaPackage):
 
     def flag_handler(self, name, flags):
         spec = self.spec
-        #is_cce = spec.satisfies("%cce")
+        # is_cce = spec.satisfies("%cce")
 
         if name == "cxxflags":
             if "+mumps" in spec:
@@ -714,7 +714,7 @@ class Trilinos(CMakePackage, CudaPackage):
                     "-Wno-missing-template-arg-list-after-template-kw"
                 )
         elif name == "ldflags":
-            #if spec.satisfies("%cce@:14"):
+            # if spec.satisfies("%cce@:14"):
             #    flags.append("-fuse-ld=gold")
             if spec.satisfies("platform=linux ~cuda"):
                 # TriBITS explicitly links libraries against all transitive
@@ -741,7 +741,7 @@ class Trilinos(CMakePackage, CudaPackage):
                 # https://github.com/spack/spack/pull/25823#issuecomment-917231118
                 flags.append("-L{0} -lgfortran".format(os.path.dirname(libgfortran)))
 
-        #if is_cce:
+        # if is_cce:
         #    return (None, None, flags)
         return (flags, None, None)
 
@@ -773,7 +773,7 @@ class Trilinos(CMakePackage, CudaPackage):
             else:
                 env.set("CXX", self["kokkos-nvcc-wrapper"].kokkos_cxx)
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    if "+mpi" in spec:
         #        env.set("OMPI_CXX", self.spec["hip"].hipcc)
         #        env.set("MPICH_CXX", self.spec["hip"].hipcc)
@@ -1212,7 +1212,7 @@ class Trilinos(CMakePackage, CudaPackage):
                     for arch in spec.variants["cuda_arch"].value
                 )
 
-            #if "+rocm" in spec:
+            # if "+rocm" in spec:
             #    options.extend(
             #        [
             #            define_kok_enable("ROCM", False),

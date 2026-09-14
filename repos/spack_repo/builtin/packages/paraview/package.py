@@ -165,8 +165,8 @@ class Paraview(CMakePackage, CudaPackage):
     conflicts("+openpmd", when="~adios2 ~hdf5", msg="openPMD needs ADIOS2 and/or HDF5")
     conflicts("~shared", when="+cuda")
     conflicts("+cuda", when="use_vtkm=off")
-    #conflicts("+rocm", when="+cuda")
-    #conflicts("+rocm", when="use_vtkm=off")
+    # conflicts("+rocm", when="+cuda")
+    # conflicts("+rocm", when="use_vtkm=off")
     # Legacy rendering dropped in 5.5
     # See commit: https://gitlab.kitware.com/paraview/paraview/-/commit/798d328c
     conflicts("~opengl2", when="@5")
@@ -176,7 +176,7 @@ class Paraview(CMakePackage, CudaPackage):
     depends_on("fortran", type="build")  # generated
 
     depends_on("cmake@3.3:", type="build")
-    #depends_on("cmake@3.21:", type="build", when="+rocm")
+    # depends_on("cmake@3.21:", type="build", when="+rocm")
 
     extends("python", when="+python")
 
@@ -255,10 +255,10 @@ class Paraview(CMakePackage, CudaPackage):
             )
 
         # Dependencies for vendored VTK-m
-        #depends_on("hip@5.2:", when="+rocm")
+        # depends_on("hip@5.2:", when="+rocm")
         # CUDA thrust is already include in the CUDA pkg
-        #depends_on("rocthrust", when="@5.13: +rocm ^cmake@3.24:")
-        #for target in ROCmPackage.amdgpu_targets:
+        # depends_on("rocthrust", when="@5.13: +rocm ^cmake@3.24:")
+        # for target in ROCmPackage.amdgpu_targets:
         #    depends_on(
         #        "kokkos@:3.7 +rocm amdgpu_target={0}".format(target),
         #        when="+rocm amdgpu_target={0}".format(target),
@@ -298,7 +298,7 @@ class Paraview(CMakePackage, CudaPackage):
             for _arch in CudaPackage.cuda_arch_values:
                 depends_on(f"viskores cuda_arch={_arch}", when=f"cuda_arch={_arch}")
 
-        #with when("+rocm"):
+        # with when("+rocm"):
         #    depends_on("viskores +rocm")
         #    for target in ROCmPackage.amdgpu_targets:
         #        depends_on(f"viskores amdgpu_target={target}", when=f"amdgpu_target={target}")
@@ -562,7 +562,7 @@ class Paraview(CMakePackage, CudaPackage):
         if spec.satisfies("@5.11:"):
             cmake_args.append("-DVTK_MODULE_USE_EXTERNAL_VTK_verdict:BOOL=OFF")
 
-        #if spec.satisfies("%cce"):
+        # if spec.satisfies("%cce"):
         #    cmake_args.append("-DVTK_PYTHON_OPTIONAL_LINK:BOOL=OFF")
 
         # The assumed qt version changed to QT5 (as of paraview 5.2.1),
@@ -670,7 +670,7 @@ class Paraview(CMakePackage, CudaPackage):
         elif spec.satisfies("@6:"):
             cmake_args.append("PARAVIEW_USE_KOKKOS:BOOL=OFF")
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    if spec.satisfies("@6:"):
         #        cmake_args.append("-DPARAVIEW_KOKKOS_BACKEND:STRING=HIP")
 

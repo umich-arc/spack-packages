@@ -53,7 +53,7 @@ class Eigen(CMakePackage):
     # TODO: https://eigen.tuxfamily.org/dox/TopicUsingBlasLapack.html
 
     # Older eigen releases haven't been tested with ROCm
-    #conflicts("+rocm @:3.4.0")
+    # conflicts("+rocm @:3.4.0")
 
     # there is a bug that provokes bad parsing of nvhpc version
     patch(
@@ -119,7 +119,7 @@ class Eigen(CMakePackage):
             # https://gitlab.com/libeigen/eigen/-/issues/1656
             args.extend([self.define("BUILD_TESTING", "ON")])
 
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    args.extend(
         #        [
         #            self.define("ROCM_PATH", self.spec["hip"].prefix),

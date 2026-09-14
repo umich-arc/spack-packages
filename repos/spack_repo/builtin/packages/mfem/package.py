@@ -265,11 +265,11 @@ class Mfem(Package, CudaPackage):
     conflicts("~threadsafe", when="@:3+openmp")
     requires("+threadsafe", when="+openmp")
 
-    #conflicts("+cuda+rocm")
+    # conflicts("+cuda+rocm")
     conflicts("+amgx", when="~cuda")
     conflicts("+cudss", when="~cuda")
     conflicts("+mpi~cuda ^hypre+cuda")
-    #conflicts("+mpi~rocm ^hypre+rocm")
+    # conflicts("+mpi~rocm ^hypre+rocm")
 
     with when("@:3"):
         conflicts("+cuda")
@@ -307,7 +307,7 @@ class Mfem(Package, CudaPackage):
         conflicts("+umpire")
 
     with when("@:4.1"):
-        #conflicts("+rocm")
+        # conflicts("+rocm")
         conflicts("+amgx")
         conflicts("+slepc")
 
@@ -315,7 +315,7 @@ class Mfem(Package, CudaPackage):
         conflicts("+mpi ^hypre+cuda")
 
     with when("@:4.3"):
-        #conflicts("+mpi ^hypre+rocm")
+        # conflicts("+mpi ^hypre+rocm")
         # See https://github.com/mfem/mfem/issues/2957
         conflicts("^mpich@4:", when="+mpi")
 
@@ -332,9 +332,9 @@ class Mfem(Package, CudaPackage):
     depends_on("gmake", type="build")
 
     depends_on("mpi", when="+mpi")
-    #depends_on("hipsparse", when="@4.4.0:+rocm")
-    #depends_on("hipblas", when="@4.8.0:+rocm")
-    #depends_on("hipcub", when="@4.9.0:+rocm")
+    # depends_on("hipsparse", when="@4.4.0:+rocm")
+    # depends_on("hipblas", when="@4.8.0:+rocm")
+    # depends_on("hipcub", when="@4.9.0:+rocm")
 
     with when("+mpi"):
         depends_on("hypre")
@@ -348,8 +348,8 @@ class Mfem(Package, CudaPackage):
     for sm_ in CudaPackage.cuda_arch_values:
         requires(f"^hypre cuda_arch={sm_}", when=f"+mpi+cuda cuda_arch={sm_} ^hypre+cuda")
     # If hypre is built with +rocm, propagate amdgpu_target
-    #requires("^hypre@2.23.0: ", when="+mpi+rocm ^hypre+rocm")
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # requires("^hypre@2.23.0: ", when="+mpi+rocm ^hypre+rocm")
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    requires(f"^hypre amdgpu_target={gfx}", when=f"+mpi+rocm amdgpu_target={gfx} ^hypre+rocm")
 
     depends_on("metis", when="+metis")
@@ -370,7 +370,7 @@ class Mfem(Package, CudaPackage):
             "sundials@5.4.0:+cuda cuda_arch={0}".format(sm_),
             when="@4.2.0:+sundials+cuda cuda_arch={0}".format(sm_),
         )
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "sundials@5.7.0:+rocm amdgpu_target={0}".format(gfx),
     #        when="@4.6.0:+sundials+rocm amdgpu_target={0}".format(gfx),
@@ -393,7 +393,7 @@ class Mfem(Package, CudaPackage):
             when=f"+superlu-dist+cuda cuda_arch={sm_} ^superlu-dist+cuda",
         )
     # If superlu-dist is built with +rocm, propagate amdgpu_target
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    requires(
     #        f"^superlu-dist+rocm amdgpu_target={gfx}",
     #        when=f"+superlu-dist+rocm amdgpu_target={gfx} ^superlu-dist+rocm",
@@ -405,7 +405,7 @@ class Mfem(Package, CudaPackage):
             "strumpack+cuda cuda_arch={0}".format(sm_),
             when="+strumpack+cuda cuda_arch={0}".format(sm_),
         )
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "strumpack+rocm amdgpu_target={0}".format(gfx),
     #        when="+strumpack+rocm amdgpu_target={0}".format(gfx),
@@ -415,14 +415,14 @@ class Mfem(Package, CudaPackage):
     # with MUMPS is not strictly required, so we do not require it here.
     depends_on("petsc@3.8:+mpi+hypre", when="+petsc")
     # rocPRIM is a dependency when using petsc+rocm and requires C++14 or newer:
-    #conflicts("cxxstd=11", when="^rocprim@5.5.0:")
+    # conflicts("cxxstd=11", when="^rocprim@5.5.0:")
     depends_on("slepc@3.8.0:", when="+slepc")
     # If petsc is built with +cuda, propagate cuda_arch to petsc and slepc
     for sm_ in CudaPackage.cuda_arch_values:
         requires(f"^petsc cuda_arch={sm_}", when=f"+cuda+petsc cuda_arch={sm_} ^petsc+cuda")
         depends_on(f"slepc+cuda cuda_arch={sm_}", when=f"+cuda+slepc cuda_arch={sm_} ^petsc+cuda")
     ## If petsc is built with +rocm, propagate amdgpu_target to petsc and slepc
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    requires(
     #        f"^petsc amdgpu_target={gfx}", when=f"+rocm+petsc amdgpu_target={gfx} ^petsc+rocm"
     #    )
@@ -446,7 +446,7 @@ class Mfem(Package, CudaPackage):
         depends_on(
             "ginkgo+cuda cuda_arch={0}".format(sm_), when="+ginkgo+cuda cuda_arch={0}".format(sm_)
         )
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "ginkgo+rocm amdgpu_target={0}".format(gfx),
     #        when="+ginkgo+rocm amdgpu_target={0}".format(gfx),
@@ -457,7 +457,7 @@ class Mfem(Package, CudaPackage):
         depends_on(
             "hiop+cuda cuda_arch={0}".format(sm_), when="+hiop+cuda cuda_arch={0}".format(sm_)
         )
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "hiop+rocm amdgpu_target={0}".format(gfx),
     #        when="+hiop+rocm amdgpu_target={0}".format(gfx),
@@ -488,7 +488,7 @@ class Mfem(Package, CudaPackage):
         depends_on(
             "raja+cuda cuda_arch={0}".format(sm_), when="+raja+cuda cuda_arch={0}".format(sm_)
         )
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "raja+rocm amdgpu_target={0}".format(gfx),
     #        when="+raja+rocm amdgpu_target={0}".format(gfx),
@@ -507,7 +507,7 @@ class Mfem(Package, CudaPackage):
             "libceed+cuda cuda_arch={0}".format(sm_),
             when="+libceed+cuda cuda_arch={0}".format(sm_),
         )
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "libceed+rocm amdgpu_target={0}".format(gfx),
     #        when="+libceed+rocm amdgpu_target={0}".format(gfx),
@@ -520,7 +520,7 @@ class Mfem(Package, CudaPackage):
         depends_on(
             "umpire+cuda cuda_arch={0}".format(sm_), when="+umpire+cuda cuda_arch={0}".format(sm_)
         )
-    #for gfx in ROCmPackage.amdgpu_targets:
+    # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "umpire+rocm amdgpu_target={0}".format(gfx),
     #        when="+umpire+rocm amdgpu_target={0}".format(gfx),
@@ -541,8 +541,8 @@ class Mfem(Package, CudaPackage):
     depends_on("enzyme@0.0.176:", when="+enzyme")
     requires("%cxx=llvm", when="+enzyme")
     depends_on("cuda+allow-unsupported-compilers", when="+enzyme+cuda")
-    #depends_on("enzyme %libllvm=llvm-amdgpu", when="+enzyme+rocm")
-    #requires("%cxx=llvm-amdgpu", when="+enzyme+rocm")
+    # depends_on("enzyme %libllvm=llvm-amdgpu", when="+enzyme+rocm")
+    # requires("%cxx=llvm-amdgpu", when="+enzyme+rocm")
 
     for using_double_cond in ["@:4.6", "precision=double"]:
         with when(using_double_cond):
@@ -720,7 +720,7 @@ class Mfem(Package, CudaPackage):
         if self.spec.satisfies("^sundials@6.4.0:"):
             cxxstd = "14"
         # When rocPRIM is used (e.g. by PETSc + ROCm) we need C++14:
-        #if self.spec.satisfies("^rocprim@5.5.0:"):
+        # if self.spec.satisfies("^rocprim@5.5.0:"):
         #    cxxstd = "14"
         if self.spec.satisfies("^ginkgo@1.4.0:1.8"):
             cxxstd = "14"
@@ -813,7 +813,7 @@ class Mfem(Package, CudaPackage):
             hypre_gpu_libs = ""
             if "+cuda" in hypre:
                 hypre_gpu_libs = " -lcusolver -lcusparse -lcurand -lcublas"
-            #elif "+rocm" in hypre:
+            # elif "+rocm" in hypre:
             #    hypre_rocm_libs = LibraryList([])
             #    if "^rocsparse" in hypre:
             #        hypre_rocm_libs += hypre["rocsparse"].libs
@@ -1093,7 +1093,7 @@ class Mfem(Package, CudaPackage):
                 if thread_libs:
                     options += ["MFEM_CUDSS_THREADING_LIB=%s" % thread_libs[0]]
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    amdgpu_target = ",".join(spec.variants["amdgpu_target"].value)
         #    options += ["HIP_CXX=%s" % spec["hip"].hipcc, "HIP_ARCH=%s" % amdgpu_target]
         #    hip_headers = HeaderList([])
@@ -1453,7 +1453,7 @@ class Mfem(Package, CudaPackage):
                 sun_comps += ",nvecparhyp,nvecparallel"
         if "+cuda" in spec and "+cuda" in spec["sundials"]:
             sun_comps += ",nveccuda"
-        #if "+rocm" in spec and "+rocm" in spec["sundials"]:
+        # if "+rocm" in spec and "+rocm" in spec["sundials"]:
         #    sun_comps += ",nvechip"
         return sun_comps
 

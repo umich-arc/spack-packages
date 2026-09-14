@@ -138,7 +138,6 @@ class Openmpi(AutotoolsPackage, CudaPackage):
         "4.1.0", sha256="73866fb77090819b6a8c85cb8539638d37d6877455825b74e289d647a39fd5b5"
     )  # libmpi.so.40.30.0
 
-
     patch("ad_lustre_rwcontig_open_source.patch", when="@1.6.5")
     patch("llnl-platforms.patch", when="@1.6.5")
     patch("configure.patch", when="@1.10.1")
@@ -202,7 +201,7 @@ class Openmpi(AutotoolsPackage, CudaPackage):
 
     # Add missing header for memcpy
     # https://github.com/open-mpi/ompi/commit/aa5577441ff1ab7f97f8b63e442b37457c7bd997
-    #patch("add_string.patch", when="@5.0.1:5.0.8 +rocm")
+    # patch("add_string.patch", when="@5.0.1:5.0.8 +rocm")
 
     # GCC 16: drop __opal_attribute_always_inline__ from mca_part_persist_start
     # to fix "inlining failed in call to always_inline: recursive inlining" error
@@ -393,7 +392,7 @@ with '-Wl,-commons,use_dylibs' and without
     depends_on("fca", when="fabrics=fca")
     depends_on("hcoll", when="fabrics=hcoll")
     depends_on("ucc", when="fabrics=ucc")
-    #depends_on("ucc +rocm", when="fabrics=ucc +rocm")
+    # depends_on("ucc +rocm", when="fabrics=ucc +rocm")
     depends_on("xpmem", when="fabrics=xpmem")
     depends_on("knem", when="fabrics=knem")
 
@@ -401,14 +400,14 @@ with '-Wl,-commons,use_dylibs' and without
     depends_on("pbs", when="schedulers=tm")
     depends_on("slurm", when="schedulers=slurm")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    libfabric_requirement = ""
     #    if is_CrayEX() or check_FI_HMEM_ROCR() or slingshot_network():
     #        libfabric_requirement = "fabrics=cxi"
     #    requires("fabrics=ucx ^ucx +rocm", f"^libfabric {libfabric_requirement}", policy="one_of")
 
     depends_on("cuda", type=("build", "link", "run"), when="@5: +cuda")
-    #depends_on("hip", type=("build", "link", "run"), when="@5: +rocm")
+    # depends_on("hip", type=("build", "link", "run"), when="@5: +rocm")
 
     conflicts("+cxx_exceptions", when="%nvhpc", msg="nvc does not ignore -fexceptions, but errors")
 
@@ -417,7 +416,7 @@ with '-Wl,-commons,use_dylibs' and without
     # variant.
     conflicts("+cuda", when="@:1.6")
     # Same goes with ROCm support added in 5.0
-    #conflicts("+rocm", when="@:4")
+    # conflicts("+rocm", when="@:4")
     # PSM2 support was added in 1.10.0
     conflicts("fabrics=psm2", when="@:1.8")
     # MXM support was added in 1.5.4
@@ -525,12 +524,12 @@ with '-Wl,-commons,use_dylibs' and without
                 variants.append("~cuda")
 
             # rocm
-            #match = re.search(
+            # match = re.search(
             #    r'parameter "mpi_built_with_rocm_support" ' + r'\(current value: "(\S+)"', output
-            #)
-            #if match and is_enabled(match.group(1)):
+            # )
+            # if match and is_enabled(match.group(1)):
             #    variants.append("+rocm")
-            #else:
+            # else:
             #    variants.append("~rocm")
 
             # wrapper-rpath
@@ -735,9 +734,7 @@ with '-Wl,-commons,use_dylibs' and without
             if recorded_prefix:
                 if not self._arc_pmix_is_usable(recorded_prefix):
                     raise InstallError(
-                        "Recorded ARC PMIx prefix is no longer usable: {0}".format(
-                            recorded_prefix
-                        )
+                        "Recorded ARC PMIx prefix is no longer usable: {0}".format(recorded_prefix)
                     )
                 return recorded_prefix
         return self._detect_arc_pmix_prefix()
@@ -1070,7 +1067,7 @@ with '-Wl,-commons,use_dylibs' and without
 
         # ROCm support
         # See https://docs.open-mpi.org/en/v5.0.x/tuning-apps/networking/rocm.html
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    config_args.append("--with-rocm={0}".format(spec["hip"].prefix))
         if spec.satisfies("@5:"):
             config_args.append("--without-rocm")

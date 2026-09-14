@@ -202,7 +202,7 @@ class Petsc(Package, CudaPackage):
         "fortran-bindings", default=True, when="+fortran", description="Activates fortran bindings"
     )
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    # hipsparse@5.6.0 broke hipsparseSpSV_solve() API, reverted in 5.6.1.
     #    patch(
     #        "https://gitlab.com/petsc/petsc/-/commit/ef7140cce45367033b48bbd2624dfd2b6aa4b997.diff",
@@ -228,7 +228,7 @@ class Petsc(Package, CudaPackage):
 
     # segmentedmempool.hpp(178): error: expression must be a modifiable lvalue
     # https://gitlab.com/petsc/petsc/-/merge_requests/8152
-    #patch("petsc_modifiable_lvalue.patch", when="@3.21.6:3.22.4+rocm")
+    # patch("petsc_modifiable_lvalue.patch", when="@3.21.6:3.22.4+rocm")
     patch("petsc_modifiable_lvalue.patch", when="@3.21.6:3.22.4+cuda")
 
     # fixes build with: +complex ^cuda@13.3. Upstream fix: petsc!9532.
@@ -287,9 +287,9 @@ class Petsc(Package, CudaPackage):
     conflicts(
         "^cuda@12.4:", when="@:3.20.5 +cuda", msg="Deprecation in CCCL 2.3 causes build failure."
     )
-    #depends_on("hip", when="+rocm")
+    # depends_on("hip", when="+rocm")
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    depends_on("rocm-core")
     #    depends_on("hipblas")
     #    depends_on("hipblas-common", when="^hipblas@6.3.0:")
@@ -340,7 +340,7 @@ class Petsc(Package, CudaPackage):
     depends_on("hypre+complex", when="+hypre+complex")
     depends_on("hypre~complex", when="+hypre~complex")
     depends_on("hypre+mixedint+cuda", when="+hypre+int64+cuda")
-    #depends_on("hypre+mixedint+rocm", when="+hypre+int64+rocm")
+    # depends_on("hypre+mixedint+rocm", when="+hypre+int64+rocm")
     depends_on("hypre+mixedint", when="+hypre+int64")
     depends_on("hypre~int64", when="+hypre~int64")
     depends_on("hypre+mpi", when="+hypre")
@@ -396,7 +396,7 @@ class Petsc(Package, CudaPackage):
             "kokkos-kernels+cuda cuda_arch=%s" % cuda_arch,
             when="+kokkos +cuda cuda_arch=%s" % cuda_arch,
         )
-    #for rocm_arch in ROCmPackage.amdgpu_targets:
+    # for rocm_arch in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "kokkos+rocm amdgpu_target=%s" % rocm_arch,
     #        when="+kokkos +rocm amdgpu_target=%s" % rocm_arch,
@@ -634,7 +634,7 @@ class Petsc(Package, CudaPackage):
                     options.append("--with-cuda-gencodearch={0}".format(cuda_arch[0]))
         else:
             options.append("--with-cudac=0")
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    if not spec.satisfies("amdgpu_target=none"):
         #        hip_arch = spec.variants["amdgpu_target"].value
         #        options.append("--with-hip-arch={0}".format(hip_arch[0]))
@@ -653,13 +653,13 @@ class Petsc(Package, CudaPackage):
         #        hip_lib += spec[pkg].libs.joined() + " "
         #    options.append("HIPPPFLAGS=%s" % hip_inc)
         #    options.append("--with-hip-lib=%s -L%s -lamdhip64" % (hip_lib, spec["hip"].prefix.lib))
-        #else:
+        # else:
         options.append("--with-hipc=0")
 
         if "superlu-dist" in spec:
             if spec.satisfies("@3.10.3:3.15"):
                 options.append("--with-cxx-dialect=C++11")
-            #if spec["superlu-dist"].satisfies("+rocm"):
+            # if spec["superlu-dist"].satisfies("+rocm"):
             #    # Suppress HIP header warning message, otherwise the PETSc
             #    # configuration fails:
             #    options.append("CXXPPFLAGS=-DROCM_NO_WRAPPER_HEADER_WARNING")

@@ -53,10 +53,10 @@ class Archivetar(Package):
 
     # mpiFileUtils still finds these through CMake; keeping them as ordinary
     # dependencies makes the bundled build less dependent on host OS headers.
-    #depends_on("bzip2")
-    #depends_on("libarchive")
-    #depends_on("libcap", when="platform=linux")
-    #depends_on("openssl")
+    # depends_on("bzip2")
+    # depends_on("libarchive")
+    # depends_on("libcap", when="platform=linux")
+    # depends_on("openssl")
 
     app_source_entries = (
         "GlobusTransfer",

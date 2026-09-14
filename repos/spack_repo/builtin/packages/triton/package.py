@@ -49,19 +49,19 @@ class Triton(CMakePackage, CudaPackage):
     )
     variant("tests", default=False, description="Build TRITON regression tests")
 
-    #conflicts("+cuda", when="+rocm", msg="TRITON backends are mutually exclusive")
+    # conflicts("+cuda", when="+rocm", msg="TRITON backends are mutually exclusive")
     conflicts("+openmp", when="+cuda", msg="TRITON backends are mutually exclusive")
-    #conflicts("+openmp", when="+rocm", msg="TRITON backends are mutually exclusive")
+    # conflicts("+openmp", when="+rocm", msg="TRITON backends are mutually exclusive")
     conflicts(
         "+native_launcher",
         when="~cuda",
         msg="TRITON native launcher only applies to CUDA builds",
     )
     conflicts("+cuda", when="cuda_arch=none")
-    #conflicts("+rocm", when="amdgpu_target=none")
+    # conflicts("+rocm", when="amdgpu_target=none")
     conflicts("%cxx=gcc@:12", msg="TRITON requires GCC 13 or newer")
     conflicts("%cxx=llvm@:15", msg="TRITON requires Clang 16 or newer")
-    #conflicts("%cxx=cce@:15", msg="TRITON requires Cray CCE 16 or newer")
+    # conflicts("%cxx=cce@:15", msg="TRITON requires Cray CCE 16 or newer")
     conflicts("%cxx=oneapi@:2023", msg="TRITON requires Intel oneAPI 2024 or newer")
 
     depends_on("cxx", type="build")
@@ -71,16 +71,16 @@ class Triton(CMakePackage, CudaPackage):
     depends_on("kokkos@5.1.1:5 cxxstd=20")
     depends_on("kokkos ~openmp", when="~openmp")
     depends_on("kokkos ~cuda", when="~cuda")
-    #depends_on("kokkos ~rocm", when="~rocm")
+    # depends_on("kokkos ~rocm", when="~rocm")
     depends_on("kokkos +serial", when="~openmp~cuda")
     depends_on("kokkos +openmp", when="+openmp")
     depends_on("kokkos +cuda +cuda_constexpr", when="+cuda")
     depends_on("kokkos +wrapper", when="+cuda %cxx=gcc")
-    #depends_on("kokkos +rocm", when="+rocm")
+    # depends_on("kokkos +rocm", when="+rocm")
     depends_on("yaml-cpp", when="+ensemble")
     depends_on("gdal", when="+gdal")
     depends_on("cuda@12.4:", when="+cuda", type=("build", "link", "run"))
-    #depends_on("hip@6.2: +rocm", when="+rocm", type=("build", "link", "run"))
+    # depends_on("hip@6.2: +rocm", when="+rocm", type=("build", "link", "run"))
 
     for cuda_arch in CudaPackage.cuda_arch_values:
         depends_on(
@@ -88,7 +88,7 @@ class Triton(CMakePackage, CudaPackage):
             when="+cuda cuda_arch={0}".format(cuda_arch),
         )
 
-    #for amdgpu_value in ROCmPackage.amdgpu_targets:
+    # for amdgpu_value in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "kokkos +rocm amdgpu_target={0}".format(amdgpu_value),
     #        when="+rocm amdgpu_target={0}".format(amdgpu_value),
@@ -97,13 +97,13 @@ class Triton(CMakePackage, CudaPackage):
     def _backend(self):
         if "+cuda" in self.spec:
             return "CUDA"
-        #elif "+rocm" in self.spec:
+        # elif "+rocm" in self.spec:
         #    return "HIP"
         elif "+openmp" in self.spec:
             return "OPENMP"
         return "SERIAL"
 
-    #def _rocm_arch_flag(self):
+    # def _rocm_arch_flag(self):
     #    targets = self.spec.variants["amdgpu_target"].value
     #    if not targets:
     #        return None
@@ -158,7 +158,7 @@ class Triton(CMakePackage, CudaPackage):
             compiler_flags.append(spec["mpi"].headers.cpp_flags)
             linker_flags.append(spec["mpi"].libs.ld_flags)
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    compiler = spec["hip"].hipcc
         #    if "+native_launcher" in spec:
         #        compiler_flags.append("-DTRITON_HIP_LAUNCHER")

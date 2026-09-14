@@ -105,7 +105,7 @@ class Mgard(CMakePackage, CudaPackage):
     depends_on("cmake@3.19:", type="build")
     depends_on("nvcomp@2.2.0:", when="@compat-2022-11-18:+cuda")
     depends_on("nvcomp@2.0.2", when="@:compat-2021-11-12+cuda")
-    #depends_on("hipcub", when="+rocm")
+    # depends_on("hipcub", when="+rocm")
     with when("+openmp"):
         depends_on("llvm-openmp", when="%apple-clang")
 
@@ -115,7 +115,7 @@ class Mgard(CMakePackage, CudaPackage):
         when="@compat-2021-11-12",
         msg="without cuda MGARD@compat-2021-11-12 has undefined symbols",
     )
-    #conflicts("+openmp", when="+rocm", msg="compiling with both rocm and openmp not supported")
+    # conflicts("+openmp", when="+rocm", msg="compiling with both rocm and openmp not supported")
     conflicts(
         "%gcc@:7", when="@compat-2022-11-18:", msg="requires std::optional and other c++17 things"
     )
@@ -141,8 +141,8 @@ class Mgard(CMakePackage, CudaPackage):
                 "@compat-2020-10-01 %oneapi@2023:",
                 "@compat-2020-10-01 %apple-clang@15:",
                 "@compat-2020-10-01 %aocc@3:",
-                #"@compat-2020-10-01 %cce@15:",
-                #"@compat-2020-10-01 %rocmcc@4:",
+                # "@compat-2020-10-01 %cce@15:",
+                # "@compat-2020-10-01 %rocmcc@4:",
             ]:
                 if self.spec.satisfies(a_spec):
                     flags.append("-Wno-error=c++11-narrowing")
@@ -152,7 +152,7 @@ class Mgard(CMakePackage, CudaPackage):
         spec = self.spec
         args = ["-DBUILD_TESTING=OFF"]
         args.append(self.define_from_variant("MGARD_ENABLE_CUDA", "cuda"))
-        #args.append(self.define_from_variant("MGARD_ENABLE_HIP", "rocm"))
+        # args.append(self.define_from_variant("MGARD_ENABLE_HIP", "rocm"))
 
         if "+cuda" in spec:
             cuda_arch_list = spec.variants["cuda_arch"].value
@@ -166,7 +166,7 @@ class Mgard(CMakePackage, CudaPackage):
                 if "70" in cuda_arch_list:
                     args.append("-DMGARD_ENABLE_CUDA_OPTIMIZE_VOLTA=ON")
 
-        #if "+rocm" in spec:
+        # if "+rocm" in spec:
         #    args.append(CMakeBuilder.define_hip_architectures(self))
 
         if self.spec.satisfies("@compat-2022-11-18:"):

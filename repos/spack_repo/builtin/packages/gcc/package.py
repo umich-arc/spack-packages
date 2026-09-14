@@ -218,7 +218,7 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
     depends_on("c", type="build")
     depends_on("cxx", type="build")
     # mawk is not sufficient for go support
-    
+
     depends_on("gmp@4.3.2:")
 
     # GCC 7.3 does not compile with newer releases on some platforms, see
@@ -230,7 +230,7 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
     depends_on("zlib-api", when="@6:")
     depends_on("zstd", when="@10:")
     depends_on("binutils")
-    
+
     # Already released GCC versions do not support any newer version of ISL
     #   GCC 5.4 https://github.com/spack/spack/issues/6902#issuecomment-433072097
     #   GCC 7.3 https://github.com/spack/spack/issues/6902#issuecomment-433030376

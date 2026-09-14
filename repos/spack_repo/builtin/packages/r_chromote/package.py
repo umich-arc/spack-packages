@@ -10,9 +10,7 @@ from spack.package import *
 class RChromote(RPackage):
     """An implementation of the 'Chrome DevTools Protocol', for controlling a headless Chrome web browser."""
 
-
     cran = "chromote"
-
 
     license("MIT", checked_by="theAeon")
 

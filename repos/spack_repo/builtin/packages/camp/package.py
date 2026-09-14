@@ -115,15 +115,15 @@ class Camp(CMakePackage, CudaPackage):
 
     patch("libstdc++-13-missing-header.patch", when="@:2022.10")
 
-    #patch("camp-rocm6.patch", when="@0.2.3 +rocm ^hip@6:")
+    # patch("camp-rocm6.patch", when="@0.2.3 +rocm ^hip@6:")
     # Version 2022.03.0 to 2023.06.0 requires patch
-    #patch("camp-rocm6.patch", when="@2022.03.0:2023.06.0 +rocm ^hip@6:")
+    # patch("camp-rocm6.patch", when="@2022.03.0:2023.06.0 +rocm ^hip@6:")
 
-    #conflicts("^blt@:0.3.6", when="+rocm")
+    # conflicts("^blt@:0.3.6", when="+rocm")
 
-    #conflicts("+omptarget +rocm")
+    # conflicts("+omptarget +rocm")
     conflicts("+sycl +omptarget")
-    #conflicts("+sycl +rocm")
+    # conflicts("+sycl +rocm")
     conflicts(
         "+sycl",
         when="@:2024.02.99",
@@ -146,8 +146,8 @@ class Camp(CMakePackage, CudaPackage):
                 cuda_arch = spec.variants["cuda_arch"].value
                 options.append("-DCMAKE_CUDA_ARCHITECTURES={0}".format(";".join(cuda_arch)))
 
-        #options.append(self.define_from_variant("ENABLE_HIP", "rocm"))
-        #if spec.satisfies("+rocm"):
+        # options.append(self.define_from_variant("ENABLE_HIP", "rocm"))
+        # if spec.satisfies("+rocm"):
         #    rocm_root = spec["llvm-amdgpu"].prefix
         #    options.append(self.define("ROCM_PATH", rocm_root))
 

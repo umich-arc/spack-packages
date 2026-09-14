@@ -109,9 +109,7 @@ class Lci(CMakePackage):
     variant(
         "bootstrap",
         description="Bootstrap backends to enable",
-        values=disjoint_sets(
-            ("auto",), ("pmix", "pmi2", "pmi1", "mpi", "file", "local")
-        )
+        values=disjoint_sets(("auto",), ("pmix", "pmi2", "pmi1", "mpi", "file", "local"))
         .prohibit_empty_set()
         .with_default("auto")
         .with_non_feature_values("auto"),
@@ -129,9 +127,7 @@ class Lci(CMakePackage):
     variant(
         "default-pm",
         description="Order of process management backends to try by default",
-        values=disjoint_sets(
-            ("auto",), ("pmix", "pmi2", "pmi1", "mpi", "file", "local")
-        )
+        values=disjoint_sets(("auto",), ("pmix", "pmi2", "pmi1", "mpi", "file", "local"))
         .prohibit_empty_set()
         .with_default("auto")
         .with_non_feature_values("auto"),
@@ -149,7 +145,7 @@ class Lci(CMakePackage):
     depends_on("mpi", when="bootstrap=mpi")
     depends_on("papi", when="+papi")
     depends_on("doxygen", when="+docs")
-    #depends_on("cray-pmi", when="bootstrap=cray")
+    # depends_on("cray-pmi", when="bootstrap=cray")
     depends_on("gperftools", when="+tcmalloc")
     depends_on("python@3.8:", type="build", when="@2:")
 
@@ -185,22 +181,22 @@ class Lci(CMakePackage):
         ]
 
         if "auto" not in bootstrap:
-            #if "cray" in bootstrap:
+            # if "cray" in bootstrap:
             #    args.extend(
             #        [
             #            self.define("LCI_PMI_BACKEND_DEFAULT", "pmi1"),
             #            self.define("LCT_PMI_BACKEND_ENABLE_PMI1", True),
             #        ]
             #    )
-            #else:
-                args.extend(
-                    [
-                        self.define("LCT_PMI_BACKEND_ENABLE_PMI1", "pmi1" in bootstrap),
-                        self.define("LCT_PMI_BACKEND_ENABLE_PMI2", "pmi2" in bootstrap),
-                        self.define("LCT_PMI_BACKEND_ENABLE_MPI", "mpi" in bootstrap),
-                        self.define("LCT_PMI_BACKEND_ENABLE_PMIX", "pmix" in bootstrap),
-                        self.define("LCI_PMI_BACKEND_DEFAULT", sorted(bootstrap)),
-                    ]
+            # else:
+            args.extend(
+                [
+                    self.define("LCT_PMI_BACKEND_ENABLE_PMI1", "pmi1" in bootstrap),
+                    self.define("LCT_PMI_BACKEND_ENABLE_PMI2", "pmi2" in bootstrap),
+                    self.define("LCT_PMI_BACKEND_ENABLE_MPI", "mpi" in bootstrap),
+                    self.define("LCT_PMI_BACKEND_ENABLE_PMIX", "pmix" in bootstrap),
+                    self.define("LCI_PMI_BACKEND_DEFAULT", sorted(bootstrap)),
+                ]
             )
 
         if not self.spec.satisfies("cache-line=auto"):

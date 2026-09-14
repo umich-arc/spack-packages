@@ -357,7 +357,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
         values=("kiss", "fftw3", "mkl", "mkl_gpu", "nvpl", "hipfft", "cufft"),
         multi=False,
     )
-    for cond in ("cuda", "opencl"): # used to also contain "rocm"
+    for cond in ("cuda", "opencl"):  # used to also contain "rocm"
         variant("gpu", default=True, when=f"+{cond}", description="Activate the GPU package")
         variant(
             "gpu_precision",
@@ -378,7 +378,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
     depends_on("heffte+fftw", when="+heffte fft=fftw3")
     depends_on("heffte+mkl", when="+heffte fft=mkl")
     depends_on("mkl", when="+kspace fft=mkl")
-    #depends_on("hipfft", when="+kokkos+kspace+rocm fft_kokkos=hipfft")
+    # depends_on("hipfft", when="+kokkos+kspace+rocm fft_kokkos=hipfft")
     depends_on("fftw-api@3", when="+kokkos+kspace fft_kokkos=fftw3")
     depends_on("mkl", when="+kokkos+kspace fft_kokkos=mkl")
     depends_on("nvpl-fft", when="+kspace fft=nvpl")
@@ -446,10 +446,10 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
     depends_on("scafacos cflags=-fPIC cxxflags=-fPIC fflags=-fPIC", when="+scafacos+lib")
     depends_on("vtk", when="+user-vtk")
     depends_on("vtk", when="+vtk")
-    #depends_on("hipcub", when="~kokkos +rocm")
-    #depends_on("hipcub@:6", when="@:20250722 ~kokkos +rocm")
-    #depends_on("llvm-amdgpu ", when="+rocm", type="build")
-    #depends_on("rocm-openmp-extras", when="+rocm +openmp", type="build")
+    # depends_on("hipcub", when="~kokkos +rocm")
+    # depends_on("hipcub@:6", when="@:20250722 ~kokkos +rocm")
+    # depends_on("llvm-amdgpu ", when="+rocm", type="build")
+    # depends_on("rocm-openmp-extras", when="+rocm +openmp", type="build")
     depends_on("llvm-openmp", when="+openmp %apple-clang", type="build")
     depends_on("gsl@2.6:", when="+rheo")
     depends_on("tbb", when="+intel %oneapi")
@@ -458,7 +458,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
     for arch in CudaPackage.cuda_arch_values:
         depends_on("kokkos+cuda cuda_arch=%s" % arch, when="+kokkos+cuda cuda_arch=%s" % arch)
 
-    #for arch in ROCmPackage.amdgpu_targets:
+    # for arch in ROCmPackage.amdgpu_targets:
     #    depends_on(
     #        "kokkos+rocm amdgpu_target=%s" % arch, when="+kokkos+rocm amdgpu_target=%s" % arch
     #    )
@@ -474,7 +474,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
         msg="smallsmall support has been removed in version 20250402",
     )
     conflicts("+cuda", when="+opencl")
-    #conflicts("+rocm", when="+opencl")
+    # conflicts("+rocm", when="+opencl")
     conflicts("+body", when="+poems@:20180628")
     conflicts("+python", when="~lib")
     conflicts("+qeq", when="~manybody")
@@ -510,11 +510,11 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
         when="^adios2+mpi",
         msg="With +adios, mpi setting for adios2 and lammps must be the same",
     )
-    #conflicts(
+    # conflicts(
     #    "~kokkos+rocm",
     #    when="@:20220602",
     #    msg="ROCm builds of the GPU package not maintained prior to version 20220623",
-    #)
+    # )
     conflicts("+intel", when="%aocc@:3.2.9999", msg="+intel with AOCC requires version 4 or newer")
     conflicts("fft=nvpl", when="@:20240829", msg="fft=nvpl requires newer LAMMPS version")
     conflicts(
@@ -527,18 +527,18 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
     )
 
     # Backport of https://github.com/lammps/lammps/pull/3726
-    #conflicts("+kokkos+rocm+kspace", when="@:20210929.3")
-    #patch(
+    # conflicts("+kokkos+rocm+kspace", when="@:20210929.3")
+    # patch(
     #    "https://github.com/lammps/lammps/commit/ebb8eee941e52c98054fdf96ea78ee4d5f606f47.patch?full_index=1",
     #    sha256="3dedd807f63a21c543d1036439099f05c6031fd98e7cb1ea7825822fc074106e",
     #    when="@20220623.3:20230208 +kokkos +rocm +kspace",
-    #)
+    # )
     # Fixed in https://github.com/lammps/lammps/pull/4305
-    #patch(
+    # patch(
     #    "https://github.com/lammps/lammps/commit/49bdc3e26449634f150602a66d0dab34d09dbc0e.patch?full_index=1",
     #    sha256="b8d1f08a82329e493e040de2bde9d2291af173a0fe6c7deb24750cc22823c421",
     #    when="@20240829 %cce",
-    #)
+    # )
     # Fixes OpenMP detection with AppleClang https://github.com/lammps/lammps/pull/4550
     patch(
         "https://github.com/lammps/lammps/commit/4e69046e5481f18f6d1402bca04fb3412991eec9.patch?full_index=1",
@@ -567,12 +567,12 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
     # versions here
     patch("intel-aocc.patch", when="@20220324:20220623.3,20220803:20221103 +intel %aocc")
 
-    #patch(
+    # patch(
     #    "https://github.com/lammps/lammps/commit/562300996285fdec4ef74542383276898555af06.patch?full_index=1",
     #    sha256="e6f1b62bbfdc79d632f4cea98019202d0dd25aa4ae61a70df1164cb4f290df79",
     #    when="@20200721 +cuda",
-    #)
-    #patch("hip_cmake.patch", when="@20220623:20221222 ~kokkos+rocm")
+    # )
+    # patch("hip_cmake.patch", when="@20220623:20221222 ~kokkos+rocm")
 
     # Add large potential files
     resource(
@@ -591,7 +591,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
         build_system_flags = []
 
         if self.spec.satisfies("+mpi+cuda"):
-            #if self.spec.satisfies("^[virtuals=mpi] cray-mpich"):
+            # if self.spec.satisfies("^[virtuals=mpi] cray-mpich"):
             #    gtl_lib = self.spec["cray-mpich"].package.gtl_lib
             #    build_system_flags.extend(gtl_lib.get(name) or [])
             # hipcc is not wrapped, we need to pass the flags via the build
@@ -649,7 +649,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
                 args.append(self.define("USE_STATIC_OPENCL_LOADER", False))
                 args.append(self.define("GPU_API", "opencl"))
                 args.append(self.define_from_variant("GPU_PREC", "gpu_precision"))
-            #elif spec.satisfies("+rocm"):
+            # elif spec.satisfies("+rocm"):
             #    args.append(self.define("GPU_API", "hip"))
             #    args.append(self.define_from_variant("GPU_PREC", "gpu_precision"))
             #    if spec.satisfies("@:20260330"):
@@ -754,7 +754,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
             args.append(self.define("DOWNLOAD_N2P2", False))
             args.append(self.define("N2P2_DIR", self.spec["n2p2"].prefix))
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    args.append(self.define("CMAKE_CXX_COMPILER", spec["hip"].hipcc))
         #    if spec.satisfies("@:20231121"):
         #        if spec.satisfies("^hip@:5.4"):

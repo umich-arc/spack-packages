@@ -214,7 +214,7 @@ class Axom(CachedCMakePackage, CudaPackage):
 
     depends_on("cmake@3.14:", type="build")
     depends_on("cmake@3.18:", type="build", when="@0.7.0:")
-    #depends_on("cmake@3.21:", type="build", when="+rocm")
+    # depends_on("cmake@3.21:", type="build", when="+rocm")
 
     depends_on("blt", type="build")
     depends_on("blt@0.7.1:", type="build", when="@0.12:")
@@ -276,8 +276,8 @@ class Axom(CachedCMakePackage, CudaPackage):
         depends_on("caliper+cuda", when="+cuda")
         depends_on("caliper~cuda", when="~cuda")
 
-        #depends_on("caliper+rocm", when="+rocm")
-        #depends_on("caliper~rocm", when="~rocm")
+        # depends_on("caliper+rocm", when="+rocm")
+        # depends_on("caliper~rocm", when="~rocm")
 
         for dep in ["adiak", "caliper"]:
             depends_on(f"{dep}+mpi", when="+mpi")
@@ -301,7 +301,7 @@ class Axom(CachedCMakePackage, CudaPackage):
         depends_on(f"caliper {ext_cuda_dep}", when=f"+profiling {ext_cuda_dep}")
         depends_on(f"mfem {ext_cuda_dep}", when=f"+mfem {ext_cuda_dep}")
 
-    #for val in ROCmPackage.amdgpu_targets:
+    # for val in ROCmPackage.amdgpu_targets:
     #    ext_rocm_dep = f"+rocm amdgpu_target={val}"
     #    depends_on(f"raja {ext_rocm_dep}", when=f"+raja {ext_rocm_dep}")
     #    depends_on(f"umpire {ext_rocm_dep}", when=f"+umpire {ext_rocm_dep}")
@@ -309,7 +309,7 @@ class Axom(CachedCMakePackage, CudaPackage):
     #    depends_on(f"caliper {ext_rocm_dep}", when=f"+profiling {ext_rocm_dep}")
     #    depends_on(f"mfem {ext_rocm_dep}", when=f"+mfem {ext_rocm_dep}")
 
-    #depends_on("rocprim", when="+rocm")
+    # depends_on("rocprim", when="+rocm")
 
     depends_on("opencascade", when="+opencascade")
 
@@ -368,17 +368,17 @@ class Axom(CachedCMakePackage, CudaPackage):
     # Sidre requires conduit_blueprint_mpi.hpp
     conflicts("^conduit@:0.6.0", when="@0.5.0:")
 
-    #conflicts("+cuda", when="+rocm")
+    # conflicts("+cuda", when="+rocm")
 
     conflicts("~raja", when="+cuda")
-    #conflicts("~raja", when="+rocm")
+    # conflicts("~raja", when="+rocm")
     conflicts("~umpire", when="+cuda")
-    #conflicts("~umpire", when="+rocm")
+    # conflicts("~umpire", when="+rocm")
 
-    #conflicts("^blt@:0.3.6", when="+rocm")
+    # conflicts("^blt@:0.3.6", when="+rocm")
 
     def flag_handler(self, name, flags):
-        #if self.spec.satisfies("%cce") and name == "fflags":
+        # if self.spec.satisfies("%cce") and name == "fflags":
         #    flags.append("-ef")
 
         if name in ("cflags", "cxxflags", "cppflags", "fflags"):
@@ -408,7 +408,7 @@ class Axom(CachedCMakePackage, CudaPackage):
             special_case += "_cuda"
         if self.spec.satisfies("~fortran"):
             special_case += "_nofortran"
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    special_case += "_hip"
         return "{0}-{1}-{2}@{3}{4}.cmake".format(
             hostname,
@@ -449,7 +449,7 @@ class Axom(CachedCMakePackage, CudaPackage):
             entries.append(cmake_cache_string("BLT_CXX_STD", f"c++{self.cxx_std}"))
 
         # Add optimization flag workaround for builds with cray compiler
-        #if spec.satisfies("%cce"):
+        # if spec.satisfies("%cce"):
         #    entries.append(cmake_cache_string("CMAKE_CXX_FLAGS_DEBUG", "-O1 -g"))
 
         #    # Remove unusable -Mfreeform flag injected by spack
@@ -494,7 +494,7 @@ class Axom(CachedCMakePackage, CudaPackage):
             entries.append("# nvcc does not like gtest's 'pthreads' flag\n")
             entries.append(cmake_cache_option("gtest_disable_pthreads", True))
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    entries.append("#------------------{0}\n".format("-" * 60))
         #    entries.append("# Axom ROCm specifics\n")
         #    entries.append("#------------------{0}\n\n".format("-" * 60))
@@ -617,7 +617,7 @@ class Axom(CachedCMakePackage, CudaPackage):
             )
 
         # For cce up to version 20.0.0
-        #if spec.satisfies("+openmp") and spec.satisfies("+rocm") and spec.satisfies("%cce@:20"):
+        # if spec.satisfies("+openmp") and spec.satisfies("+rocm") and spec.satisfies("%cce@:20"):
         #    openmp_gen_exp = (
         #        "$<$<NOT:$<COMPILE_LANGUAGE:Fortran>>:"
         #        "-fopenmp=libomp>;$<$<COMPILE_LANGUAGE:"
@@ -874,7 +874,7 @@ class Axom(CachedCMakePackage, CudaPackage):
 
         return options
 
-    #def patch(self):
+    # def patch(self):
     #    if self.spec.satisfies("%cce"):
     #        filter_file(
     #            "PROPERTIES LINKER_LANGUAGE CXX",

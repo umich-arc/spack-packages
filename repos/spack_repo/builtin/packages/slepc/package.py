@@ -101,7 +101,7 @@ class Slepc(Package, CudaPackage):
     depends_on("arpack-ng~mpi", when="+arpack^petsc~mpi~int64")
     depends_on("arpack-ng+mpi", when="+arpack^petsc+mpi~int64")
 
-    #for arch in ROCmPackage.amdgpu_targets:
+    # for arch in ROCmPackage.amdgpu_targets:
     #    rocm_dep = "+rocm amdgpu_target={0}".format(arch)
     #    depends_on("petsc {0}".format(rocm_dep), when=rocm_dep)
 

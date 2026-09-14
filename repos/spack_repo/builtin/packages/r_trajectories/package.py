@@ -38,4 +38,3 @@ class RTrajectories(RPackage):
         depends_on("r-sp")
         depends_on("r-spacetime")
         depends_on("r-zoo")
-

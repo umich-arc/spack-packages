@@ -42,13 +42,13 @@ class Libceed(MakefilePackage, CudaPackage):
 
     variant("shared", default=True, description="Build shared libraries")
 
-    #conflicts("+rocm", when="@:0.7")
+    # conflicts("+rocm", when="@:0.7")
 
     depends_on("c", type="build")  # generated
     depends_on("cxx", type="build")  # generated
     depends_on("fortran", type="build")  # generated
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    depends_on("hip@3.8.0:", when="@0.8:")
     #    depends_on("hipblas@3.8.0:", when="@0.8:")
 
@@ -68,7 +68,7 @@ class Libceed(MakefilePackage, CudaPackage):
     depends_on("magma~shared", when="+magma~shared")
     depends_on("magma+shared", when="+magma+shared")
 
-    #patch("libceed-v0.8-hip.patch", when="@0.8+rocm")
+    # patch("libceed-v0.8-hip.patch", when="@0.8+rocm")
     patch("pkgconfig-version-0.4.diff", when="@0.4")
 
     # occa: do not occaFree kernels
@@ -148,7 +148,7 @@ class Libceed(MakefilePackage, CudaPackage):
                 # Disable CUDA auto-detection:
                 makeopts += ["CUDA_DIR=/disable-cuda"]
 
-            #if spec.satisfies("+rocm"):
+            # if spec.satisfies("+rocm"):
             #    makeopts += ["HIP_DIR=%s" % spec["hip"].prefix]
             #    amdgpu_target = ",".join(spec.variants["amdgpu_target"].value)
             #    makeopts += ["HIP_ARCH=%s" % amdgpu_target]

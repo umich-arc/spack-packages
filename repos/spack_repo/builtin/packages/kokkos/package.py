@@ -100,7 +100,7 @@ class Kokkos(CMakePackage, CudaPackage):
         conflicts("%oneapi@:2021")
         conflicts("%oneapi@:2024", when="+sycl")
         depends_on("cuda@12.2:", when="+cuda")
-        #depends_on("hip@6.2:", when="+rocm")
+        # depends_on("hip@6.2:", when="+rocm")
         conflicts("%nvhpc@:22.2")
         conflicts("%msvc@:19.2")
         conflicts("%arm@:20")
@@ -119,7 +119,7 @@ class Kokkos(CMakePackage, CudaPackage):
         "openmp": [False, None, "Whether to build OpenMP backend"],
         "threads": [False, None, "Whether to build the C++ threads backend"],
         "serial": [False, None, "Whether to build serial backend"],
-        #"rocm": [False, None, "Whether to build HIP backend"],
+        # "rocm": [False, None, "Whether to build HIP backend"],
         "sycl": [False, None, "Whether to build the SYCL backend"],
         "openmptarget": [False, "@:5.0", "Whether to build the OpenMPTarget backend"],
     }
@@ -244,7 +244,7 @@ class Kokkos(CMakePackage, CudaPackage):
     )
 
     # Since Kokkos supports only one amdgpu_target at a time, the multi-value property is disabled.
-    #variant(
+    # variant(
     #    "amdgpu_target",
     #    description="AMD GPU architecture",
     #    values=("none",) + ROCmPackage.amdgpu_targets,
@@ -252,10 +252,10 @@ class Kokkos(CMakePackage, CudaPackage):
     #    multi=False,
     #    sticky=True,
     #    when="+rocm",
-    #)
+    # )
 
     # amdgpu_target : (cmake_arch_option, condition)
-    #amdgpu_arch_map = {
+    # amdgpu_arch_map = {
     #    "gfx900": ("vega900", None),
     #    "gfx906": ("vega906", None),
     #    "gfx908": ("vega908", None),
@@ -270,20 +270,20 @@ class Kokkos(CMakePackage, CudaPackage):
     #    "gfx1151": ("amd_gfx1151", "@5.2.0:"),
     #    "gfx1152": ("amd_gfx1152", "@5.2.0:"),
     #    "gfx1201": ("amd_gfx1201", "@5.0.0:"),
-    #}
-    #amdgpu_apu_arch_map = {"gfx942": ("amd_gfx942_apu", "@4.5.00:")}
-    #amd_support_conflict_msg = (
+    # }
+    # amdgpu_apu_arch_map = {"gfx942": ("amd_gfx942_apu", "@4.5.00:")}
+    # amd_support_conflict_msg = (
     #    "{0} is not supported; "
     #    "Kokkos supports the following AMD GPU targets: " + ", ".join(amdgpu_arch_map.keys())
-    #)
+    # )
     # FIXME we should revisit this. More archs have unified memory via HMM,
     # only the APU has unified physical memory
-    #amd_apu_support_conflict_msg = (
+    # amd_apu_support_conflict_msg = (
     #    "{0} is not supported; "
     #    "Kokkos supports the following AMD GPU targets with unified memory: "
     #    + ", ".join(amdgpu_apu_arch_map.keys())
-    #)
-    #for arch in ROCmPackage.amdgpu_targets:
+    # )
+    # for arch in ROCmPackage.amdgpu_targets:
     #    if arch not in amdgpu_arch_map:
     #        conflicts(
     #            "+rocm", when=f"amdgpu_target={arch}", msg=amd_support_conflict_msg.format(arch)
@@ -313,13 +313,13 @@ class Kokkos(CMakePackage, CudaPackage):
         description="Intel GPU architecture",
     )
     # FIXME this should move to the apu part
-    #variant("apu", default=False, description="Enable APU support", when="@4.5: +rocm")
+    # variant("apu", default=False, description="Enable APU support", when="@4.5: +rocm")
 
     for dev, (dflt, when, desc) in devices_variants.items():
         variant(dev, default=dflt, description=desc, when=when)
-    #conflicts("+cuda", when="+rocm", msg="CUDA and ROCm are not compatible in Kokkos.")
+    # conflicts("+cuda", when="+rocm", msg="CUDA and ROCm are not compatible in Kokkos.")
     depends_on("intel-oneapi-dpl", when="+sycl")
-    #depends_on("rocthrust", when="@4.3: +rocm")
+    # depends_on("rocthrust", when="@4.3: +rocm")
     depends_on("llvm-openmp", when="+openmp %apple-clang")
 
     for opt, (dflt, when, desc) in options_variants.items():
@@ -431,7 +431,7 @@ class Kokkos(CMakePackage, CudaPackage):
         return microarch
 
     def append_args(self, cmake_prefix, cmake_options, spack_options):
-        #variant_to_cmake_option = {"rocm": "hip"}
+        # variant_to_cmake_option = {"rocm": "hip"}
         for variant_name in cmake_options:
             opt = variant_to_cmake_option.get(variant_name, variant_name)
             optname = f"Kokkos_{cmake_prefix}_{opt.upper()}"
@@ -483,7 +483,7 @@ class Kokkos(CMakePackage, CudaPackage):
         if kokkos_microarch_name:
             spack_microarches.append(kokkos_microarch_name)
 
-        #if spec.satisfies("+rocm"):
+        # if spec.satisfies("+rocm"):
         #    amdgpu_target = spec.variants["amdgpu_target"].value
         #    if amdgpu_target != "none":
         #        if amdgpu_target in self.amdgpu_arch_map:
@@ -523,7 +523,7 @@ class Kokkos(CMakePackage, CudaPackage):
 
         if self.spec.satisfies("+wrapper"):
             options.append(self.define("CMAKE_CXX_COMPILER", self.kokkos_cxx))
-        #elif "+rocm" in self.spec:
+        # elif "+rocm" in self.spec:
         #    if "+cmake_lang" in self.spec:
         #        if self.spec.satisfies("%cxx=clang") or self.spec.satisfies("%cxx=rocmcc"):
         #            options.append(self.define("CMAKE_HIP_COMPILER", self.compiler.cxx))

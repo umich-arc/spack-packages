@@ -59,16 +59,16 @@ class Hip(ROCmLibrary, CMakePackage):
     version("5.7.1", sha256="ea34c75d2cff366fcdd45109c5be460a48d4fcf72b8a534368b54eae5d05db0e")
     version("5.7.0", sha256="8974a436e7f1daf232a77e27a215bcb24a8cc132aa11b5b885a7417ad4246074")
 
-    #variant("rocm", default=True, description="Enable ROCm support")
+    # variant("rocm", default=True, description="Enable ROCm support")
     variant("cuda", default=True, description="Build with CUDA")
-    #variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
-    #conflicts("+cuda +rocm", msg="CUDA and ROCm support are mutually exclusive")
+    # variant("asan", default=False, description="Build with address-sanitizer enabled or disabled")
+    # conflicts("+cuda +rocm", msg="CUDA and ROCm support are mutually exclusive")
     conflicts("~cuda", msg="CUDA support is required")
-    #conflicts("~rocm +asan", msg="ROCm must be enabled for asan")
+    # conflicts("~rocm +asan", msg="ROCm must be enabled for asan")
 
-    #conflicts("+asan", when="os=rhel9")
-    #conflicts("+asan", when="os=centos7")
-    #conflicts("+asan", when="os=centos8")
+    # conflicts("+asan", when="os=rhel9")
+    # conflicts("+asan", when="os=centos7")
+    # conflicts("+asan", when="os=centos8")
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
@@ -81,7 +81,7 @@ class Hip(ROCmLibrary, CMakePackage):
 
     test_requires_compiler = True
 
-    #with when("+rocm"):
+    # with when("+rocm"):
     #    depends_on("gl@4.5:")
     #    depends_on("py-cppheaderparser", type="build")
     #    depends_on("libx11", when="+asan")
@@ -398,7 +398,7 @@ class Hip(ROCmLibrary, CMakePackage):
         return ver
 
     def set_variables(self, env):
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    # Note: do not use self.spec[name] here, since not all dependencies
         #    # have defined prefixes when hip is marked as external.
         #    paths = self.get_paths()
@@ -492,7 +492,7 @@ class Hip(ROCmLibrary, CMakePackage):
         self, env: EnvironmentModifications, dependent_spec: Spec
     ) -> None:
         env.set("HIPCC_COMPILE_FLAGS_APPEND", "")
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    paths = self.get_paths()
         #    env.append_path(
         #        "HIPCC_COMPILE_FLAGS_APPEND", f"--rocm-path={paths['rocm-path']}", separator=" "
@@ -537,14 +537,14 @@ class Hip(ROCmLibrary, CMakePackage):
             clr_dir = "rocm-systems/projects/clr"
         else:
             clr_dir = "clr"
-        #if self.spec.satisfies("@5.7:6.2 +rocm"):
+        # if self.spec.satisfies("@5.7:6.2 +rocm"):
         #    filter_file(
         #        '"${ROCM_PATH}/llvm"',
         #        self.spec["llvm-amdgpu"].prefix,
         #        "clr/hipamd/hip-config-amd.cmake",
         #        string=True,
         #    )
-        #if self.spec.satisfies("@6.3: +rocm"):
+        # if self.spec.satisfies("@6.3: +rocm"):
         #    filter_file(
         #        '"${ROCM_PATH}/llvm"',
         #        self.spec["llvm-amdgpu"].prefix,
@@ -558,7 +558,7 @@ class Hip(ROCmLibrary, CMakePackage):
         if self.spec.satisfies("@5.7"):
             with working_dir("hipcc/bin"):
                 filter_shebang("hipconfig")
-            #if self.spec.satisfies("+rocm"):
+            # if self.spec.satisfies("+rocm"):
             #    numactl = self.spec["numactl"].prefix.lib
             #    with working_dir("hipcc/src"):
             #        filter_file(" -lnuma", f" -L{numactl} -lnuma", "hipBin_amd.h")
@@ -572,7 +572,7 @@ class Hip(ROCmLibrary, CMakePackage):
             # https://github.com/ROCm/clr/commit/a2a8dad980b0fa1a6086e0c0f95847ae80f5a2c6.
             self.define("CMAKE_POLICY_DEFAULT_CMP0074", "NEW")
         ]
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    # find_package(Clang) and find_package(LLVM) in clr/hipamd/src/hiprtc/CMakeLists.txt
         #    # should find llvm-amdgpu
         #    args.append(self.define("LLVM_ROOT", self.spec["llvm-amdgpu"].prefix))

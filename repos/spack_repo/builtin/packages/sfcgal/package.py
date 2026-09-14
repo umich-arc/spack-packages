@@ -56,9 +56,13 @@ class Sfcgal(CMakePackage):
     depends_on("cgal@5.6:6.2", when="@2.3")
 
     depends_on(
-        "boost@1.54.0:+chrono+filesystem+program_options+serialization+system+test+thread+timer", when ="@1.3"
+        "boost@1.54.0:+chrono+filesystem+program_options+serialization+system+test+thread+timer",
+        when="@1.3",
     )
-    depends_on("boost@1.74.0:+chrono+filesystem+program_options+serialization+system+thread+timer", when="@1.4:")
+    depends_on(
+        "boost@1.74.0:+chrono+filesystem+program_options+serialization+system+thread+timer",
+        when="@1.4:",
+    )
     depends_on("mpfr@2.2.1:")
     depends_on("gmp@4.2:")
     depends_on("nlohmann-json@3.11")

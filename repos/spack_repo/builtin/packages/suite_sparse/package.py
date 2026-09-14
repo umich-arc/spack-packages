@@ -280,7 +280,7 @@ class SuiteSparse(Package):
         if spec.satisfies("platform=darwin %gcc"):
             make_args += ["LDLIBS=-lm"]
 
-        #if "%cce" in spec:
+        # if "%cce" in spec:
         #    # Assume the proper Cray CCE module (cce) is loaded:
         #    craylibs_var = "CRAYLIBS_" + str(spec.target.family).upper()
         #    craylibs_path = env.get(craylibs_var, None)

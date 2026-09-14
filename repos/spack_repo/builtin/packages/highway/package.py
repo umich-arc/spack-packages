@@ -59,4 +59,3 @@ class Highway(CMakePackage):
 
     def setup_build_environment(self, env):
         env.prepend_path("PATH", self.spec["binutils"].prefix.bin)
-    

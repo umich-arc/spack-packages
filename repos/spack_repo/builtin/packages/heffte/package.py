@@ -6,7 +6,7 @@ import os
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-#from spack_repo.builtin.build_systems.rocm import ROCmPackage
+# from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
 from spack.package import *
 
@@ -40,7 +40,7 @@ class Heffte(CMakePackage, CudaPackage):
 
     depends_on("cmake@3.10:", when="@:2.3.0", type=("build", "run"))
     depends_on("cmake@3.19:", when="@2.4.0:", type=("build", "run"))
-    #depends_on("cmake@3.21:", when="@2.4.0:+rocm", type=("build", "run"))
+    # depends_on("cmake@3.21:", when="@2.4.0:+rocm", type=("build", "run"))
 
     variant("shared", default=True, description="Builds with shared libraries")
     variant("fftw", default=False, description="Builds with support for FFTW backend")
@@ -64,7 +64,7 @@ class Heffte(CMakePackage, CudaPackage):
 
     conflicts("^openmpi~cuda", when="+cuda")  # +cuda requires CUDA enabled OpenMPI
     conflicts("~cuda", when="+magma")  # magma requires CUDA or HIP
-    #conflicts("+rocm", when="@:2.1.0")  # heffte+rocm is in in development in spack
+    # conflicts("+rocm", when="@:2.1.0")  # heffte+rocm is in in development in spack
 
     depends_on("mpi", type=("build", "run"))
 
@@ -75,16 +75,16 @@ class Heffte(CMakePackage, CudaPackage):
     # mkl renamed dfti.hpp to dft.hpp in 2026.0, which breaks heffte@2.4.1 and earlier
     conflicts("^intel-oneapi-mkl@2026.0:", when="@:2.4.1")
     depends_on("cuda@8.0:", when="+cuda", type=("build", "run"))
-    #depends_on("hip@3.8.0:", when="+rocm", type=("build", "run"))
-    #depends_on("rocfft@3.8.0:", when="+rocm", type=("build", "run"))
-    #depends_on("hip@5.2.3:", when="@2.4.0:+rocm", type=("build", "run"))
-    #depends_on("rocfft@5.2.3:", when="@2.4.0:+rocm", type=("build", "run"))
+    # depends_on("hip@3.8.0:", when="+rocm", type=("build", "run"))
+    # depends_on("rocfft@3.8.0:", when="+rocm", type=("build", "run"))
+    # depends_on("hip@5.2.3:", when="@2.4.0:+rocm", type=("build", "run"))
+    # depends_on("rocfft@5.2.3:", when="@2.4.0:+rocm", type=("build", "run"))
     depends_on("magma@2.5.3:", when="+cuda+magma", type=("build", "run"))
-    #depends_on("magma+rocm@2.6.1:", when="+magma+rocm @2.1:", type=("build", "run"))
-    #depends_on("rocblas@3.8:", when="+magma+rocm", type=("build", "run"))
-    #depends_on("rocsparse@3.8:", when="+magma+rocm", type=("build", "run"))
-    #depends_on("hipblas@3.8:", when="+magma+rocm", type=("build", "run"))
-    #depends_on("hipsparse@3.8:", when="+magma+rocm", type=("build", "run"))
+    # depends_on("magma+rocm@2.6.1:", when="+magma+rocm @2.1:", type=("build", "run"))
+    # depends_on("rocblas@3.8:", when="+magma+rocm", type=("build", "run"))
+    # depends_on("rocsparse@3.8:", when="+magma+rocm", type=("build", "run"))
+    # depends_on("hipblas@3.8:", when="+magma+rocm", type=("build", "run"))
+    # depends_on("hipsparse@3.8:", when="+magma+rocm", type=("build", "run"))
     depends_on("intel-oneapi-mkl@2023.2.0:", when="+sycl", type=("build", "run"))
     depends_on("intel-oneapi-mpi@2021.10.0:", when="+sycl", type=("build", "run"))
 
@@ -96,7 +96,7 @@ class Heffte(CMakePackage, CudaPackage):
             "-DHeffte_ENABLE_TESTING=ON",
             self.define_from_variant("BUILD_SHARED_LIBS", "shared"),
             self.define_from_variant("Heffte_ENABLE_CUDA", "cuda"),
-            #self.define_from_variant("Heffte_ENABLE_ROCM", "rocm"),
+            # self.define_from_variant("Heffte_ENABLE_ROCM", "rocm"),
             self.define_from_variant("Heffte_ENABLE_ONEAPI", "sycl"),
             self.define_from_variant("Heffte_ENABLE_FFTW", "fftw"),
             self.define_from_variant("Heffte_ENABLE_MKL", "mkl"),
@@ -116,14 +116,14 @@ class Heffte(CMakePackage, CudaPackage):
                 archs = ";".join(cuda_arch)
                 args.append("-DCMAKE_CUDA_ARCHITECTURES=%s" % archs)
 
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    args.append("-DCMAKE_CXX_COMPILER={0}".format(self.spec["hip"].hipcc))
 
         #    rocm_arch = self.spec.variants["amdgpu_target"].value
         #    if "none" not in rocm_arch:
         #        args.append("-DCMAKE_CXX_FLAGS={0}".format(self.hip_flags(rocm_arch)))
 
-            # See https://github.com/ROCm/rocFFT/issues/322
+        # See https://github.com/ROCm/rocFFT/issues/322
         #    if self.spec.satisfies("^cmake@3.21.0:3.21.2"):
         #        args.append(self.define("__skip_rocmclang", "ON"))
 
@@ -172,7 +172,7 @@ class Heffte(CMakePackage, CudaPackage):
         else:
             options.append(self.define("Heffte_DIR", self.spec.prefix.lib.cmake.Heffte))
 
-        #if self.spec.satisfies("+rocm"):
+        # if self.spec.satisfies("+rocm"):
         #    # path name is 'hsa-runtime64' but python cannot have '-' in variable name
         #    hsa_runtime = join_path(self.spec["hsa-rocr-dev"].prefix.lib.cmake, "hsa-runtime64")
         #    options.extend(
