@@ -78,8 +78,8 @@ class Googletest(CMakePackage):
 
             mkdirp(prefix.lib)
             if spec.satisfies("+shared"):
-                install("libgtest.{0}".format(dso_suffix), prefix.lib)
-                install("libgtest_main.{0}".format(dso_suffix), prefix.lib)
+                install(f"libgtest.{dso_suffix}", prefix.lib)
+                install(f"libgtest_main.{dso_suffix}", prefix.lib)
             else:
                 install("libgtest.a", prefix.lib)
                 install("libgtest_main.a", prefix.lib)

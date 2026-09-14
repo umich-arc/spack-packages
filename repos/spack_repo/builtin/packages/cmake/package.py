@@ -276,7 +276,7 @@ class Cmake(Package):
             self.generator = ninja
 
         if not sys.platform == "win32":
-            args.append("--prefix={0}".format(self.prefix))
+            args.append(f"--prefix={self.prefix}")
 
             jobs = get_effective_jobs(
                 make_jobs,
@@ -284,7 +284,7 @@ class Cmake(Package):
                 supports_jobserver=self.generator.supports_jobserver,
             )
             if jobs is not None:
-                args.append("--parallel={0}".format(jobs))
+                args.append(f"--parallel={jobs}")
 
             if spec.satisfies("+ownlibs"):
                 # Build and link to the CMake-provided third-party libraries

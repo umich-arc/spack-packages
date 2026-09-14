@@ -142,11 +142,11 @@ class MakefileBuilder(MakefileBuilder):
             options.append("AOCL_EXCLUDE_LZ4HC=1")
         decompress_fast = spec.variants["decompress_fast"].value
         if decompress_fast != "OFF":
-            options.append("AOCL_DECOMPRESS_FAST={0}".format(decompress_fast))
+            options.append(f"AOCL_DECOMPRESS_FAST={decompress_fast}")
         return options
 
     def build(self, pkg, spec, prefix):
         make(*self._make_options(spec))
 
     def install(self, pkg, spec, prefix):
-        make("install", "PREFIX={0}".format(prefix), *self._make_options(spec))
+        make("install", f"PREFIX={prefix}", *self._make_options(spec))

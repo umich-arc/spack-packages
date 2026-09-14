@@ -28,7 +28,7 @@ class Libxml2(AutotoolsPackage, CMakePackage, NMakePackage):
         if version >= Version("2.9.13"):
             url = "https://download.gnome.org/sources/libxml2/{0}/libxml2-{1}.tar.xz"
             return url.format(version.up_to(2), version)
-        return "http://xmlsoft.org/sources/libxml2-{0}.tar.gz".format(version)
+        return f"http://xmlsoft.org/sources/libxml2-{version}.tar.gz"
 
     license("MIT")
 
@@ -153,13 +153,13 @@ class Libxml2(AutotoolsPackage, CMakePackage, NMakePackage):
         test_filename = "test.xml"
         xmllint = which(path, required=True)
 
-        with test_part(self, "test_xmllint_auto", purpose="generate {0}".format(test_filename)):
+        with test_part(self, "test_xmllint_auto", purpose=f"generate {test_filename}"):
             xmllint("--auto", "-o", test_filename)
 
         with test_part(
             self,
             "test_xmllint_validate_no_dtd",
-            purpose="validate {0} without a DTD".format(test_filename),
+            purpose=f"validate {test_filename} without a DTD",
         ):
             out = xmllint(
                 "--postvalid",
@@ -178,7 +178,7 @@ class Libxml2(AutotoolsPackage, CMakePackage, NMakePackage):
         with test_part(
             self,
             "test_xmllint_validate_with_dtd",
-            purpose="validate {0} with a DTD".format(test_filename),
+            purpose=f"validate {test_filename} with a DTD",
         ):
             out = xmllint(
                 "--dtdvalid",
@@ -196,7 +196,7 @@ class Libxml2(AutotoolsPackage, CMakePackage, NMakePackage):
         with test_part(
             self,
             "test_xmllint_validate_works",
-            purpose="validate {0} with a DTD".format(test_filename),
+            purpose=f"validate {test_filename} with a DTD",
         ):
             xmllint("--dtdvalid", dtd_path, data_dir.join("info.xml"))
 
@@ -228,14 +228,14 @@ class AutotoolsBuilder(AnyBuilder, autotools.AutotoolsBuilder):
 
         args = [
             "--with-lzma={0}".format(spec["xz"].prefix),
-            "--with-iconv={0}".format(self._iconv_option()),
+            f"--with-iconv={self._iconv_option()}",
         ]
 
         if spec.satisfies("+python"):
             args.extend(
                 [
                     "--with-python={0}".format(spec["python"].home),
-                    "--with-python-install-dir={0}".format(python_platlib),
+                    f"--with-python-install-dir={python_platlib}",
                 ]
             )
         else:

@@ -185,7 +185,7 @@ class Perl(Package):  # Perl doesn't use Autotools, it should subclass Package
 
         config_args = [
             "-des",
-            "-Dprefix={0}".format(prefix),
+            f"-Dprefix={prefix}",
             "-Dlocincpth=" + self.spec["gdbm"].prefix.include,
             "-Dloclibpth=" + self.spec["gdbm"].prefix.lib,
         ]
@@ -375,7 +375,7 @@ class Perl(Package):  # Perl doesn't use Autotools, it should subclass Package
         c_compiler = self["c"].cc
         with self.make_briefly_writable(config_dot_pm):
             match = "cc *=>.*"
-            substitute = "cc => '{cc}',".format(cc=c_compiler)
+            substitute = f"cc => '{c_compiler}',"
             filter_file(match, substitute, config_dot_pm, **kwargs)
 
         # And the path Config_heavy.pl
@@ -384,11 +384,11 @@ class Perl(Package):  # Perl doesn't use Autotools, it should subclass Package
 
         with self.make_briefly_writable(config_heavy):
             match = "^cc=.*"
-            substitute = "cc='{cc}'".format(cc=c_compiler)
+            substitute = f"cc='{c_compiler}'"
             filter_file(match, substitute, config_heavy, **kwargs)
 
             match = "^ld=.*"
-            substitute = "ld='{ld}'".format(ld=c_compiler)
+            substitute = f"ld='{c_compiler}'"
             filter_file(match, substitute, config_heavy, **kwargs)
 
             match = "^ccflags='"
@@ -419,8 +419,7 @@ class Perl(Package):  # Perl doesn't use Autotools, it should subclass Package
             path = os.path.join(self.prefix.bin, f"{self.spec.name}{ver}{ext}")
             if os.path.exists(path):
                 return Executable(path)
-        else:
-            raise RuntimeError(f"Unable to locate {self.spec.name} command in {self.prefix.bin}")
+        raise RuntimeError(f"Unable to locate {self.spec.name} command in {self.prefix.bin}")
 
     def test_version(self):
         """check version"""

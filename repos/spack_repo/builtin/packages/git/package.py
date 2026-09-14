@@ -152,8 +152,7 @@ class Git(AutotoolsPackage):
                     custom_lines.append("CSPRNG_METHOD=arc4random")
 
         with open("config.mak", "w") as config_file:
-            for entry in custom_lines:
-                config_file.write(entry + "\n")
+            config_file.writelines(entry + "\n" for entry in custom_lines)
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         # We use EXTLIBS rather than LDFLAGS so that git's Makefile

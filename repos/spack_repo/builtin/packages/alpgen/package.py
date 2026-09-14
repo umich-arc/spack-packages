@@ -40,7 +40,7 @@ class Alpgen(CMakePackage, MakefilePackage):
 
     def url_for_version(self, version):
         root = self.url.rsplit("/", 2)[0]
-        return "{0}/V{1}/v{2}.tgz".format(root, version.up_to(2), version.joined)
+        return f"{root}/V{version.up_to(2)}/v{version.joined}.tgz"
 
     def patch(self):
         if self.spec.satisfies("build_system=cmake"):

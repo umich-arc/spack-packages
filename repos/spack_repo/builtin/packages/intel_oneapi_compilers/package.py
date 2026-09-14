@@ -661,9 +661,9 @@ class IntelOneapiCompilers(IntelOneApiPackage, CompilerPackage):
         #  _ld_library_path because it looks like the only rpath that needs to be
         #  injected is self.component_prefix.linux.compiler.lib.intel64_lin.
         if self.v2_layout:
-            common_flags = ["-Wl,-rpath,{}".format(self.component_prefix.lib)]
+            common_flags = [f"-Wl,-rpath,{self.component_prefix.lib}"]
         else:
-            common_flags = ["-Wl,-rpath,{}".format(d) for d in self._ld_library_path()]
+            common_flags = [f"-Wl,-rpath,{d}" for d in self._ld_library_path()]
 
         # Make sure that underlying clang gets the right GCC toolchain by default
         gcc = self.spec["gcc"].package

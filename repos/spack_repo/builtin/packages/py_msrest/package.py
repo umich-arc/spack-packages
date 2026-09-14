@@ -16,7 +16,7 @@ class PyMsrest(PythonPackage):
 
     def url_for_version(self, version):
         if Version("0.4.8") < version < Version("0.7"):
-            return "https://pypi.io/packages/source/m/msrest/msrest-{0}.tar.gz".format(version)
+            return f"https://pypi.io/packages/source/m/msrest/msrest-{version}.tar.gz"
 
         return super().url_for_version(version)
 

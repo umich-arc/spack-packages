@@ -207,6 +207,6 @@ class ParallelNetcdf(AutotoolsPackage):
                     return
 
                 except (Exception, ProcessError) as err:
-                    tty.info(f"Skipping {mpiexe}: {str(err)}")
+                    tty.info(f"Skipping {mpiexe}: {err!s}")
 
         assert False, "No MPI executable was found"

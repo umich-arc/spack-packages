@@ -38,7 +38,7 @@ class Ampl(Package):
     resource(
         when="@:20210226 +api",
         name="amplapi",
-        url="file://{0}/amplapi-linux64.2.0.0.zip".format(os.getcwd()),
+        url=f"file://{os.getcwd()}/amplapi-linux64.2.0.0.zip",
         sha256="a4abe111f142b862f11fcd8700f964b688d5d2291e9e055f6e7adbd92b0e243a",
         destination="",
         placement="amplapi",
@@ -46,7 +46,7 @@ class Ampl(Package):
     resource(
         when="@20220525 +api",
         name="amplapi",
-        url="file://{0}/amplapi-linux64.2.0.8.zip".format(os.getcwd()),
+        url=f"file://{os.getcwd()}/amplapi-linux64.2.0.8.zip",
         sha256="6ea572827a9e69c4e285e01c9c2e235af6237acd6052d109c5d7e9762b7a8bd7",
         destination="",
         placement="amplapi",
@@ -54,7 +54,7 @@ class Ampl(Package):
     resource(
         when="@:20210226 +ide",
         name="amplide",
-        url="file://{0}/amplide-linux64.3.5.tgz".format(os.getcwd()),
+        url=f"file://{os.getcwd()}/amplide-linux64.3.5.tgz",
         sha256="c2163896df672b71901d2e46cd5cf1c1c4f0451e478ef32d0971705aaf86d6ac",
         destination="",
         placement="amplide",
@@ -62,7 +62,7 @@ class Ampl(Package):
     resource(
         when="@20220525 +ide",
         name="amplide",
-        url="file://{0}/amplide.linux64.3.6.8.tgz".format(os.getcwd()),
+        url=f"file://{os.getcwd()}/amplide.linux64.3.6.8.tgz",
         sha256="f482afb7a2bb977d8ca68f288b41b9691ac501bd2d5f4dbc11b42c8dc19b366a",
         destination="",
         placement="amplide",
@@ -70,7 +70,7 @@ class Ampl(Package):
     resource(
         when="@:20210226",
         name="ampl_lic",
-        url="file://{0}/ampl_lic.linux-intel64.20210618.tgz".format(os.getcwd()),
+        url=f"file://{os.getcwd()}/ampl_lic.linux-intel64.20210618.tgz",
         sha256="f5c38638d6cc99c85e0d6de001722b64a03e2adeaf5aed9ed622401654d9ff33",
         destination="",
         placement="",
@@ -78,14 +78,14 @@ class Ampl(Package):
     resource(
         when="@20220525",
         name="ampl_lic",
-        url="file://{0}/ampl_lic.linux-intel64.20210929.tgz".format(os.getcwd()),
+        url=f"file://{os.getcwd()}/ampl_lic.linux-intel64.20210929.tgz",
         sha256="19dc1a511c59a6c2917dec50b495ed9850a6a3c8ec84e42979656916f2cbafb4",
         destination="",
         placement="",
     )
 
     def url_for_version(self, version):
-        return "file://{0}/ampl.linux-intel64.{1}.tgz".format(os.getcwd(), version)
+        return f"file://{os.getcwd()}/ampl.linux-intel64.{version}.tgz"
 
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         env.prepend_path("PATH", self.prefix)

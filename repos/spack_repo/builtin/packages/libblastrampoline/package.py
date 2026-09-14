@@ -52,4 +52,4 @@ class Libblastrampoline(MakefilePackage):
 
     def install(self, spec, prefix):
         with working_dir(self.build_directory):
-            make("prefix={0}".format(prefix), "install")
+            make(f"prefix={prefix}", "install")

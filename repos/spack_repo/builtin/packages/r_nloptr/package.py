@@ -46,7 +46,7 @@ class RNloptr(RPackage):
         include_flags = self.spec["nlopt"].headers.include_flags
         libs = self.spec["nlopt"].libs.libraries[0]
         args = [
-            "--with-nlopt-cflags={0}".format(include_flags),
-            "--with-nlopt-libs={0}".format(libs),
+            f"--with-nlopt-cflags={include_flags}",
+            f"--with-nlopt-libs={libs}",
         ]
         return args

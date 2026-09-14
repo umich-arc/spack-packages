@@ -42,8 +42,8 @@ class NetcdfCxx4(AutotoolsPackage):
 
         return " ".join(
             [
-                "-I{0}".format(hdf5.prefix.include),
-                "-I{0}".format(netcdf_c.prefix.include),
+                f"-I{hdf5.prefix.include}",
+                f"-I{netcdf_c.prefix.include}",
             ]
         )
 
@@ -53,17 +53,17 @@ class NetcdfCxx4(AutotoolsPackage):
         netcdf_c = self.spec["netcdf-c"]
 
         lib_dirs = dedupe(hdf5.libs.directories + netcdf_c.libs.directories)
-        return " ".join("-L{0}".format(d) for d in lib_dirs)
+        return " ".join(f"-L{d}" for d in lib_dirs)
 
     def configure_args(self):
         cppflags = self._include_flags
         ldflags = self._ldflags
-        cflags = "{0} {1} -lhdf5 -lz -lnetcdf".format(cppflags, ldflags)
+        cflags = f"{cppflags} {ldflags} -lhdf5 -lz -lnetcdf"
 
         return [
             "--disable-filter-testing",
-            "CPPFLAGS={0}".format(cppflags),
-            "CFLAGS={0}".format(cflags),
-            "CXXFLAGS={0}".format(cflags),
-            "LDFLAGS={0}".format(ldflags),
+            f"CPPFLAGS={cppflags}",
+            f"CFLAGS={cflags}",
+            f"CXXFLAGS={cflags}",
+            f"LDFLAGS={ldflags}",
         ]

@@ -97,7 +97,7 @@ class Tk(AutotoolsPackage, SourceforgePackage):
     @run_after("install")
     def symlink_wish(self):
         with working_dir(self.prefix.bin):
-            symlink("wish{0}".format(self.version.up_to(2)), "wish")
+            symlink(f"wish{self.version.up_to(2)}", "wish")
 
     def test_tk_help(self):
         """run tk help"""
@@ -129,7 +129,7 @@ class Tk(AutotoolsPackage, SourceforgePackage):
     def _find_script_dir(self):
         # Put more-specific prefixes first
         check_prefixes = [
-            join_path(self.prefix, "share", "tk{0}".format(self.version.up_to(2))),
+            join_path(self.prefix, "share", f"tk{self.version.up_to(2)}"),
             self.prefix,
         ]
         for prefix in check_prefixes:

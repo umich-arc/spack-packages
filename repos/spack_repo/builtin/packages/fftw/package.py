@@ -103,7 +103,7 @@ class FftwBase(AutotoolsPackage):
 
     def configure(self, spec, prefix):
         # Base options
-        options = ["--prefix={0}".format(prefix), "--enable-threads"]
+        options = [f"--prefix={prefix}", "--enable-threads"]
         options.extend(self.enable_or_disable("shared"))
 
         # On Apple Arm machines, force to use aarch64 rather than arm
@@ -111,7 +111,7 @@ class FftwBase(AutotoolsPackage):
         if self.spec.satisfies("platform=darwin target=m1:"):
             uname = Executable("uname")
             uname_r = uname("-r", output=str)
-            options.append("--build=aarch64-apple-darwin{0}".format(uname_r))
+            options.append(f"--build=aarch64-apple-darwin{uname_r}")
 
         if not self.compiler.f77 or not self.compiler.fc:
             options.append("--disable-fortran")

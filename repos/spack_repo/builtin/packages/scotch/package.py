@@ -248,7 +248,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
                 makefile_inc.extend(
                     [
                         "LIB       = .dylib",
-                        "CLIBFLAGS = -dynamiclib {0}".format(pkg.compiler.cc_pic_flag),
+                        f"CLIBFLAGS = -dynamiclib {pkg.compiler.cc_pic_flag}",
                         "RANLIB    = echo",
                         "AR        = $(CC)",
                         (
@@ -263,7 +263,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
                 makefile_inc.extend(
                     [
                         "LIB       = .so",
-                        "CLIBFLAGS = -shared {0}".format(pkg.compiler.cc_pic_flag),
+                        f"CLIBFLAGS = -shared {pkg.compiler.cc_pic_flag}",
                         "RANLIB    = echo",
                         "AR        = $(CC)",
                         "ARFLAGS   = -shared $(LDFLAGS) -o",
@@ -341,9 +341,8 @@ class MakefileBuilder(makefile.MakefileBuilder):
                 ]
             )
 
-        with working_dir("src"):
-            with open("Makefile.inc", "w") as fh:
-                fh.write("\n".join(makefile_inc))
+        with working_dir("src"), open("Makefile.inc", "w") as fh:
+            fh.write("\n".join(makefile_inc))
 
     def is_64bit(self):
         return "64" in str(self.pkg.spec.target.family)

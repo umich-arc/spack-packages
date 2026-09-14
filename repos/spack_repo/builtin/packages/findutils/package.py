@@ -22,7 +22,7 @@ class Findutils(AutotoolsPackage, GNUMirrorPackage):
     def url_for_version(self, version):
         # Before 4.7.0 it used tar.gz instead of tar.xz
         if version < Version("4.7.0"):
-            self.gnu_mirror_path = "findutils/findutils-{0}.tar.gz".format(version)
+            self.gnu_mirror_path = f"findutils/findutils-{version}.tar.gz"
 
         return super().url_for_version(version)
 

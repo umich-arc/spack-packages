@@ -51,7 +51,7 @@ class Orca(Package):
     license("LGPL-2.1-or-later")
 
     for ver, packages in _versions.items():
-        key = "{0}-{1}".format(platform.system(), platform.machine())
+        key = f"{platform.system()}-{platform.machine()}"
         sha_val = packages.get(key)
         if sha_val:
             version(ver, sha256=sha_val, deprecated=packages.get("deprecated", False))
@@ -75,7 +75,7 @@ class Orca(Package):
     }
     for orca_version, openmpi_version in openmpi_versions.items():
         depends_on(
-            "openmpi@{0}".format(openmpi_version), type="run", when="@{0}".format(orca_version)
+            f"openmpi@{openmpi_version}", type="run", when=f"@{orca_version}"
         )
 
     def url_for_version(self, version):

@@ -41,7 +41,7 @@ class Hmmer(Package):
     )
 
     def install(self, spec, prefix):
-        configure_args = ["--prefix={0}".format(prefix)]
+        configure_args = [f"--prefix={prefix}"]
 
         if self.spec.satisfies("+gsl"):
             configure_args.extend(["--with-gsl", "LIBS=-lgsl -lgslcblas"])

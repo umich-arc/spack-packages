@@ -133,7 +133,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
         if len(split_ver) < 2:
             update = ""
         else:
-            update = "_update{0}".format(split_ver[1])
+            update = f"_update{split_ver[1]}"
 
         return "https://github.com/lammps/lammps/archive/{0}_{1}{2}.tar.gz".format(
             "stable" if str(version) in Lammps.stable_versions else "patch",
@@ -614,7 +614,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
         args = [
             self.define_from_variant("BUILD_SHARED_LIBS", "lib"),
             self.define_from_variant("LAMMPS_EXCEPTIONS", "exceptions"),
-            self.define_from_variant("{}_MPI".format(mpi_prefix), "mpi"),
+            self.define_from_variant(f"{mpi_prefix}_MPI", "mpi"),
             self.define_from_variant("BUILD_OMP", "openmp"),
             self.define_from_variant("BUILD_TOOLS", "tools"),
             self.define("ENABLE_TESTING", self.run_tests),
@@ -642,7 +642,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
                 args.append(self.define_from_variant("GPU_PREC", "gpu_precision"))
                 cuda_arch = spec.variants["cuda_arch"].value
                 if cuda_arch != "none":
-                    args.append(self.define("GPU_ARCH", "sm_{0}".format(cuda_arch[0])))
+                    args.append(self.define("GPU_ARCH", f"sm_{cuda_arch[0]}"))
                 args.append(self.define_from_variant("CUDA_MPS_SUPPORT", "cuda_mps"))
             elif spec.satisfies("+opencl"):
                 # LAMMPS downloads and bundles its own OpenCL ICD Loader by default
@@ -724,7 +724,7 @@ class Lammps(CMakePackage, CudaPackage, PythonExtension):
         for pkg, params in self.supported_packages.items():
             if "when" not in params or spec.satisfies(params["when"]):
                 opt = "{0}_{1}".format(pkg_prefix, pkg.replace("-package", "").upper())
-                args.append(self.define(opt, "+{0}".format(pkg) in spec))
+                args.append(self.define(opt, f"+{pkg}" in spec))
 
         if spec.satisfies("+kspace"):
             args.append(self.define_from_variant("FFT", "fft"))

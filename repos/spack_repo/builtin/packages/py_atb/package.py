@@ -64,13 +64,13 @@ class PyAtb(PythonPackage):
         openmp_flag = self.compiler.openmp_flag
         filter_file(
             "extra_compile_args = ['-fopenmp']",
-            "extra_compile_args = [{0!r}]".format(openmp_flag),
+            f"extra_compile_args = [{openmp_flag!r}]",
             "setup.py",
             string=True,
         )
         filter_file(
             "extra_link_args = ['-lgomp']",
-            "extra_link_args = [{0!r}]".format(openmp_flag),
+            f"extra_link_args = [{openmp_flag!r}]",
             "setup.py",
             string=True,
         )

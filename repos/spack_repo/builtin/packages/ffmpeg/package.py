@@ -191,12 +191,12 @@ class Ffmpeg(AutotoolsPackage):
             env.append_flags("CFLAGS", "-Wno-error=incompatible-function-pointer-types")
 
     def enable_or_disable_meta(self, variant, options):
-        switch = "enable" if "+{0}".format(variant) in self.spec else "disable"
-        return ["--{0}-{1}".format(switch, option) for option in options]
+        switch = "enable" if f"+{variant}" in self.spec else "disable"
+        return [f"--{switch}-{option}" for option in options]
 
     def configure_args(self):
         spec = self.spec
-        config_args = ["--enable-pic", "--cc={0}".format(spack_cc), "--cxx={0}".format(spack_cxx)]
+        config_args = ["--enable-pic", f"--cc={spack_cc}", f"--cxx={spack_cxx}"]
 
         # '+X' meta variant #
 

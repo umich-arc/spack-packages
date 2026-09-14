@@ -55,7 +55,7 @@ class Daos(SConsPackage):
     depends_on("ucx@1.12.1:")
 
     def build_args(self, spec, prefix):
-        args = ["PREFIX={0}".format(prefix), "USE_INSTALLED=all"]
+        args = [f"PREFIX={prefix}", "USE_INSTALLED=all"]
 
         if spec.satisfies("+debug"):
             args.append("--debug=explain,findlibs,includes")
@@ -75,5 +75,5 @@ class Daos(SConsPackage):
         return args
 
     def install_args(self, spec, prefix):
-        args = ["PREFIX={0}".format(prefix)]
+        args = [f"PREFIX={prefix}"]
         return args

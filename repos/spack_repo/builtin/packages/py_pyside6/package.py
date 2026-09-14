@@ -104,7 +104,7 @@ class PyPyside6(PythonPackage):
 
     def install_options(self, spec, prefix):
         args = [
-            "--parallel={0}".format(make_jobs),
+            f"--parallel={make_jobs}",
             "--ignore-git",
             # if you want to debug build problems, uncomment this
             # "--verbose-build",

@@ -110,13 +110,13 @@ class Flex(AutotoolsPackage):
     def url_for_version(self, version):
         url = "https://github.com/westes/flex"
         if version >= Version("2.6.1"):
-            url += "/releases/download/v{0}/flex-{0}.tar.gz".format(version)
+            url += f"/releases/download/v{version}/flex-{version}.tar.gz"
         elif version == Version("2.6.0"):
-            url += "/archive/v{0}.tar.gz".format(version)
+            url += f"/archive/v{version}.tar.gz"
         elif version >= Version("2.5.37"):
-            url += "/archive/flex-{0}.tar.gz".format(version)
+            url += f"/archive/flex-{version}.tar.gz"
         else:
-            url += "/archive/flex-{0}.tar.gz".format(version.dashed)
+            url += f"/archive/flex-{version.dashed}.tar.gz"
 
         return url
 

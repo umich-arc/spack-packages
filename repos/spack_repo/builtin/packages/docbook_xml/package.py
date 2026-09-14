@@ -77,7 +77,7 @@ class DocbookXml(Package):
             "--noout",
             "--add",
             "public",
-            "-//OASIS//ENTITIES DocBook XML Additional General Entities V{0}//EN".format(version),
+            f"-//OASIS//ENTITIES DocBook XML Additional General Entities V{version}//EN",
             f"file://{prefix}/dbgenent.mod",
             docbook,
         )

@@ -161,7 +161,7 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
     conflicts("+libomptarget", when="~clang")
     conflicts("+libomptarget", when="~offload @19:")
     for _p in ["darwin", "windows"]:
-        conflicts("+libomptarget", when="platform={0}".format(_p))
+        conflicts("+libomptarget", when=f"platform={_p}")
     del _p
 
     variant(
@@ -316,7 +316,7 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
         # Versions 10 and older cannot build runtimes with cmake@3.17:
         # See https://reviews.llvm.org/D77284
         for runtime in ["libunwind", "libcxx", "compiler-rt"]:
-            depends_on("cmake@:3.16", type="build", when="{0}=runtime".format(runtime))
+            depends_on("cmake@:3.16", type="build", when=f"{runtime}=runtime")
         del runtime
     depends_on("python@3.8:", when="@20: ~python", type="build")
     depends_on("python", when="~python", type="build")
@@ -515,7 +515,7 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
 
     # fix building of older versions of llvm with newer versions of glibc
     for compiler_rt_as in ["project", "runtime"]:
-        with when("compiler-rt={0}".format(compiler_rt_as)):
+        with when(f"compiler-rt={compiler_rt_as}"):
             # sys/ustat.h has been removed in favour of statfs from glibc-2.28
             # see https://reviews.llvm.org/D47281
             patch(
@@ -536,7 +536,7 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
     # patch backports the original correct fix to previous releases.  The
     # second patch backports the un-breaking of the original fix.
     for libcxx_as in ["project", "runtime"]:
-        with when("libcxx={0}".format(libcxx_as)):
+        with when(f"libcxx={libcxx_as}"):
             patch(
                 "https://github.com/llvm/llvm-project/commit/3bf63cf3b366d3a57cf5cbad4112a6abf6c0c3b1.patch?full_index=1",
                 sha256="e56489a4bcf3c3636e206adca366bfcda2722ad81a5fa9a0360faed63933191a",
@@ -791,9 +791,7 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
     @classmethod
     def validate_detected_spec(cls, spec, extra_attributes):
         # For LLVM 'compilers' is a mandatory attribute
-        msg = 'the extra attribute "compilers" must be set for the detected spec "{0}"'.format(
-            spec
-        )
+        msg = f'the extra attribute "compilers" must be set for the detected spec "{spec}"'
         assert "compilers" in extra_attributes, msg
         compilers = extra_attributes["compilers"]
         for key in ("c", "cxx"):
@@ -855,11 +853,10 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
         for condition, flag in flags[language][standard]:
             if self.spec.satisfies(condition):
                 return flag
-        else:
-            raise RuntimeError(
-                f"{self.spec} does not support the '{standard}' standard "
-                f"for the '{language}' language"
-            )
+        raise RuntimeError(
+            f"{self.spec} does not support the '{standard}' standard "
+            f"for the '{language}' language"
+        )
 
     def archspec_name(self):
         return "clang"
@@ -902,7 +899,7 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         """When using %clang, add only its ld.lld-$ver and/or ld.lld to our PATH"""
         if self.compiler.name in ["clang", "apple-clang"]:
-            for lld in "ld.lld-{0}".format(self.compiler.version.version[0]), "ld.lld":
+            for lld in f"ld.lld-{self.compiler.version.version[0]}", "ld.lld":
                 bin = os.path.join(os.path.dirname(self.compiler.cc), lld)
                 sym = os.path.join(self.stage.path, "ld.lld")
                 if os.path.exists(bin) and not os.path.exists(sym):

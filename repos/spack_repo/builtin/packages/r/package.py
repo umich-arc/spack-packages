@@ -246,7 +246,7 @@ class R(AutotoolsPackage):
 
         # Set FPICFLAGS for compilers except 'gcc'.
         if self.compiler.name != "gcc":
-            config_args.append("FPICFLAGS={0}".format(self.compiler.cc_pic_flag))
+            config_args.append(f"FPICFLAGS={self.compiler.cc_pic_flag}")
 
         return config_args
 
@@ -334,7 +334,7 @@ class R(AutotoolsPackage):
 
         # Use the number of make_jobs set in spack. The make program will
         # determine how many jobs can actually be started.
-        env.set("MAKEFLAGS", "-j{0}".format(make_jobs))
+        env.set("MAKEFLAGS", f"-j{make_jobs}")
         env.set("R_HOME", join_path(self.prefix, "rlib", "R"))
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:

@@ -413,13 +413,9 @@ class Petsc(Package, CudaPackage):
     # * petsc-3.15 and newer (without docs)
     def url_for_version(self, version):
         if self.spec.satisfies("@3.13.0:3.14.6"):
-            return "http://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-lite-{0}.tar.gz".format(
-                version
-            )
+            return f"http://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-lite-{version}.tar.gz"
         else:
-            return "http://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-{0}.tar.gz".format(
-                version
-            )
+            return f"http://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-{version}.tar.gz"
 
     def mpi_dependent_options(self):
         if "~mpi" in self.spec:
@@ -606,21 +602,15 @@ class Petsc(Package, CudaPackage):
                 if useinc or uselib:
                     if useinc:
                         options.append(
-                            "--with-{library}-include={value}".format(
-                                library=petsclibname, value=spec[spacklibname].prefix.include
-                            )
+                            f"--with-{petsclibname}-include={spec[spacklibname].prefix.include}"
                         )
                     if uselib:
                         options.append(
-                            "--with-{library}-lib={value}".format(
-                                library=petsclibname, value=spec[spacklibname].libs.joined()
-                            )
+                            f"--with-{petsclibname}-lib={spec[spacklibname].libs.joined()}"
                         )
                 else:
                     options.append(
-                        "--with-{library}-dir={path}".format(
-                            library=petsclibname, path=spec[spacklibname].prefix
-                        )
+                        f"--with-{petsclibname}-dir={spec[spacklibname].prefix}"
                     )
 
         if "+cuda" in spec:
@@ -631,7 +621,7 @@ class Petsc(Package, CudaPackage):
                 else:
                     if len(cuda_arch) != 1:
                         raise InstallError("multiple CUDA architectures require petsc@3.19:")
-                    options.append("--with-cuda-gencodearch={0}".format(cuda_arch[0]))
+                    options.append(f"--with-cuda-gencodearch={cuda_arch[0]}")
         else:
             options.append("--with-cudac=0")
         # if "+rocm" in spec:
@@ -711,7 +701,7 @@ class Petsc(Package, CudaPackage):
         make(target, parallel=False)
 
         if self.run_tests:
-            make('check PETSC_ARCH="" PETSC_DIR={0}'.format(prefix), parallel=False)
+            make(f'check PETSC_ARCH="" PETSC_DIR={prefix}', parallel=False)
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         # configure fails if these env vars are set outside of Spack

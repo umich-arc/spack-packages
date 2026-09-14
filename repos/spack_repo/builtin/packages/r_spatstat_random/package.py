@@ -50,11 +50,10 @@ class RSpatstatRandom(RPackage):
     depends_on("r-spatstat-utils@3.0-2:", type=("build", "run"), when="@3.1-4:")
     depends_on("r-spatstat-utils@3.0-5:", type=("build", "run"), when="@3.3-0:")
 
-    with when("@3.5-1:"):
-        with default_args(type=("build", "run")):
-            depends_on("r-spatstat-data@3.1-9:")
-            depends_on("r-spatstat-univar@3.2-0:")
-            depends_on("r-spatstat-geom@3.8-2:")
-            depends_on("r-matrix")
-            depends_on("r-spatstat-utils@3.2-4:")
-            depends_on("r-spatstat-sparse@3.2-0:")
+    with when("@3.5-1:"), default_args(type=("build", "run")):
+        depends_on("r-spatstat-data@3.1-9:")
+        depends_on("r-spatstat-univar@3.2-0:")
+        depends_on("r-spatstat-geom@3.8-2:")
+        depends_on("r-matrix")
+        depends_on("r-spatstat-utils@3.2-4:")
+        depends_on("r-spatstat-sparse@3.2-0:")

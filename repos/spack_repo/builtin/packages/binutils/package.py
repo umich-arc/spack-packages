@@ -211,11 +211,11 @@ class Binutils(AutotoolsPackage, GNUMirrorPackage):
         # version, just check the first two components
         version = str(self.spec.version.up_to(2))
         for _bin in binaries:
-            reason = "checking version of {0} is {1}".format(_bin, version)
-            with test_part(self, "test_binaries_{0}".format(_bin), purpose=reason):
+            reason = f"checking version of {_bin} is {version}"
+            with test_part(self, f"test_binaries_{_bin}", purpose=reason):
                 installed_exe = join_path(self.prefix.bin, _bin)
                 if not os.path.exists(installed_exe):
-                    raise SkipTest("{0} is not installed".format(_bin))
+                    raise SkipTest(f"{_bin} is not installed")
 
                 exe = which(installed_exe, required=True)
                 out = exe("--version", output=str.split, error=str.split)
@@ -231,7 +231,7 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
         platform = self.spec.platform
 
         if family in known_targets and platform in known_platforms:
-            targets = "{}-{}".format(known_targets[family], known_platforms[platform])
+            targets = f"{known_targets[family]}-{known_platforms[platform]}"
         else:
             targets = "all"
 
@@ -242,7 +242,7 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
             "--enable-deterministic-archives",
             "--enable-multilib",
             "--enable-pic",
-            "--enable-targets={}".format(targets),
+            f"--enable-targets={targets}",
             "--with-sysroot=/",
             "--with-system-zlib",
             *self.enable_or_disable("gas"),

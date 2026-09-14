@@ -83,11 +83,11 @@ class PySip(PythonPackage):
 
         args = [
             "--sip-module={0}".format(spec.variants["module"].value),
-            "--bindir={0}".format(prefix.bin),
-            "--destdir={0}".format(python_platlib),
+            f"--bindir={prefix.bin}",
+            f"--destdir={python_platlib}",
             "--incdir={0}".format(join_path(prefix, self["python"].include)),
-            "--sipdir={0}".format(prefix.share.sip),
-            "--stubsdir={0}".format(python_platlib),
+            f"--sipdir={prefix.share.sip}",
+            f"--stubsdir={python_platlib}",
         ]
         python("configure.py", *args)
         make()

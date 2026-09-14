@@ -109,4 +109,4 @@ class PyPip(Package, PythonExtension):
         python(script, *PythonPipBuilder.std_args(self), f"--prefix={prefix}", whl)
 
     def setup_dependent_package(self, module, dependent_spec: Spec):
-        setattr(module, "pip", python.with_default_args("-m", "pip"))
+        module.pip = python.with_default_args("-m", "pip")

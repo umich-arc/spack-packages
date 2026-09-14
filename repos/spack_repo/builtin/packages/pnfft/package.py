@@ -37,7 +37,7 @@ class Pnfft(AutotoolsPackage):
         return self._fftw_precisions
 
     def configure(self, spec, prefix):
-        options = ["--prefix={0}".format(prefix)]
+        options = [f"--prefix={prefix}"]
         if not self.compiler.f77 or not self.compiler.fc:
             options.append("--disable-fortran")
 

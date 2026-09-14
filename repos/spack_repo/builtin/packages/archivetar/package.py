@@ -99,13 +99,13 @@ class Archivetar(Package):
         self._configure_make_install(
             join_path(deps, "dtcmp-1.1.0"),
             prefix,
-            "--with-lwgrp={0}".format(prefix.install),
+            f"--with-lwgrp={prefix.install}",
         )
 
     def _configure_make_install(self, source_dir, prefix, *extra_args):
         with working_dir(source_dir):
             configure = Executable("./configure")
-            configure("--prefix={0}".format(prefix.install), *extra_args)
+            configure(f"--prefix={prefix.install}", *extra_args)
             make()
             make("install")
 
@@ -114,11 +114,11 @@ class Archivetar(Package):
         with working_dir("spack-build-mpifileutils", create=True):
             cmake(
                 source_dir,
-                "-DCMAKE_INSTALL_PREFIX={0}".format(prefix.install),
+                f"-DCMAKE_INSTALL_PREFIX={prefix.install}",
                 "-DCMAKE_C_COMPILER={0}".format(spec["mpi"].mpicc),
                 "-DCMAKE_CXX_COMPILER={0}".format(spec["mpi"].mpicxx),
-                "-DWITH_DTCMP_PREFIX={0}".format(prefix.install),
-                "-DWITH_LibCircle_PREFIX={0}".format(prefix.install),
+                f"-DWITH_DTCMP_PREFIX={prefix.install}",
+                f"-DWITH_LibCircle_PREFIX={prefix.install}",
             )
             make()
             make("install")

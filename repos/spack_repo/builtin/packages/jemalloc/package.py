@@ -70,7 +70,7 @@ class Jemalloc(AutotoolsPackage):
 
         je_prefix = spec.variants["jemalloc_prefix"].value
         if je_prefix != "none":
-            args.append("--with-jemalloc-prefix={0}".format(je_prefix))
+            args.append(f"--with-jemalloc-prefix={je_prefix}")
 
         args += self.enable_or_disable("libs")
         args += self.enable_or_disable("documentation")

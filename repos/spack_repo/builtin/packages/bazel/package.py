@@ -187,7 +187,7 @@ class Bazel(Package):
         "sha256": "360626cc19063bc411bfed2914301b908a8f77a7919aaea007a977fa8fb3cde1",
         "when": "@4",
     }
-    for resource_name in resource_dictionary.keys():
+    for resource_name in resource_dictionary:
         resource(
             when=resource_dictionary[resource_name]["when"],
             name=resource_name,

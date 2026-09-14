@@ -518,7 +518,7 @@ class AutotoolsBuilder(AutotoolsBuilder):
             configure_args.extend(["--with-cuda", "--enable-curand", "--enable-cusparse"])
             cuda_arch_vals = spec.variants["cuda_arch"].value
             if cuda_arch_vals:
-                cuda_arch_sorted = list(sorted(cuda_arch_vals, reverse=True))
+                cuda_arch_sorted = sorted(cuda_arch_vals, reverse=True)
                 cuda_arch = cuda_arch_sorted[0]
                 configure_args.append(f"--with-gpu-arch={cuda_arch}")
             # New in 2.21.0: replaces --enable-cub

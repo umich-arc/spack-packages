@@ -177,7 +177,7 @@ class Mesa(MesonPackage):
             url = "https://archive.mesa3d.org/older-versions/{0}.x/mesa-{1}.tar.xz"
             return url.format(version.up_to(1), version.dotted)
 
-        return super(Mesa, self).url_for_version(version)
+        return super().url_for_version(version)
 
     # Explicitly use the llvm-config tool
     def patch(self):
@@ -256,9 +256,9 @@ class MesonBuilder(meson.MesonBuilder):
 
         if "+osmesa" in spec:
             num_frontends += 1
-            args.append("-Dosmesa={0}".format(osmesa_enable))
+            args.append(f"-Dosmesa={osmesa_enable}")
         else:
-            args.append("-Dosmesa={0}".format(osmesa_disable))
+            args.append(f"-Dosmesa={osmesa_disable}")
 
         if "+glx" in spec:
             num_frontends += 1
@@ -300,7 +300,7 @@ class MesonBuilder(meson.MesonBuilder):
             with working_dir(self.build_directory):
                 with open("meson-native-config.ini", "w") as native_config:
                     native_config.write("[binaries]\n")
-                    native_config.write("llvm-config = '{0}'\n".format(llvm_config.path))
+                    native_config.write(f"llvm-config = '{llvm_config.path}'\n")
             args.append("-Dllvm=enabled")
             args.append(opt_enable("+llvm_dylib" in spec["libllvm"], "shared-llvm"))
 

@@ -42,7 +42,7 @@ class Stata(Package):
 
     # STATA is downloaded from user/pass protected ftp as Stata15Linux64.tar.gz
     def url_for_version(self, version):
-        return "file://{0}/Stata{1}Linux64.tar.gz".format(os.getcwd(), version)
+        return f"file://{os.getcwd()}/Stata{version}Linux64.tar.gz"
 
     # STATA is simple and needs really just the PATH set.
     def setup_run_environment(self, env: EnvironmentModifications) -> None:

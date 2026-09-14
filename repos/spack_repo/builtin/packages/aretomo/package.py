@@ -37,7 +37,7 @@ class Aretomo(Package):
 
         mkdirp(prefix.bin)
         install(
-            "AreTomo_{0}_Cuda{1}_*".format(spec.version, cuda_version),
+            f"AreTomo_{spec.version}_Cuda{cuda_version}_*",
             join_path(prefix.bin, "AreTomo"),
         )
 

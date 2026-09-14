@@ -85,8 +85,8 @@ class Spdk(AutotoolsPackage):
 
         for mod in self.mods:
             if "+" + mod in spec:
-                config_args.append("--with-{0}".format(mod))
+                config_args.append(f"--with-{mod}")
             else:
-                config_args.append("--without-{0}".format(mod))
+                config_args.append(f"--without-{mod}")
 
         return config_args

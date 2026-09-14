@@ -20,12 +20,10 @@ class my_html_parser(HTMLParser):
             self.state = 3
         if tag == "td" and self.state == 3:
             self.state = 4
-        pass
 
     def handle_endtag(self, tag):
         if tag == "table" and self.state == 1:
             self.state = 2
-        pass
 
     def handle_data(self, data):
         # print("Encountered some data  :", data)

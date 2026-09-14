@@ -169,7 +169,7 @@ class Amdfftw(FftwBase):
     def configure(self, spec, prefix):
         """Configure function"""
         # Base options
-        options = ["--prefix={0}".format(prefix), "--enable-amd-opt"]
+        options = [f"--prefix={prefix}", "--enable-amd-opt"]
 
         # Dynamic dispatcher builds a single portable optimized library
         # that can execute on different x86 CPU architectures.
@@ -178,9 +178,9 @@ class Amdfftw(FftwBase):
 
         # Check if compiler is AOCC
         if spec.satisfies("%aocc"):
-            options.append("CC={0}".format(os.path.basename(spack_cc)))
-            options.append("FC={0}".format(os.path.basename(spack_fc)))
-            options.append("F77={0}".format(os.path.basename(spack_fc)))
+            options.append(f"CC={os.path.basename(spack_cc)}")
+            options.append(f"FC={os.path.basename(spack_fc)}")
+            options.append(f"F77={os.path.basename(spack_fc)}")
 
         if spec.satisfies("+debug"):
             options.append("--enable-debug")

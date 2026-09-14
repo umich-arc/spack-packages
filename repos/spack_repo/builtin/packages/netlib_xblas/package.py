@@ -74,4 +74,3 @@ class NetlibXblas(AutotoolsPackage):
         for h in headers:
             install(join_path("src", h), prefix.include)
 
-        return

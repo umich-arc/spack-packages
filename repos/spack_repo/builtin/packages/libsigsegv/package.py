@@ -45,16 +45,16 @@ class Libsigsegv(AutotoolsPackage, GNUMirrorPackage):
         """build and run smoke test"""
         data_dir = self.test_suite.current_test_data_dir
         prog = "smoke_test"
-        src = data_dir.join("{0}.c".format(prog))
+        src = data_dir.join(f"{prog}.c")
 
         options = [
-            "-I{0}".format(self.prefix.include),
+            f"-I{self.prefix.include}",
             src,
             "-o",
             prog,
-            "-L{0}".format(self.prefix.lib),
+            f"-L{self.prefix.lib}",
             "-lsigsegv",
-            "{0}{1}".format(self.compiler.cc_rpath_arg, self.prefix.lib),
+            f"{self.compiler.cc_rpath_arg}{self.prefix.lib}",
         ]
 
         cc = which(os.environ["CC"], required=True)

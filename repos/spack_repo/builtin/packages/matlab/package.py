@@ -57,7 +57,7 @@ class Matlab(Package):
     extendable = True
 
     def url_for_version(self, version):
-        return "file://{0}/matlab_{1}_glnxa64.zip".format(os.getcwd(), version)
+        return f"file://{os.getcwd()}/matlab_{version}_glnxa64.zip"
 
     def install(self, spec, prefix):
         config = {
@@ -70,8 +70,7 @@ class Matlab(Package):
 
         # Store values requested by the installer in a file
         with open("spack_installer_input.txt", "w") as input_file:
-            for key in config:
-                input_file.write("{0}={1}\n".format(key, config[key]))
+            input_file.writelines(f"{key}={config[key]}\n" for key in config)
 
         # Run silent installation script
         # Full path required

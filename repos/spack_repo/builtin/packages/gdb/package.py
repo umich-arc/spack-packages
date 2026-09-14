@@ -107,7 +107,7 @@ class Gdb(AutotoolsPackage, GNUMirrorPackage):
 
     def configure_args(self):
         args = [
-            "--with-system-gdbinit={}".format(self.prefix.etc.gdbinit),
+            f"--with-system-gdbinit={self.prefix.etc.gdbinit}",
             "--with-system-zlib",
             *self.enable_or_disable("lto"),
             *self.with_or_without("quad"),
@@ -136,8 +136,7 @@ class Gdb(AutotoolsPackage, GNUMirrorPackage):
             if os.path.exists(tool):
                 mkdir(self.prefix.etc)
                 with open(self.prefix.etc.gdbinit, "w") as gdbinit:
-                    gdbinit.write("add-auto-load-safe-path {0}\n".format(tool))
+                    gdbinit.write(f"add-auto-load-safe-path {tool}\n")
 
     def check(self):
         """The GDB testsuite is extensive and is hard to pass. Skip it for now."""
-        pass

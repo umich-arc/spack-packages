@@ -111,8 +111,7 @@ class Superlu(CMakePackage):
         config_args.extend(self._make_hdr_for_test(lib))
 
         with open(join_path(self.examples_src_dir, filename), "w") as inc:
-            for option in config_args:
-                inc.write(f"{option}\n")
+            inc.writelines(f"{option}\n" for option in config_args)
 
         # change the path in the example's Makefile to the file written above
         filter_file(r"include \.\./" + filename, "include ./" + filename, makefile)

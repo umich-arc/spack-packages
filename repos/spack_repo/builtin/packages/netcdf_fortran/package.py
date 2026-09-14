@@ -42,15 +42,15 @@ class NetcdfFortran(AutotoolsPackage):
 
     def configure_args(self):
         netcdf_c = self.spec["netcdf-c"]
-        cppflags = "-I{0}".format(netcdf_c.prefix.include)
-        ldflags = "-L{0}".format(netcdf_c.prefix.lib)
+        cppflags = f"-I{netcdf_c.prefix.include}"
+        ldflags = f"-L{netcdf_c.prefix.lib}"
         fflags = "-w -fallow-argument-mismatch"
 
         return [
-            "CPPFLAGS={0}".format(cppflags),
-            "LDFLAGS={0}".format(ldflags),
-            "FC={0}".format(self.compiler.fc),
-            "F77={0}".format(self.compiler.f77),
+            f"CPPFLAGS={cppflags}",
+            f"LDFLAGS={ldflags}",
+            f"FC={self.compiler.fc}",
+            f"F77={self.compiler.f77}",
             # "FCFLAGS={0}".format(fflags),
             # "FFLAGS={0}".format(fflags),
         ]

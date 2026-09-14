@@ -132,7 +132,7 @@ class RdmaCore(CMakePackage):
     #       IBACM_SERVER_PATH.
     def cmake_args(self):
         cmake_args = [
-            "-DCMAKE_INSTALL_SYSCONFDIR={0}".format(self.spec.prefix.etc),
+            f"-DCMAKE_INSTALL_SYSCONFDIR={self.spec.prefix.etc}",
             "-DCMAKE_INSTALL_RUNDIR=/var/run",
         ]
 

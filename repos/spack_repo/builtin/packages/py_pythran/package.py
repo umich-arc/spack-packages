@@ -94,7 +94,7 @@ class PyPythran(PythonPackage):
 
     def patch(self):
         # Compiler is used at run-time to determine name of OpenMP library to search for
-        cfg_file = join_path("pythran", "pythran-{0}.cfg".format(sys.platform))
+        cfg_file = join_path("pythran", f"pythran-{sys.platform}.cfg")
         filter_file("CXX=", "CXX=" + self.compiler.cxx, cfg_file)
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:

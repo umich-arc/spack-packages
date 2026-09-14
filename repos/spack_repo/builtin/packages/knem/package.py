@@ -58,7 +58,7 @@ class Knem(AutotoolsPackage):
     def override_kernel_compiler(self):
         # Override the compiler for kernel module source files. We need
         # this additional argument for all installation phases.
-        make.add_default_arg("CC={0}".format(spack_cc))
+        make.add_default_arg(f"CC={spack_cc}")
 
     def configure_args(self):
         return self.enable_or_disable("hwloc")

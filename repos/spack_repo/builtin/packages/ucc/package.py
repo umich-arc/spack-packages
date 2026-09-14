@@ -53,7 +53,7 @@ class Ucc(AutotoolsPackage, CudaPackage):
     with when("+nccl"):
         for arch in CudaPackage.cuda_arch_values:
             depends_on(
-                "nccl +cuda cuda_arch={0}".format(arch), when="+cuda cuda_arch={0}".format(arch)
+                f"nccl +cuda cuda_arch={arch}", when=f"+cuda cuda_arch={arch}"
             )
 
     def autoreconf(self, spec, prefix):

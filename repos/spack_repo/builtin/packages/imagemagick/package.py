@@ -46,7 +46,7 @@ class Imagemagick(AutotoolsPackage):
         if spec.satisfies("+ghostscript"):
             args.append("--with-gslib")
             gs_font_dir = spec["ghostscript-fonts"].prefix.share.font
-            args.append("--with-gs-font-dir={0}".format(gs_font_dir))
+            args.append(f"--with-gs-font-dir={gs_font_dir}")
         else:
             args.append("--without-gslib")
         args.extend(self.with_or_without("rsvg"))

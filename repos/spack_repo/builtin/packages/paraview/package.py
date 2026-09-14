@@ -249,8 +249,8 @@ class Paraview(CMakePackage, CudaPackage):
         # We only support one single Architecture
         for _arch, _other_arch in itertools.permutations(CudaPackage.cuda_arch_values, 2):
             conflicts(
-                "cuda_arch={0}".format(_arch),
-                when="cuda_arch={0}".format(_other_arch),
+                f"cuda_arch={_arch}",
+                when=f"cuda_arch={_other_arch}",
                 msg="Paraview only accepts one architecture value",
             )
 
@@ -434,7 +434,7 @@ class Paraview(CMakePackage, CudaPackage):
         if self.spec.version == Version("master"):
             return "paraview-5.11"
         else:
-            return "paraview-{0}".format(self.spec.version.up_to(2))
+            return f"paraview-{self.spec.version.up_to(2)}"
 
     def setup_dependent_build_environment(
         self, env: EnvironmentModifications, dependent_spec: Spec
@@ -487,7 +487,7 @@ class Paraview(CMakePackage, CudaPackage):
 
         if "+python" in self.spec:
             python_version = self.spec["python"].version.up_to(2)
-            pv_pydir = join_path(lib_dir, "python{0}".format(python_version), "site-packages")
+            pv_pydir = join_path(lib_dir, f"python{python_version}", "site-packages")
             if "+shared" in self.spec:
                 env.prepend_path("PYTHONPATH", pv_pydir)
                 # The Trilinos Catalyst adapter requires
@@ -716,21 +716,20 @@ class Paraview(CMakePackage, CudaPackage):
         pvserver = self.prefix.bin.pvserver
         pvpython = Executable(self.prefix.bin.pvpython)
 
-        with working_dir("smoke_test_build", create=True):
-            with Popen(
-                [mpirun, "-np", "3", pvserver, "--mpi", "--force-offscreen-rendering"]
-            ) as servers:
-                pvpython(
-                    "--force-offscreen-rendering",
-                    "-c",
-                    "from paraview.simple import *;"
-                    "Connect('127.0.0.1');"
-                    "sphere = Sphere(ThetaResolution=16, PhiResolution=32);"
-                    "sphere_remote = servermanager.Fetch(sphere);"
-                    "Show(sphere);"
-                    "Render()",
-                )
-                servers.terminate()
+        with working_dir("smoke_test_build", create=True), Popen(
+            [mpirun, "-np", "3", pvserver, "--mpi", "--force-offscreen-rendering"]
+        ) as servers:
+            pvpython(
+                "--force-offscreen-rendering",
+                "-c",
+                "from paraview.simple import *;"
+                "Connect('127.0.0.1');"
+                "sphere = Sphere(ThetaResolution=16, PhiResolution=32);"
+                "sphere_remote = servermanager.Fetch(sphere);"
+                "Show(sphere);"
+                "Render()",
+            )
+            servers.terminate()
 
     @run_after("install")
     @on_package_attributes(run_tests=True)

@@ -86,7 +86,7 @@ class PyProtobuf(PythonPackage):
         depends_on(f"protobuf@{ver}", when=f"@5.{ver}")
     for ver in range(21, 26):
         depends_on(f"protobuf@{ver}", when=f"@4.{ver}")
-    for ver in range(0, 21):
+    for ver in range(21):
         depends_on(f"protobuf@3.{ver}", when=f"@3.{ver}")
 
     conflicts("%gcc@14:", when="@:4.24.3")

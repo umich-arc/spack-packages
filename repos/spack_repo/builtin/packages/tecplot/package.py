@@ -118,30 +118,28 @@ class Tecplot(Package):
         #       Patch (maintenance) versions can only be verified by the hash.
         if "r" in str(version):
             # Parse as previous versioning
-            return "file://{0}/tecplot360ex{1}_linux64.sh".format(os.getcwd(), version)
+            return f"file://{os.getcwd()}/tecplot360ex{version}_linux64.sh"
         else:
             # Parse as semantic versioning
-            return "file://{0}/tecplot360ex{1}r{2}_linux64.sh".format(
-                os.getcwd(), version[0], version[1]
-            )
+            return f"file://{os.getcwd()}/tecplot360ex{version[0]}r{version[1]}_linux64.sh"
 
     def install(self, spec, prefix):
         set_executable(self.stage.archive_file)
         installer = Executable(self.stage.archive_file)
         installer("--skip-license", "--prefix=%s" % prefix)
         # Link individual products to top level license file
-        lic360 = "360ex_{0}/tecplotlm.lic".format(self.version)
-        licChorus = "chorus_{0}/tecplotlm.lic".format(self.version)
+        lic360 = f"360ex_{self.version}/tecplotlm.lic"
+        licChorus = f"chorus_{self.version}/tecplotlm.lic"
         force_symlink("../tecplotlm.lic", join_path(self.prefix, lic360))
         force_symlink("../tecplotlm.lic", join_path(self.prefix, licChorus))
 
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         # Add Chorus bin
-        binChorus = "chorus_{0}/bin".format(self.version)
+        binChorus = f"chorus_{self.version}/bin"
         env.prepend_path("PATH", join_path(self.prefix, binChorus))
         # Add Tecplot 360 bin
-        bin360 = "360ex_{0}/bin".format(self.version)
+        bin360 = f"360ex_{self.version}/bin"
         env.prepend_path("PATH", join_path(self.prefix, bin360))
         # Add Tecplot 360 lib
-        lib360 = "360ex_{0}/lib".format(self.version)
+        lib360 = f"360ex_{self.version}/lib"
         env.prepend_path("LD_LIBRARY_PATH", join_path(self.prefix, lib360))

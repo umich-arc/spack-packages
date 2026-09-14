@@ -59,7 +59,7 @@ class CalculixAdapter(MakefilePackage):
         # pkg-config which emits none either. rpath the shared dependencies so
         # ccx_preCICE runs without a module load / LD_LIBRARY_PATH.
         rpaths = " ".join(
-            "-Wl,-rpath,{0}".format(d)
+            f"-Wl,-rpath,{d}"
             for d in [
                 spec["precice"].libs.directories[0],
                 spec["yaml-cpp"].libs.directories[0],
@@ -88,7 +88,7 @@ class CalculixAdapter(MakefilePackage):
             "SPOOLES_LIBS=-Wl,--start-group {0} -Wl,--end-group".format(
                 join_path(spooles.lib, "libspooles.a")
             ),
-            "ARPACK_LIBS={0} {1}".format(arpack_libs, rpaths),
+            f"ARPACK_LIBS={arpack_libs} {rpaths}",
             "YAML_INCLUDE=-I" + spec["yaml-cpp"].prefix.include,
             "YAML_LIBS=" + spec["yaml-cpp"].libs.ld_flags,
             "ADDITIONAL_FFLAGS=" + fflags,

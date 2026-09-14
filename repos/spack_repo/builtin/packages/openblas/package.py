@@ -554,9 +554,9 @@ class MakefileBuilder(makefile.MakefileBuilder):
         # When mixing compilers make sure that
         # $SPACK_ROOT/lib/spack/env/<compiler> have symlinks with reasonable
         # names and hack them inside lib/spack/spack/compilers/<compiler>.py
-        make_defs = ["CC={0}".format(spack_cc)]
+        make_defs = [f"CC={spack_cc}"]
         if "~fortran" not in self.spec:
-            make_defs += ["FC={0}".format(spack_fc)]
+            make_defs += [f"FC={spack_fc}"]
 
         # force OpenBLAS to use externally defined parallel build
         if self.spec.version < Version("0.3"):
@@ -590,9 +590,9 @@ class MakefileBuilder(makefile.MakefileBuilder):
 
         if "~shared" in self.spec:
             if "+pic" in self.spec:
-                make_defs.append("CFLAGS={0}".format(self.pkg.compiler.cc_pic_flag))
+                make_defs.append(f"CFLAGS={self.pkg.compiler.cc_pic_flag}")
                 if "~fortran" not in self.spec:
-                    make_defs.append("FFLAGS={0}".format(self.pkg.compiler.f77_pic_flag))
+                    make_defs.append(f"FFLAGS={self.pkg.compiler.f77_pic_flag}")
             make_defs += ["NO_SHARED=1"]
         # fix missing _dggsvd_ and _sggsvd_
         if self.spec.satisfies("@0.2.16"):
@@ -619,7 +619,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
 
         suffix = self.spec.variants["symbol_suffix"].value
         if suffix != "none":
-            make_defs += ["SYMBOLSUFFIX={0}".format(suffix)]
+            make_defs += [f"SYMBOLSUFFIX={suffix}"]
 
         # Synchronize floating-point control and status register (FPCSR)
         # between threads (x86/x86_64 only).
@@ -646,7 +646,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
         # Avoid that NUM_THREADS gets initialized with the host's number of CPUs.
         if self.spec.satisfies("threads=openmp") or self.spec.satisfies("threads=pthreads"):
             max_num_threads = self.spec.variants["max_num_threads"].value
-            make_defs.append("NUM_THREADS={0}".format(max_num_threads))
+            make_defs.append(f"NUM_THREADS={max_num_threads}")
 
         return make_defs
 

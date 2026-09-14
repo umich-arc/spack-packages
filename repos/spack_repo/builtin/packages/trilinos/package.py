@@ -739,7 +739,7 @@ class Trilinos(CMakePackage, CudaPackage):
                     libgfortran = fc("--print-file-name", "libgfortran.a", output=str).strip()
                 # -L<libdir> -lgfortran required for OSX
                 # https://github.com/spack/spack/pull/25823#issuecomment-917231118
-                flags.append("-L{0} -lgfortran".format(os.path.dirname(libgfortran)))
+                flags.append(f"-L{os.path.dirname(libgfortran)} -lgfortran")
 
         # if is_cce:
         #    return (None, None, flags)
@@ -806,12 +806,8 @@ class Trilinos(CMakePackage, CudaPackage):
             if kokkos_version_in_trilinos_source != kokkos_version_specified:
                 raise InstallError(
                     "For Trilinos@[master,develop], ^kokkos version in spec must "
-                    "match version in Trilinos source code. Specify ^kokkos@{0} ".format(
-                        kokkos_version_in_trilinos_source
-                    )
-                    + "for trilinos@[master,develop] instead of ^kokkos@{0}.\n".format(
-                        kokkos_version_specified
-                    )
+                    f"match version in Trilinos source code. Specify ^kokkos@{kokkos_version_in_trilinos_source} "
+                    + f"for trilinos@[master,develop] instead of ^kokkos@{kokkos_version_specified}.\n"
                     + "Trilinos recipe maintainers, please update the ^kokkos version range"
                 )
 

@@ -65,4 +65,3 @@ class Libsodium(AutotoolsPackage):
         except OSError:
             # Old versions of libsodium don't have these files.
             tty.debug("Couldn't chmod config.guess or config.sub: file not found")
-            pass

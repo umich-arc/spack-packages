@@ -124,20 +124,19 @@ class MesonBuilder(BuildEnvironment, meson.MesonBuilder):
 
     def check(self):
         """All build time checks open windows in the X server, don't do that"""
-        pass
 
 
 class AutotoolsBuilder(BuildEnvironment, autotools.AutotoolsBuilder):
     def configure_args(self):
         true = which("true", required=True)
         args = [
-            "--prefix={0}".format(self.prefix),
+            f"--prefix={self.prefix}",
             # disable building of gtk-doc files following #9771
             "--disable-gtk-doc-html",
-            "GTKDOC_CHECK={0}".format(true),
-            "GTKDOC_CHECK_PATH={0}".format(true),
-            "GTKDOC_MKPDF={0}".format(true),
-            "GTKDOC_REBASE={0}".format(true),
+            f"GTKDOC_CHECK={true}",
+            f"GTKDOC_CHECK_PATH={true}",
+            f"GTKDOC_MKPDF={true}",
+            f"GTKDOC_REBASE={true}",
         ]
         if self.spec.satisfies("~cups"):
             args.append("--disable-cups")
@@ -145,4 +144,3 @@ class AutotoolsBuilder(BuildEnvironment, autotools.AutotoolsBuilder):
 
     def check(self):
         """All build time checks open windows in the X server, don't do that"""
-        pass

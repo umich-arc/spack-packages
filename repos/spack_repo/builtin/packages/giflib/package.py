@@ -50,9 +50,9 @@ class Giflib(MakefilePackage, SourceforgePackage):
         if self.spec.satisfies("@5.2.0:"):
             args.extend(
                 [
-                    "PREFIX={0}".format(self.spec.prefix),
-                    "LIBMAJOR={0}".format(self.spec.version.up_to(1)),
-                    "LIBVER={0}".format(self.spec.version),
+                    f"PREFIX={self.spec.prefix}",
+                    f"LIBMAJOR={self.spec.version.up_to(1)}",
+                    f"LIBVER={self.spec.version}",
                 ]
             )
         return args
@@ -79,7 +79,7 @@ class Giflib(MakefilePackage, SourceforgePackage):
     def edit(self, spec, prefix):
         if spec.satisfies("@:5.2.0"):
             configure = Executable("./configure")
-            configure("--prefix={0}".format(prefix))
+            configure(f"--prefix={prefix}")
         # remove call to convert in doc makefile
         with working_dir("doc"):
             filter_file("^.*convert.*-resize.*$", "", "Makefile")

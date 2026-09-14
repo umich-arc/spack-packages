@@ -289,10 +289,10 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
             vv = ["11", "12.1.0", "12.2.0"]
             for prev_v, curr_v in zip(vv, vv[1:]):
                 conflicts(
-                    "%gcc@{0}:".format(curr_v),
-                    when="@{0}".format(curr_v),
-                    msg="'gcc@{0} languages=d' requires '%gcc@:{1}' "
-                    "with the D language support".format(curr_v, prev_v),
+                    f"%gcc@{curr_v}:",
+                    when=f"@{curr_v}",
+                    msg=f"'gcc@{curr_v} languages=d' requires '%gcc@:{prev_v}' "
+                    "with the D language support",
                 )
 
             # In principle, it is possible to have GDC even with GCC 5.
@@ -331,7 +331,7 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
         nvptx_newlib_ver = "4.5.0.20241231"
         resource(
             name="newlib",
-            url="ftp://sourceware.org/pub/newlib/newlib-{0}.tar.gz".format(nvptx_newlib_ver),
+            url=f"ftp://sourceware.org/pub/newlib/newlib-{nvptx_newlib_ver}.tar.gz",
             sha256=newlib_shasum[nvptx_newlib_ver],
             destination="newlibsource",
             fetch_options=timeout,
@@ -646,11 +646,10 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
             if self.spec.satisfies(condition):
                 return flag
 
-        else:
-            raise RuntimeError(
-                f"{self.spec} does not support the '{standard}' standard "
-                f"for the '{language}' language"
-            )
+        raise RuntimeError(
+            f"{self.spec} does not support the '{standard}' standard "
+            f"for the '{language}' language"
+        )
 
     @classmethod
     def filter_detected_exes(cls, prefix, exes_in_prefix):
@@ -812,8 +811,7 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
         # This makes sure that build_type=Release is really -O3, not -O3 -g.
         fmt_string = "{} := $(filter-out -O% -g%, $({})) {}\n"
         with open("config/spack.mk", "w") as f:
-            for var in variables:
-                f.write(fmt_string.format(var, var, flags))
+            f.writelines(fmt_string.format(var, var, flags) for var in variables)
             # Improve the build time for stage 2 a bit by enabling -O1 in stage 1.
             # Note: this is ignored under ~bootstrap.
             f.write("STAGE1_CFLAGS += -O1\n")
@@ -888,7 +886,7 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
         # More info at: https://gcc.gnu.org/install/configure.html
         for dep_str in ("mpfr", "gmp", "mpc", "isl"):
             if dep_str not in spec:
-                options.append("--without-{0}".format(dep_str))
+                options.append(f"--without-{dep_str}")
                 continue
 
             dep_spec = spec[dep_str]
@@ -896,8 +894,8 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
             lib_dir = dep_spec.libs.directories[0]
             options.extend(
                 [
-                    "--with-{0}-include={1}".format(dep_str, include_dir),
-                    "--with-{0}-lib={1}".format(dep_str, lib_dir),
+                    f"--with-{dep_str}-include={include_dir}",
+                    f"--with-{dep_str}-lib={lib_dir}",
                 ]
             )
 
@@ -950,7 +948,7 @@ class Gcc(AutotoolsPackage, GNUMirrorPackage, CompilerPackage):
             # explicitly:
             options.append("--enable-libphobos")
             if spec.satisfies("@12:"):
-                options.append("GDC={0}".format(self.detect_gdc()))
+                options.append(f"GDC={self.detect_gdc()}")
 
         return options
 

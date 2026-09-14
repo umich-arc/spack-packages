@@ -175,7 +175,7 @@ class Viskores(CMakePackage, CudaPackage):
                 else:
                     # Viskores_CUDA_Architecture only accepts a single CUDA arch
                     num_cuda_arch = spec.variants["cuda_arch"].value[0]
-                    str_cuda_arch = str()
+                    str_cuda_arch = ""
 
                     try:
                         str_cuda_arch = gpu_name_table[num_cuda_arch]
@@ -202,7 +202,7 @@ class Viskores(CMakePackage, CudaPackage):
             cmake = Executable(self.spec["cmake"].prefix.bin.cmake)
             ctest = Executable(self.spec["cmake"].prefix.bin.ctest)
 
-            mpi_home = str()
+            mpi_home = ""
             if "+mpi" in self.spec:
                 mpi_home = self.spec["mpi"].prefix
             cmake(

@@ -84,8 +84,8 @@ class Triton(CMakePackage, CudaPackage):
 
     for cuda_arch in CudaPackage.cuda_arch_values:
         depends_on(
-            "kokkos +cuda cuda_arch={0}".format(cuda_arch),
-            when="+cuda cuda_arch={0}".format(cuda_arch),
+            f"kokkos +cuda cuda_arch={cuda_arch}",
+            when=f"+cuda cuda_arch={cuda_arch}",
         )
 
     # for amdgpu_value in ROCmPackage.amdgpu_targets:
@@ -137,11 +137,11 @@ class Triton(CMakePackage, CudaPackage):
         compiler = spec["mpi"].mpicxx
 
         for lib_dir in spec["mpi"].libs.directories:
-            linker_flags.append("-Wl,-rpath,{0}".format(lib_dir))
+            linker_flags.append(f"-Wl,-rpath,{lib_dir}")
 
         dtags = os.environ.get("SPACK_DTAGS_TO_ADD")
         if dtags:
-            linker_flags.append("-Wl,{0}".format(dtags))
+            linker_flags.append(f"-Wl,{dtags}")
 
         if spec.variants["precision"].value == "single":
             compiler_flags.append("-DUSE_SINGLE_PRECISION")
@@ -171,12 +171,12 @@ class Triton(CMakePackage, CudaPackage):
 
         with open(machine_file, "w", encoding="utf-8") as f:
             f.write("#!/usr/bin/env bash\n")
-            f.write("export TRITON_BACKEND={0}\n".format(self._backend()))
-            f.write('export TRITON_COMPILER="{0}"\n'.format(compiler))
+            f.write(f"export TRITON_BACKEND={self._backend()}\n")
+            f.write(f'export TRITON_COMPILER="{compiler}"\n')
             f.write('export TRITON_COMPILER_FLAGS="{0}"\n'.format(" ".join(compiler_flags)))
             f.write('export TRITON_LINKER_FLAGS="{0}"\n'.format(" ".join(linker_flags)))
             f.write("export TRITON_DEBUG=OFF\n")
-            f.write('export TRITON_RUN_COMMAND="{0} -n 1"\n'.format(self._mpi_launcher()))
+            f.write(f'export TRITON_RUN_COMMAND="{self._mpi_launcher()} -n 1"\n')
             if "+cuda" in spec:
                 f.write('export CUDA_DIR="{0}"\n'.format(spec["cuda"].prefix))
                 f.write('export CUDA_HOME="{0}"\n'.format(spec["cuda"].prefix))

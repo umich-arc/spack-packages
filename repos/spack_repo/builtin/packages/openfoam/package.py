@@ -50,13 +50,13 @@ from spack.package import *
 
 # Not the nice way of doing things, but is a start for refactoring
 __all__ = [
-    "add_extra_files",
-    "write_environ",
-    "rewrite_environ_files",
-    "mplib_content",
-    "foam_add_path",
-    "foam_add_lib",
     "OpenfoamArch",
+    "add_extra_files",
+    "foam_add_lib",
+    "foam_add_path",
+    "mplib_content",
+    "rewrite_environ_files",
+    "write_environ",
 ]
 
 
@@ -69,12 +69,12 @@ def add_extra_files(foam_pkg, common, local, **kwargs):
 
     indir = join_path(os.path.dirname(__file__), "common")
     for f in common:
-        tty.info("Added file {0}".format(f))
+        tty.info(f"Added file {f}")
         install(join_path(indir, f), join_path(outdir, f))
 
     indir = join_path(foam_pkg.package_dir, "assets")
     for f in local:
-        tty.info("Added file {0}".format(f))
+        tty.info(f"Added file {f}")
         install(join_path(indir, f), join_path(outdir, f))
 
 
@@ -86,9 +86,9 @@ def format_export(key, value):
     if key.startswith("#"):
         return "## export {0}={1}\n".format(re.sub(r"^#+\s*", "", key), value)
     elif value is None:
-        return "unset {0}\n".format(key)
+        return f"unset {key}\n"
     else:
-        return "export {0}={1}\n".format(key, value)
+        return f"export {key}={value}\n"
 
 
 def format_setenv(key, value):
@@ -99,9 +99,9 @@ def format_setenv(key, value):
     if key.startswith("#"):
         return "## setenv {0} {1}\n".format(re.sub(r"^#+\s*", "", key), value)
     elif value is None:
-        return "unsetenv {0}\n".format(key)
+        return f"unsetenv {key}\n"
     else:
-        return "setenv {0} {1}\n".format(key, value)
+        return f"setenv {key} {value}\n"
 
 
 def _write_environ_entries(outfile, environ, formatter):
@@ -113,9 +113,7 @@ def _write_environ_entries(outfile, environ, formatter):
     if isinstance(environ, dict):
         for key in sorted(environ):
             entry = environ[key]
-            if isinstance(entry, dict):
-                _write_environ_entries(outfile, entry, formatter)
-            elif isinstance(entry, list):
+            if isinstance(entry, dict) or isinstance(entry, list):
                 _write_environ_entries(outfile, entry, formatter)
             else:
                 outfile.write(formatter(key, entry))
@@ -162,25 +160,25 @@ def rewrite_environ_files(environ, **kwargs):
     rcfile = kwargs.get("posix", None)
     if rcfile and os.path.isfile(rcfile):
         for k, v in environ.items():
-            regex = r"^(\s*export\s+{0})=.*$".format(k)
+            regex = rf"^(\s*export\s+{k})=.*$"
             if not v:
-                replace = r"unset {0}  #SPACK: unset".format(k)
+                replace = rf"unset {k}  #SPACK: unset"
             elif v.startswith("#"):
-                replace = r"unset {0}  {1}".format(k, v)
+                replace = rf"unset {k}  {v}"
             else:
-                replace = r"\1={0}".format(v)
+                replace = rf"\1={v}"
             filter_file(regex, replace, rcfile, backup=False)
 
     rcfile = kwargs.get("cshell", None)
     if rcfile and os.path.isfile(rcfile):
         for k, v in environ.items():
-            regex = r"^(\s*setenv\s+{0})\s+.*$".format(k)
+            regex = rf"^(\s*setenv\s+{k})\s+.*$"
             if not v:
-                replace = r"unsetenv {0}  #SPACK: unset".format(k)
+                replace = rf"unsetenv {k}  #SPACK: unset"
             elif v.startswith("#"):
-                replace = r"unsetenv {0}  {1}".format(k, v)
+                replace = rf"unsetenv {k}  {v}"
             else:
-                replace = r"\1 {0}".format(v)
+                replace = rf"\1 {v}"
             filter_file(regex, replace, rcfile, backup=False)
 
 
@@ -232,14 +230,14 @@ def mplib_content(spec, pre=None):
         pre = mpi_spec.prefix
 
     info = {
-        "name": "{0}-{1}".format(mpi_spec.name, mpi_spec.version),
+        "name": f"{mpi_spec.name}-{mpi_spec.version}",
         "prefix": pre,
         "include": inc,
         "bindir": bin,
         "libdir": lib,
         "FLAGS": "-DOMPI_SKIP_MPICXX -DMPICH_SKIP_MPICXX",
-        "PINC": "-I{0}".format(inc),
-        "PLIBS": "-L{0} -l{1}".format(lib, libname),
+        "PINC": f"-I{inc}",
+        "PLIBS": f"-L{lib} -l{libname}",
     }
     return info
 
@@ -496,7 +494,7 @@ class Openfoam(Package):
 
     def setup_minimal_environment(self, env: EnvironmentModifications):
         """Sets a minimal openfoam environment."""
-        tty.info("OpenFOAM minimal env {0}".format(self.prefix))
+        tty.info(f"OpenFOAM minimal env {self.prefix}")
         env.set("FOAM_PROJECT_DIR", self.projectdir)
         env.set("WM_PROJECT_DIR", self.projectdir)
         for d in ["wmake", self.archbin]:  # bin added automatically
@@ -504,7 +502,6 @@ class Openfoam(Package):
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         """Sets the build environment (prior to unpacking the sources)."""
-        pass
 
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         """Sets the run environment (post-installation).
@@ -551,7 +548,7 @@ class Openfoam(Package):
 
                 env.extend(mods)
                 minimal = False
-                tty.debug("OpenFOAM bashrc env: {0}".format(bashrc))
+                tty.debug(f"OpenFOAM bashrc env: {bashrc}")
             except Exception:
                 minimal = True
 
@@ -612,9 +609,9 @@ class Openfoam(Package):
         add_extra_files(self, self.common, self.assets)
 
         # Prior to 1812, required OpenFOAM-v{VER} directory when sourcing
-        projdir = "OpenFOAM-v{0}".format(self.version)
+        projdir = f"OpenFOAM-v{self.version}"
         if not os.path.exists(join_path(self.stage.path, projdir)):
-            tty.info("Added directory link {0}".format(projdir))
+            tty.info(f"Added directory link {projdir}")
             symlink(
                 os.path.relpath(self.stage.source_path, self.stage.path),
                 join_path(self.stage.path, projdir),
@@ -830,7 +827,7 @@ class Openfoam(Package):
 
         args = ["-silent"]
         if self.parallel:  # Build in parallel? - pass as an argument
-            args.append("-j{0}".format(make_jobs))
+            args.append(f"-j{make_jobs}")
         builder = Executable(self.build_script)
         builder(*args)
 
@@ -1089,7 +1086,7 @@ class OpenfoamArch:
         rule_dir = self._rule_directory(projdir)
 
         if not os.path.isdir(rule_dir):
-            raise InstallError("No wmake rule for {0} {1}".format(self.arch, self.compiler))
+            raise InstallError(f"No wmake rule for {self.arch} {self.compiler}")
         return True
 
     def _rule_add_rpath(self, rpath, src, dst):
@@ -1108,19 +1105,18 @@ class OpenfoamArch:
         ok = os.path.isfile(src)
 
         if ok:
-            with open(src, "r") as infile:
-                with open(dst, "w") as outfile:
-                    for line in infile:
-                        line = line.rstrip()
-                        outfile.write(line)
-                        if re.match(r"^\S+DBUG\s*:?=", line):
+            with open(src, "r") as infile, open(dst, "w") as outfile:
+                for line in infile:
+                    line = line.rstrip()
+                    outfile.write(line)
+                    if re.match(r"^\S+DBUG\s*:?=", line):
+                        outfile.write(" ")
+                        outfile.write(rpath)
+                    elif re.match(r"^\S+OPT\s*:?=", line):
+                        if self.arch_option:
                             outfile.write(" ")
-                            outfile.write(rpath)
-                        elif re.match(r"^\S+OPT\s*:?=", line):
-                            if self.arch_option:
-                                outfile.write(" ")
-                                outfile.write(self.arch_option)
-                        outfile.write("\n")
+                            outfile.write(self.arch_option)
+                    outfile.write("\n")
         return ok
 
     def create_rules(self, projdir, foam_pkg):
@@ -1138,9 +1134,7 @@ class OpenfoamArch:
         # used for some statically linked wmake tools, but left in anyhow.
 
         # rpath for installed OpenFOAM libraries
-        rpath = "{0}{1}".format(
-            foam_pkg.compiler.cxx_rpath_arg, join_path(foam_pkg.projectdir, foam_pkg.archlib)
-        )
+        rpath = f"{foam_pkg.compiler.cxx_rpath_arg}{join_path(foam_pkg.projectdir, foam_pkg.archlib)}"
 
         user_mpi = mplib_content(foam_pkg.spec)
         rule_dir = self._rule_directory(projdir)
@@ -1150,9 +1144,9 @@ class OpenfoamArch:
         # and modify '*DBUG' value to include rpath
 
         for lang in ["c", "c++"]:
-            gen = join_path(comm_dir, "{0}Opt".format(lang))
-            src = join_path(rule_dir, "{0}Opt".format(lang))
-            dst = join_path(rule_dir, "{0}{1}".format(lang, self.compile_option))
+            gen = join_path(comm_dir, f"{lang}Opt")
+            src = join_path(rule_dir, f"{lang}Opt")
+            dst = join_path(rule_dir, f"{lang}{self.compile_option}")
 
             if not self._rule_add_rpath(rpath, src, dst):
                 self._rule_add_rpath(rpath, gen, dst)

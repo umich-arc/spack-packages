@@ -264,7 +264,7 @@ class VtkM(
                 else:
                     # VTKm_CUDA_Architecture only accepts a single CUDA arch
                     num_cuda_arch = spec.variants["cuda_arch"].value[0]
-                    str_cuda_arch = str()
+                    str_cuda_arch = ""
 
                     try:
                         str_cuda_arch = gpu_name_table[num_cuda_arch]

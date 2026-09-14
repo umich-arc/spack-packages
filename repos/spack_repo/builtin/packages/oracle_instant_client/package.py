@@ -94,7 +94,7 @@ class OracleInstantClient(Package):
             if rname == "basic":
                 continue
             url, sha256 = atts
-            condition = "@{0}".format(oracle_version)
+            condition = f"@{oracle_version}"
             resource(name=rname, url=url, sha256=sha256, when=condition, placement=rname)
 
     depends_on("libaio", type="link")

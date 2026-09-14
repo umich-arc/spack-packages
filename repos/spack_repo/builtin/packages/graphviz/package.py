@@ -54,7 +54,7 @@ class Graphviz(AutotoolsPackage):
         variant(
             lang,
             default=False,
-            description="Enable for optional {0} language bindings".format(lang),
+            description=f"Enable for optional {lang} language bindings",
         )
 
     # Feature variants
@@ -222,8 +222,8 @@ class Graphviz(AutotoolsPackage):
 
         for var, when in [("expat", "@:8.0"), ("java", "@:")]:
             if spec.satisfies("+" + var + when):
-                args.append("--with-{0}includedir={1}".format(var, spec[var].prefix.include))
-                args.append("--with-{0}libdir={1}".format(var, spec[var].prefix.lib))
+                args.append(f"--with-{var}includedir={spec[var].prefix.include}")
+                args.append(f"--with-{var}libdir={spec[var].prefix.lib}")
 
         if spec.satisfies("+zlib"):
             args.append("--with-zlibincludedir={}".format(spec["zlib-api"].prefix.include))

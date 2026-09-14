@@ -102,7 +102,7 @@ class BlisBase(MakefilePackage):
                 break
         # To ensure the target should always be the last argument for base and derived class
         config_args = self.configure_args() + [target]
-        configure("--prefix={0}".format(prefix), *config_args)
+        configure(f"--prefix={prefix}", *config_args)
 
     @run_after("install")
     def darwin_fix(self):

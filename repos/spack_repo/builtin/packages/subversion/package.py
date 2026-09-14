@@ -130,7 +130,7 @@ class Subversion(AutotoolsPackage):
             make("swig-pl")
             with working_dir(join_path("subversion", "bindings", "swig", "perl", "native")):
                 perl = spec["perl"].command
-                perl("Makefile.PL", "INSTALL_BASE={0}".format(prefix))
+                perl("Makefile.PL", f"INSTALL_BASE={prefix}")
 
     def check(self):
         make("check")

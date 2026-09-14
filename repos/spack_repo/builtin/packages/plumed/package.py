@@ -235,12 +235,12 @@ class Plumed(AutotoolsPackage):
     def patch(self):
         # Ensure Spack's wrappers are used to compile the Python interface
         env = (
-            'CC="{0}" LDSHARED="{0} -pthread -shared" '
-            'CXX="{1}" LDCXXSHARED="{1} -pthread -shared"'.format(spack_cc, spack_cxx)
+            f'CC="{spack_cc}" LDSHARED="{spack_cc} -pthread -shared" '
+            f'CXX="{spack_cxx}" LDCXXSHARED="{spack_cxx} -pthread -shared"'
         )
         filter_file(
             "plumed_program_name=plumed",
-            "{0} plumed_program_name=plumed".format(env),
+            f"{env} plumed_program_name=plumed",
             "src/lib/Makefile",
             "python/Makefile",
         )
@@ -362,8 +362,8 @@ class Plumed(AutotoolsPackage):
 
             selected_modules = "none"
             for mod in optional_modules:
-                selected_modules += ":+{0}".format(mod)
+                selected_modules += f":+{mod}"
 
-        configure_opts.append("--enable-modules={0}".format(selected_modules))
+        configure_opts.append(f"--enable-modules={selected_modules}")
 
         return configure_opts

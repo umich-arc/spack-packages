@@ -11,7 +11,6 @@ import subprocess
 import sys
 from pathlib import Path
 from shutil import copy
-from typing import Dict, List
 
 from spack_repo.builtin.build_systems.generic import Package
 
@@ -52,7 +51,7 @@ class Python(Package):
 
     #: phase
     install_targets = ["install"]
-    build_targets: List[str] = []
+    build_targets: list[str] = []
 
     license("0BSD")
 
@@ -319,7 +318,7 @@ class Python(Package):
     conflicts("@3.9:", when="%oneapi@2022.2.1:2023")
 
     # Used to cache various attributes that are expensive to compute
-    _config_vars: Dict[str, Dict[str, str]] = {}
+    _config_vars: dict[str, dict[str, str]] = {}
 
     # An in-source build with --enable-optimizations fails for python@3.X
     build_directory = "spack-build"
@@ -466,11 +465,11 @@ class Python(Package):
         # with a warning message about this potentially erroneous behavior.
         if not spec.satisfies("@3.7.2:"):
             tty.warn(
-                (
-                    'Python v{0} does not have the C++ "distutils" patch; '
+
+                    f'Python v{self.version} does not have the C++ "distutils" patch; '
                     "errors may occur when installing Python modules w/ "
                     "mixed C/C++ source files."
-                ).format(self.version)
+
             )
 
         env.unset("PYTHONPATH")
@@ -573,7 +572,7 @@ class Python(Package):
         copy_tree(str(lib_dir), prefix.Lib)
 
         # locate and track all pdb files
-        pdbs = glob.glob(f"{str(build_root)}\\*.pdb")
+        pdbs = glob.glob(f"{build_root!s}\\*.pdb")
         pdb_assoc = {}
         for pdb in pdbs:
             filename = os.path.splitext(os.path.basename(pdb))[0]
@@ -585,7 +584,7 @@ class Python(Package):
                 copy(pdb_assoc[file_name], loc)
 
         # handle executables
-        executables = glob.glob(f"{str(build_root)}\\*.exe")
+        executables = glob.glob(f"{build_root!s}\\*.exe")
         for exe in executables:
             copy(exe, prefix)
             install_pdb(exe, prefix)
@@ -603,8 +602,8 @@ class Python(Package):
             copy(str(build_root / binary), prefix.Lib.venv.scripts.nt)
 
         # handle shared libraries
-        shared_libraries = glob.glob(f"{str(build_root)}\\*.dll")
-        shared_libraries.extend(glob.glob(f"{str(build_root)}\\*.pyd"))
+        shared_libraries = glob.glob(f"{build_root!s}\\*.dll")
+        shared_libraries.extend(glob.glob(f"{build_root!s}\\*.pyd"))
         os.makedirs(prefix.DLLs)
         for lib in shared_libraries:
             libname = os.path.basename(lib)
@@ -616,7 +615,7 @@ class Python(Package):
             install_pdb(lib, dest)
 
         # handle static libraries
-        static_libraries = glob.glob(f"{str(build_root)}\\*.lib")
+        static_libraries = glob.glob(f"{build_root!s}\\*.lib")
         os.makedirs(prefix.libs, exist_ok=True)
         for lib in static_libraries:
             copy(lib, prefix.libs)
@@ -671,7 +670,7 @@ class Python(Package):
                     config_args.append("--with-tail-call-interp")
 
         if spec.satisfies("@3.7 %intel"):
-            config_args.append("--with-icc={0}".format(spack_cc))
+            config_args.append(f"--with-icc={spack_cc}")
 
         if "+debug" in spec:
             config_args.append("--with-pydebug")
@@ -763,7 +762,7 @@ class Python(Package):
                 pass
             else:
                 options = getattr(self, "configure_flag_args", [])
-                options += ["--prefix={0}".format(prefix)]
+                options += [f"--prefix={prefix}"]
                 options += self.configure_args()
                 configure(*options)
 
@@ -1022,12 +1021,8 @@ print(json.dumps(config))
                 "LIBPL": self.prefix.lib.join("python{0}")
                 .join("config-{0}-{1}")
                 .format(version, sys.platform),
-                "LDLIBRARY": "{}python{}.{}".format(
-                    lib_prefix, version, shared_library_suffix(self.spec)
-                ),
-                "LIBRARY": "{}python{}.{}".format(
-                    lib_prefix, version, static_library_suffix(self.spec)
-                ),
+                "LDLIBRARY": f"{lib_prefix}python{version}.{shared_library_suffix(self.spec)}",
+                "LIBRARY": f"{lib_prefix}python{version}.{static_library_suffix(self.spec)}",
                 "LDSHARED": "cc",
                 "LDCXXSHARED": "c++",
                 "PYTHONFRAMEWORKPREFIX": "/System/Library/Frameworks",
@@ -1046,15 +1041,15 @@ print(json.dumps(config))
                 .Makefile.format(version, sys.platform),
                 # get_paths
                 "data": self.prefix,
-                "include": self.prefix.include.join("python{}".format(version)),
-                "platinclude": self.prefix.include64.join("python{}".format(version)),
-                "platlib": self.prefix.lib64.join("python{}".format(version)).join(
+                "include": self.prefix.include.join(f"python{version}"),
+                "platinclude": self.prefix.include64.join(f"python{version}"),
+                "platlib": self.prefix.lib64.join(f"python{version}").join(
                     "site-packages"
                 ),
-                "platstdlib": self.prefix.lib64.join("python{}".format(version)),
-                "purelib": self.prefix.lib.join("python{}".format(version)).join("site-packages"),
+                "platstdlib": self.prefix.lib64.join(f"python{version}"),
+                "purelib": self.prefix.lib.join(f"python{version}").join("site-packages"),
                 "scripts": self.prefix.bin,
-                "stdlib": self.prefix.lib.join("python{}".format(version)),
+                "stdlib": self.prefix.lib.join(f"python{version}"),
             }
 
             try:
@@ -1161,7 +1156,7 @@ print(json.dumps(config))
         else:
             shared_libs = [self.config_vars["LDLIBRARY"]]
         shared_libs += [
-            "{}python{}.{}".format(lib_prefix, py_version, shared_library_suffix(self.spec))
+            f"{lib_prefix}python{py_version}.{shared_library_suffix(self.spec)}"
         ]
         # Like LDLIBRARY for Python on Mac OS, LIBRARY may refer to an un-linkable object
         file_extension_static = os.path.splitext(self.config_vars["LIBRARY"])[-1]
@@ -1170,7 +1165,7 @@ print(json.dumps(config))
         else:
             static_libs = [self.config_vars["LIBRARY"]]
         static_libs += [
-            "{}python{}.{}".format(lib_prefix, py_version, static_library_suffix(self.spec))
+            f"{lib_prefix}python{py_version}.{static_library_suffix(self.spec)}"
         ]
 
         # The +shared variant isn't reliable, as `spack external find` currently can't
@@ -1191,7 +1186,7 @@ print(json.dumps(config))
                 return lib
 
         raise NoLibrariesError(
-            "Unable to find {} libraries with the following names:\n\n* ".format(self.name)
+            f"Unable to find {self.name} libraries with the following names:\n\n* "
             + "\n* ".join(candidates)
         )
 
@@ -1217,7 +1212,7 @@ print(json.dumps(config))
                 break
         else:
             raise NoHeadersError(
-                "Unable to locate {} headers in any of these locations:\n\n* ".format(self.name)
+                f"Unable to locate {self.name} headers in any of these locations:\n\n* "
                 + "\n* ".join(candidates)
             )
 
@@ -1295,7 +1290,7 @@ print(json.dumps(config))
         path = self.config_vars["include"]
         if path.startswith(prefix):
             return path.replace(prefix, "")
-        return os.path.join("include", "python{}".format(self.version.up_to(2)))
+        return os.path.join("include", f"python{self.version.up_to(2)}")
 
     def setup_dependent_build_environment(
         self, env: EnvironmentModifications, dependent_spec: Spec
@@ -1396,7 +1391,7 @@ print(json.dumps(config))
         module.python_platlib = join_path(dependent_spec.prefix, self.platlib)
         module.python_purelib = join_path(dependent_spec.prefix, self.purelib)
 
-    def dependent_cmake_args(self, dependent_spec: Spec) -> List[str]:
+    def dependent_cmake_args(self, dependent_spec: Spec) -> list[str]:
         # pkg.spec["python"] can re-direct to python-venv if pkg extends python
         # ref. https://github.com/spack/spack/pull/40773
         python_executable = dependent_spec["python"].command.path

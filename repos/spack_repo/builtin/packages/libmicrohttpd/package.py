@@ -54,8 +54,8 @@ class Libmicrohttpd(AutotoolsPackage, GNUMirrorPackage):
         if self.spec.satisfies("+https"):
             options.append("--enable-https")
             prefix = self.spec["gnutls"].prefix
-            options.append("--with-gnutls={0}".format(prefix))
+            options.append(f"--with-gnutls={prefix}")
             prefix = self.spec["libgcrypt"].prefix
-            options.append("--with-libgcrypt-prefix={0}".format(prefix))
+            options.append(f"--with-libgcrypt-prefix={prefix}")
 
         return options

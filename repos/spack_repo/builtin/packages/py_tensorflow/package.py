@@ -322,7 +322,7 @@ class PyTensorflow(Package, CudaPackage, PythonExtension):
         depends_on("py-wheel@0.35:0", when="@2.4:2.6")
 
         for minor_ver in range(5, 21):
-            depends_on("py-tensorboard@2.{}".format(minor_ver), when="@2.{}".format(minor_ver))
+            depends_on(f"py-tensorboard@2.{minor_ver}", when=f"@2.{minor_ver}")
 
         # TODO: add packages for these dependencies
         # depends_on("py-tensorflow-io-gcs-filesystem@0.23.1:", when="@2.8:2.19")
@@ -969,7 +969,7 @@ class PyTensorflow(Package, CudaPackage, PythonExtension):
             "build",
             # Spack logs don't handle colored output well
             "--color=no",
-            "--jobs={0}".format(make_jobs),
+            f"--jobs={make_jobs}",
             "--config=opt",
             # Enable verbose output for failures
             "--verbose_failures",

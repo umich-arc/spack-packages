@@ -19,7 +19,7 @@ is_windows = sys.platform == "win32"
 def find_script_dir(spec: Spec) -> str:
     # Put more-specific prefixes first
     check_prefixes = [
-        join_path(spec.prefix, "share", "tcl{0}".format(spec.package.version.up_to(2))),
+        join_path(spec.prefix, "share", f"tcl{spec.package.version.up_to(2)}"),
         spec.prefix,
     ]
     for prefix in check_prefixes:

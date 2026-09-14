@@ -61,10 +61,10 @@ class SuperluMt(Package):
                 [
                     "PLAT       = _OPENMP",
                     "TMGLIB     = libtmglib.a",
-                    "MPLIB      = {0}".format(self.compiler.openmp_flag),
-                    "CFLAGS     = {0}".format(self.compiler.openmp_flag),
-                    "FFLAGS     = {0}".format(self.compiler.openmp_flag),
-                    "LOADOPTS   += {0}".format(self.compiler.openmp_flag),
+                    f"MPLIB      = {self.compiler.openmp_flag}",
+                    f"CFLAGS     = {self.compiler.openmp_flag}",
+                    f"FFLAGS     = {self.compiler.openmp_flag}",
+                    f"LOADOPTS   += {self.compiler.openmp_flag}",
                 ]
             )
         elif "+pthread" in spec:
@@ -118,17 +118,16 @@ class SuperluMt(Package):
         if "+pic" in spec:
             config.extend(
                 [
-                    "CFLAGS     += {0}".format(self.compiler.cc_pic_flag),
-                    "NOOPTS     += {0}".format(self.compiler.cc_pic_flag),
-                    "FFLAGS     += {0}".format(self.compiler.f77_pic_flag),
-                    "LOADOPTS   += {0}".format(self.compiler.cc_pic_flag),
+                    f"CFLAGS     += {self.compiler.cc_pic_flag}",
+                    f"NOOPTS     += {self.compiler.cc_pic_flag}",
+                    f"FFLAGS     += {self.compiler.f77_pic_flag}",
+                    f"LOADOPTS   += {self.compiler.cc_pic_flag}",
                 ]
             )
 
         # Write configuration options to include file
         with open("make.inc", "w") as inc:
-            for option in config:
-                inc.write("{0}\n".format(option))
+            inc.writelines(f"{option}\n" for option in config)
 
     def install(self, spec, prefix):
         # Set up make include file manually

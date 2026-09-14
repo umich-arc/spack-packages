@@ -6,7 +6,6 @@ import os
 import platform
 import re
 import sys
-from typing import List
 
 from spack_repo.builtin.build_systems.generic import Package
 
@@ -392,7 +391,7 @@ class Qt(Package):
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         if not IS_WINDOWS:
-            env.set("MAKEFLAGS", "-j{0}".format(make_jobs))
+            env.set("MAKEFLAGS", f"-j{make_jobs}")
         if self.version >= Version("5.11"):
             # QDoc uses LLVM as of 5.11; remove the LLVM_INSTALL_DIR to
             # disable
@@ -439,7 +438,7 @@ class Qt(Package):
         mkspec_dir = "qtbase/mkspecs" if spec.satisfies("@5:") else "mkspecs"
         for subdir, cname in itertools.product(("", "unsupported/"), cnames):
             platdirname = "".join([subdir, pname, "-", cname])
-            tty.debug("Checking for platform '{0}' in {1}".format(platdirname, mkspec_dir))
+            tty.debug(f"Checking for platform '{platdirname}' in {mkspec_dir}")
             if os.path.exists(os.path.join(mkspec_dir, platdirname)):
                 qtplat = platdirname
                 break
@@ -607,13 +606,13 @@ class Qt(Package):
 
         return [quote(x) if has_space(x) or has_reserved(x) else x for x in args]
 
-    def _split_link_args(self, file_set: List):
+    def _split_link_args(self, file_set: list):
         """Returns a list of the -L
         arguments included in arg_str with proper
         handling for paths with spaces"""
         return ["-L" + x for x in file_set]
 
-    def _split_include_args(self, file_set: List):
+    def _split_include_args(self, file_set: list):
         """Returns a list of the -I
         arguments included in arg_str with proper
         handling for paths with spaces"""

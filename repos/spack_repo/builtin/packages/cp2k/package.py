@@ -580,8 +580,8 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage):
         "gfx90a:xnack+",
         "gfx942",
     )
-    cuda_msg = "cp2k only supports cuda_arch {0}".format(supported_cuda_arch_list)
-    rocm_msg = "cp2k only supports amdgpu_target {0}".format(supported_rocm_arch_list)
+    cuda_msg = f"cp2k only supports cuda_arch {supported_cuda_arch_list}"
+    rocm_msg = f"cp2k only supports amdgpu_target {supported_rocm_arch_list}"
 
     conflicts("+cuda", when="cuda_arch=none")
 
@@ -590,7 +590,7 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage):
     with when("@:2026.1 +cuda"):
         for arch in CudaPackage.cuda_arch_values:
             if arch not in supported_cuda_arch_list:
-                conflicts("+cuda", when="cuda_arch={0}".format(arch), msg=cuda_msg)
+                conflicts("+cuda", when=f"cuda_arch={arch}", msg=cuda_msg)
 
     # with when("@:2026.1 +rocm"):
     #    for arch in ROCmPackage.amdgpu_targets:
@@ -724,9 +724,9 @@ class MakefileBuilder(makefile.MakefileBuilder):
 
         dflags = ["-DNDEBUG"] if spec.satisfies("@:2023.2") else []
         if fftw.name == "intel-oneapi-mkl":
-            cppflags = ["-D__FFTW3_MKL", "-I{0}".format(fftw_header_dir)]
+            cppflags = ["-D__FFTW3_MKL", f"-I{fftw_header_dir}"]
         else:
-            cppflags = ["-D__FFTW3", "-I{0}".format(fftw_header_dir)]
+            cppflags = ["-D__FFTW3", f"-I{fftw_header_dir}"]
 
         # CP2K requires MPI 3 starting at version 2023.1
         # and __MPI_VERSION is not supported anymore.
@@ -782,7 +782,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
             cxxflags.append(pkg.compiler.openmp_flag)
             fcflags.append(pkg.compiler.openmp_flag)
             ldflags.append(pkg.compiler.openmp_flag)
-            nvflags.append('-Xcompiler="{0}"'.format(pkg.compiler.openmp_flag))
+            nvflags.append(f'-Xcompiler="{pkg.compiler.openmp_flag}"')
         # elif spec.satisfies("%cce"):  # Cray enables OpenMP by default
         #    cflags += ["-hnoomp"]
         #    cxxflags += ["-hnoomp"]
@@ -855,7 +855,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
                 libs.append(
                     join_path(
                         elpa.prefix.lib,
-                        ("libelpa{elpa_suffix}.a".format(elpa_suffix=elpa_suffix)),
+                        (f"libelpa{elpa_suffix}.a"),
                     )
                 )
             else:
@@ -869,7 +869,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
                     cppflags.append("-D__ELPA3")
             else:
                 cppflags.append(
-                    "-D__ELPA={0}{1:02d}".format(elpa.version[0], int(elpa.version[1]))
+                    f"-D__ELPA={elpa.version[0]}{int(elpa.version[1]):02d}"
                 )
                 fcflags += ["-I{0}".format(join_path(elpa_incdir, "elpa"))]
 
@@ -879,7 +879,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
         if spec.satisfies("+sirius"):
             sirius = spec["sirius"]
             cppflags.append("-D__SIRIUS")
-            fcflags += ["-I{0}".format(sirius.prefix.include.sirius)]
+            fcflags += [f"-I{sirius.prefix.include.sirius}"]
             libs += list(sirius.libs)
 
         if spec.satisfies("+plumed"):
@@ -966,7 +966,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
                     ),
                     join_path(
                         spec["intel-oneapi-mkl"].libs.directories[0],
-                        "libmkl_blacs_{0}_lp64.so".format(mpi_impl),
+                        f"libmkl_blacs_{mpi_impl}_lp64.so",
                     ),
                 ]
             else:
@@ -1088,7 +1088,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
                 mkf.write("include {0}\n".format(self.pkg["plumed"].plumed_inc))
 
             mkf.write("\n# COMPILER, LINKER, TOOLS\n\n")
-            mkf.write("FC  = {0}\nCC  = {1}\nCXX = {2}\nLD  = {3}\n".format(fc, cc, cxx, fc))
+            mkf.write(f"FC  = {fc}\nCC  = {cc}\nCXX = {cxx}\nLD  = {fc}\n")
 
             if spec.satisfies("%intel"):
                 intel_bin_dir = ancestor(pkg.compiler.cc)
@@ -1098,10 +1098,10 @@ class MakefileBuilder(makefile.MakefileBuilder):
                 # ${CPP} <file>.F > <file>.f90
                 #
                 # and use `-fpp` instead
-                mkf.write("CPP = # {0} -P\n".format(spack_cc))
-                mkf.write("AR  = {0}/xiar -qs\n".format(intel_bin_dir))
+                mkf.write(f"CPP = # {spack_cc} -P\n")
+                mkf.write(f"AR  = {intel_bin_dir}/xiar -qs\n")
             else:  # incl. spec.satisfies("%intel-oneapi-compilers")
-                mkf.write("CPP = # {0} -E\n".format(spack_cc))
+                mkf.write(f"CPP = # {spack_cc} -E\n")
                 mkf.write("AR  = ar -qs\n")  # r = qs is a GNU extension
 
             if spec.satisfies("+cuda"):
@@ -1139,8 +1139,8 @@ class MakefileBuilder(makefile.MakefileBuilder):
                 mkf.write(fflags("FCFLAGS", fcflags + ["-mllvm -enable-newgvn=true"]))
 
             mkf.write("# CP2K-specific flags\n\n")
-            mkf.write("GPUVER = {0}\n".format(gpuver))
-            mkf.write("DATA_DIR = {0}\n".format(prefix.share.data))
+            mkf.write(f"GPUVER = {gpuver}\n")
+            mkf.write(f"DATA_DIR = {prefix.share.data}\n")
 
     def build(self, pkg, spec, prefix):
         if "+cuda" in spec and len(spec.variants["cuda_arch"].value) > 1:
@@ -1178,8 +1178,8 @@ class MakefileBuilder(makefile.MakefileBuilder):
     @property
     def build_targets(self):
         return [
-            "ARCH={0}".format(self.makefile_architecture),
-            "VERSION={0}".format(self.makefile_version),
+            f"ARCH={self.makefile_architecture}",
+            f"VERSION={self.makefile_version}",
         ]
 
     @property
@@ -1189,7 +1189,7 @@ class MakefileBuilder(makefile.MakefileBuilder):
 
     @property
     def makefile_architecture(self):
-        return "{0.architecture}-{0.compiler.name}".format(self.spec)
+        return f"{self.spec.architecture}-{self.spec.compiler.name}"
 
     @property
     def makefile_version(self):
@@ -1226,8 +1226,8 @@ class MakefileBuilder(makefile.MakefileBuilder):
         to generate and override entire libcp2k.pc.
         """
         pkgconfig_file = join_path(self.prefix.lib.pkgconfig, "libcp2k.pc")
-        filter_file(r"(^includedir=).*", r"\1{0}".format(self.prefix.include), pkgconfig_file)
-        filter_file(r"(^libdir=).*", r"\1{0}".format(self.prefix.lib), pkgconfig_file)
+        filter_file(r"(^includedir=).*", rf"\1{self.prefix.include}", pkgconfig_file)
+        filter_file(r"(^libdir=).*", rf"\1{self.prefix.lib}", pkgconfig_file)
 
         with open(pkgconfig_file, "r+") as handle:
             content = handle.read().rstrip()

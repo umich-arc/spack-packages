@@ -341,11 +341,10 @@ class Umpire(CachedCMakePackage, CudaPackage):
     # We need c++ 17 only with intel
     depends_on("fmt@9.1:12.1 cxxstd=17", when="@2024.02.0: %intel@19.1")
 
-    with when("@5.0.0:"):
-        with when("+cuda"):
-            depends_on("camp+cuda")
-            for sm_ in CudaPackage.cuda_arch_values:
-                depends_on("camp+cuda cuda_arch={0}".format(sm_), when="cuda_arch={0}".format(sm_))
+    with when("@5.0.0:"), when("+cuda"):
+        depends_on("camp+cuda")
+        for sm_ in CudaPackage.cuda_arch_values:
+            depends_on(f"camp+cuda cuda_arch={sm_}", when=f"cuda_arch={sm_}")
 
         # with when("+rocm"):
         #    depends_on("camp+rocm")
@@ -396,13 +395,7 @@ class Umpire(CachedCMakePackage, CudaPackage):
         hostname = socket.gethostname()
         if "SYS_TYPE" in env:
             hostname = hostname.rstrip("1234567890")
-        return "{0}-{1}-{2}@{3}-{4}.cmake".format(
-            hostname,
-            self._get_sys_type(self.spec),
-            self.spec.compiler.name,
-            self.spec.compiler.version,
-            self.spec.dag_hash(8),
-        )
+        return f"{hostname}-{self._get_sys_type(self.spec)}-{self.spec.compiler.name}@{self.spec.compiler.version}-{self.spec.dag_hash(8)}.cmake"
 
     @property
     def cxx_std(self):
@@ -425,7 +418,7 @@ class Umpire(CachedCMakePackage, CudaPackage):
             entries.append(cmake_cache_option("ENABLE_FORTRAN", False))
 
         entries.append(
-            cmake_cache_option("{}ENABLE_C".format(option_prefix), spec.satisfies("+c"))
+            cmake_cache_option(f"{option_prefix}ENABLE_C", spec.satisfies("+c"))
         )
 
         llnl_link_helpers(entries, spec, compiler)
@@ -458,7 +451,7 @@ class Umpire(CachedCMakePackage, CudaPackage):
                 filter(gcc_toolchain_regex.match, spec.compiler_flags["cxxflags"])
             )
             if using_toolchain:
-                cuda_flags.append("-Xcompiler {}".format(using_toolchain[0]))
+                cuda_flags.append(f"-Xcompiler {using_toolchain[0]}")
 
             entries.append(cmake_cache_string("CMAKE_CUDA_FLAGS", " ".join(cuda_flags)))
         else:
@@ -496,13 +489,13 @@ class Umpire(CachedCMakePackage, CudaPackage):
 
         entries.append(
             cmake_cache_option(
-                "{}ENABLE_DEVICE_CONST".format(option_prefix), spec.satisfies("+deviceconst")
+                f"{option_prefix}ENABLE_DEVICE_CONST", spec.satisfies("+deviceconst")
             )
         )
 
         entries.append(
             cmake_cache_option(
-                "{}ENABLE_OPENMP_TARGET".format(option_prefix), spec.satisfies("+omptarget")
+                f"{option_prefix}ENABLE_OPENMP_TARGET", spec.satisfies("+omptarget")
             )
         )
 
@@ -564,28 +557,28 @@ class Umpire(CachedCMakePackage, CudaPackage):
 
         # Prefixed options that used to be name without one
         entries.append(
-            cmake_cache_option("{}ENABLE_NUMA".format(option_prefix), spec.satisfies("+numa"))
+            cmake_cache_option(f"{option_prefix}ENABLE_NUMA", spec.satisfies("+numa"))
         )
         entries.append(
             cmake_cache_option(
-                "{}ENABLE_DEVELOPER_BENCHMARKS".format(option_prefix),
+                f"{option_prefix}ENABLE_DEVELOPER_BENCHMARKS",
                 spec.satisfies("+dev_benchmarks"),
             )
         )
         entries.append(
-            cmake_cache_option("{}ENABLE_TOOLS".format(option_prefix), spec.satisfies("+tools"))
+            cmake_cache_option(f"{option_prefix}ENABLE_TOOLS", spec.satisfies("+tools"))
         )
         entries.append(
             cmake_cache_option(
-                "{}ENABLE_BACKTRACE".format(option_prefix), spec.satisfies("+backtrace")
+                f"{option_prefix}ENABLE_BACKTRACE", spec.satisfies("+backtrace")
             )
         )
         entries.append(
-            cmake_cache_option("{}ENABLE_ASAN".format(option_prefix), spec.satisfies("+asan"))
+            cmake_cache_option(f"{option_prefix}ENABLE_ASAN", spec.satisfies("+asan"))
         )
         entries.append(
             cmake_cache_option(
-                "{}ENABLE_SANITIZER_TESTS".format(option_prefix),
+                f"{option_prefix}ENABLE_SANITIZER_TESTS",
                 spec.satisfies("+sanitizer_tests"),
             )
         )

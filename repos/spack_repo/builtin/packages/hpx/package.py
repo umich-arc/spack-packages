@@ -216,14 +216,14 @@ class Hpx(CMakePackage, CudaPackage):
 
     def url_for_version(self, version):
         if version >= Version("1.9.0"):
-            return "https://github.com/STEllAR-GROUP/hpx/archive/v{}.tar.gz".format(version)
-        return "https://github.com/STEllAR-GROUP/hpx/archive/{}.tar.gz".format(version)
+            return f"https://github.com/STEllAR-GROUP/hpx/archive/v{version}.tar.gz"
+        return f"https://github.com/STEllAR-GROUP/hpx/archive/{version}.tar.gz"
 
     def instrumentation_args(self):
         args = []
         for value in self.instrumentation_values:
-            condition = "instrumentation={0}".format(value)
-            args.append(self.define("HPX_WITH_{0}".format(value.upper()), condition in self.spec))
+            condition = f"instrumentation={value}"
+            args.append(self.define(f"HPX_WITH_{value.upper()}", condition in self.spec))
         return args
 
     def cmake_args(self):

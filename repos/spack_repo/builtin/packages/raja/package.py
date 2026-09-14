@@ -331,7 +331,7 @@ class Raja(CachedCMakePackage, CudaPackage):
     with when("+cuda @0.12.0:"):
         depends_on("camp+cuda")
         for sm_ in CudaPackage.cuda_arch_values:
-            depends_on("camp +cuda cuda_arch={0}".format(sm_), when="cuda_arch={0}".format(sm_))
+            depends_on(f"camp +cuda cuda_arch={sm_}", when=f"cuda_arch={sm_}")
 
     conflicts("+gpu-profiling", when="~cuda", msg="GPU profiling requires CUDA or ROCm")
     conflicts("+gpu-profiling +cuda", when="@:2022.02.99")
@@ -370,13 +370,7 @@ class Raja(CachedCMakePackage, CudaPackage):
         hostname = socket.gethostname()
         if "SYS_TYPE" in env:
             hostname = hostname.rstrip("1234567890")
-        return "{0}-{1}-{2}@{3}-{4}.cmake".format(
-            hostname,
-            self._get_sys_type(self.spec),
-            self.spec.compiler.name,
-            self.spec.compiler.version,
-            self.spec.dag_hash(8),
-        )
+        return f"{hostname}-{self._get_sys_type(self.spec)}-{self.spec.compiler.name}@{self.spec.compiler.version}-{self.spec.dag_hash(8)}.cmake"
 
     def initconfig_compiler_entries(self):
         spec = self.spec
@@ -415,7 +409,7 @@ class Raja(CachedCMakePackage, CudaPackage):
                 filter(gcc_toolchain_regex.match, spec.compiler_flags["cxxflags"])
             )
             if using_toolchain:
-                cuda_flags.append("-Xcompiler {}".format(using_toolchain[0]))
+                cuda_flags.append(f"-Xcompiler {using_toolchain[0]}")
 
             if cuda_flags:
                 entries.append(cmake_cache_string("CMAKE_CUDA_FLAGS", " ".join(cuda_flags)))
@@ -533,13 +527,13 @@ class Raja(CachedCMakePackage, CudaPackage):
 
         entries.append(
             cmake_cache_option(
-                "{}ENABLE_EXAMPLES".format(option_prefix), spec.satisfies("+examples")
+                f"{option_prefix}ENABLE_EXAMPLES", spec.satisfies("+examples")
             )
         )
         if spec.satisfies("@0.14.0:"):
             entries.append(
                 cmake_cache_option(
-                    "{}ENABLE_EXERCISES".format(option_prefix), spec.satisfies("+exercises")
+                    f"{option_prefix}ENABLE_EXERCISES", spec.satisfies("+exercises")
                 )
             )
         else:

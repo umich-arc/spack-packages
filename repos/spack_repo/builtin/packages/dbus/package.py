@@ -83,7 +83,7 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
         args += self.enable_or_disable("xml-docs", variant="xml_docs")
         socket = self.spec.variants["system-socket"].value
         if socket != "default":
-            args += ["--with-system-socket={0}".format(socket)]
+            args += [f"--with-system-socket={socket}"]
         return args
 
 

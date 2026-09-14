@@ -367,8 +367,8 @@ class Mfem(Package, CudaPackage):
     conflicts("cxxstd=11", when="^sundials@6.4.0:")
     for sm_ in CudaPackage.cuda_arch_values:
         depends_on(
-            "sundials@5.4.0:+cuda cuda_arch={0}".format(sm_),
-            when="@4.2.0:+sundials+cuda cuda_arch={0}".format(sm_),
+            f"sundials@5.4.0:+cuda cuda_arch={sm_}",
+            when=f"@4.2.0:+sundials+cuda cuda_arch={sm_}",
         )
     # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
@@ -402,8 +402,8 @@ class Mfem(Package, CudaPackage):
     depends_on("strumpack@3.0.0:+shared", when="+strumpack+shared")
     for sm_ in CudaPackage.cuda_arch_values:
         depends_on(
-            "strumpack+cuda cuda_arch={0}".format(sm_),
-            when="+strumpack+cuda cuda_arch={0}".format(sm_),
+            f"strumpack+cuda cuda_arch={sm_}",
+            when=f"+strumpack+cuda cuda_arch={sm_}",
         )
     # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
@@ -444,7 +444,7 @@ class Mfem(Package, CudaPackage):
     conflicts("cxxstd=14", when="^ginkgo@1.9:")
     for sm_ in CudaPackage.cuda_arch_values:
         depends_on(
-            "ginkgo+cuda cuda_arch={0}".format(sm_), when="+ginkgo+cuda cuda_arch={0}".format(sm_)
+            f"ginkgo+cuda cuda_arch={sm_}", when=f"+ginkgo+cuda cuda_arch={sm_}"
         )
     # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
@@ -455,7 +455,7 @@ class Mfem(Package, CudaPackage):
     depends_on("hiop@0.4.6:+mpi", when="+hiop+mpi")
     for sm_ in CudaPackage.cuda_arch_values:
         depends_on(
-            "hiop+cuda cuda_arch={0}".format(sm_), when="+hiop+cuda cuda_arch={0}".format(sm_)
+            f"hiop+cuda cuda_arch={sm_}", when=f"+hiop+cuda cuda_arch={sm_}"
         )
     # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
@@ -486,7 +486,7 @@ class Mfem(Package, CudaPackage):
     conflicts("cxxstd=11", when="^raja@2022.03.0:")
     for sm_ in CudaPackage.cuda_arch_values:
         depends_on(
-            "raja+cuda cuda_arch={0}".format(sm_), when="+raja+cuda cuda_arch={0}".format(sm_)
+            f"raja+cuda cuda_arch={sm_}", when=f"+raja+cuda cuda_arch={sm_}"
         )
     # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
@@ -504,8 +504,8 @@ class Mfem(Package, CudaPackage):
 
     for sm_ in CudaPackage.cuda_arch_values:
         depends_on(
-            "libceed+cuda cuda_arch={0}".format(sm_),
-            when="+libceed+cuda cuda_arch={0}".format(sm_),
+            f"libceed+cuda cuda_arch={sm_}",
+            when=f"+libceed+cuda cuda_arch={sm_}",
         )
     # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
@@ -518,7 +518,7 @@ class Mfem(Package, CudaPackage):
     conflicts("cxxstd=11", when="^umpire@2022.03.0:")
     for sm_ in CudaPackage.cuda_arch_values:
         depends_on(
-            "umpire+cuda cuda_arch={0}".format(sm_), when="+umpire+cuda cuda_arch={0}".format(sm_)
+            f"umpire+cuda cuda_arch={sm_}", when=f"+umpire+cuda cuda_arch={sm_}"
         )
     # for gfx in ROCmPackage.amdgpu_targets:
     #    depends_on(
@@ -529,10 +529,10 @@ class Mfem(Package, CudaPackage):
     # AmgX: propagate the cuda_arch and mpi settings:
     for sm_ in CudaPackage.cuda_arch_values:
         depends_on(
-            "amgx+mpi cuda_arch={0}".format(sm_), when="+amgx+mpi cuda_arch={0}".format(sm_)
+            f"amgx+mpi cuda_arch={sm_}", when=f"+amgx+mpi cuda_arch={sm_}"
         )
         depends_on(
-            "amgx~mpi cuda_arch={0}".format(sm_), when="+amgx~mpi cuda_arch={0}".format(sm_)
+            f"amgx~mpi cuda_arch={sm_}", when=f"+amgx~mpi cuda_arch={sm_}"
         )
 
     depends_on("cudss@0.6:0.7.1+mpi", when="+cudss+mpi")
@@ -1266,7 +1266,7 @@ class Mfem(Package, CudaPackage):
             # construct proper include path
             conduit_include_path = conduit.prefix.include.conduit
             # add this path to the found flags
-            conduit_opt_flags = "-I{0} {1}".format(conduit_include_path, headers.cpp_flags)
+            conduit_opt_flags = f"-I{conduit_include_path} {headers.cpp_flags}"
 
             options += [
                 "CONDUIT_OPT=%s" % conduit_opt_flags,
