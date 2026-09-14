@@ -251,14 +251,14 @@ class CompilerWrapper(Package):
                 return compiler_pkg.fortran
 
         if dependent_spec.has_virtual_dependency("c"):
-            setattr(module, "spack_cc", _spack_compiler_attribute(language="c"))
+            module.spack_cc = _spack_compiler_attribute(language="c")
 
         if dependent_spec.has_virtual_dependency("cxx"):
-            setattr(module, "spack_cxx", _spack_compiler_attribute(language="cxx"))
+            module.spack_cxx = _spack_compiler_attribute(language="cxx")
 
         if dependent_spec.has_virtual_dependency("fortran"):
-            setattr(module, "spack_fc", _spack_compiler_attribute(language="fortran"))
-            setattr(module, "spack_f77", _spack_compiler_attribute(language="fortran"))
+            module.spack_fc = _spack_compiler_attribute(language="fortran")
+            module.spack_f77 = _spack_compiler_attribute(language="fortran")
 
     @property
     def disable_new_dtags(self) -> str:

@@ -56,9 +56,9 @@ class PikaAlgorithms(CMakePackage):
     depends_on("pika@:0.16", when="@0.1.3")
 
     for cxxstd in cxxstds:
-        depends_on("boost cxxstd={0}".format(map_cxxstd(cxxstd)), when="cxxstd={0}".format(cxxstd))
-        depends_on("fmt cxxstd={0}".format(cxxstd), when="cxxstd={0}".format(cxxstd))
-        depends_on("pika cxxstd={0}".format(cxxstd), when="cxxstd={0}".format(cxxstd))
+        depends_on(f"boost cxxstd={map_cxxstd(cxxstd)}", when=f"cxxstd={cxxstd}")
+        depends_on(f"fmt cxxstd={cxxstd}", when=f"cxxstd={cxxstd}")
+        depends_on(f"pika cxxstd={cxxstd}", when=f"cxxstd={cxxstd}")
 
     def cmake_args(self):
         return [

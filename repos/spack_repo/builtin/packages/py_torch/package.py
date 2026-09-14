@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-import os
 import sys
 
 from spack_repo.builtin.build_systems.cuda import CudaPackage
@@ -755,7 +754,7 @@ class PyTorch(PythonPackage, CudaPackage):
             if self.spec.satisfies("%clang"):
                 for flag in self.spec.compiler_flags["cxxflags"]:
                     if "gcc-toolchain" in flag:
-                        env.set("CMAKE_CUDA_FLAGS", "=-Xcompiler={0}".format(flag))
+                        env.set("CMAKE_CUDA_FLAGS", f"=-Xcompiler={flag}")
 
         # enable_or_disable("rocm")
         # if "+rocm" in self.spec:
@@ -931,7 +930,6 @@ class PyTorch(PythonPackage, CudaPackage):
     def setup_dependent_run_environment(self, env, dependent_spec):
         """So dependents (e.g. py-torch-nvidia-apex, py-torchaudio) can find
         libamdhip64.so when importing torch or running code that uses ROCm."""
-        pass
         # if "+rocm" in self.spec:
         #    env.prepend_path("LD_LIBRARY_PATH", self.spec["hip"].prefix.lib)
 

@@ -502,7 +502,7 @@ class CMakeBuilder(cmake.CMakeBuilder):
 class GenericBuilder(generic.GenericBuilder):
     def install(self, pkg, spec, prefix):
         prefix_path = prefix.bin if "@:5.4.0" in spec else prefix
-        options = ["-prefix={0}".format(prefix_path)]
+        options = [f"-prefix={prefix_path}"]
 
         # QE autoconf compiler variables has some limitations:
         # 1. There is no explicit MPICC variable so we must re-purpose
@@ -516,8 +516,8 @@ class GenericBuilder(generic.GenericBuilder):
         if "+mpi" in spec:
             mpi = spec["mpi"]
             options.append("--enable-parallel=yes")
-            options.append("MPIF90={0}".format(mpi.mpifc))
-            options.append("CC={0}".format(mpi.mpicc))
+            options.append(f"MPIF90={mpi.mpifc}")
+            options.append(f"CC={mpi.mpicc}")
         else:
             options.append("--enable-parallel=no")
             options.append("CC={0}".format(env["SPACK_CC"]))
@@ -547,21 +547,21 @@ class GenericBuilder(generic.GenericBuilder):
             options.append("FFTW_INCLUDE={0}".format(join_path(env["MKLROOT"], "include/fftw")))
         if "^fftw@3:" in spec:
             fftw_prefix = spec["fftw"].prefix
-            options.append("FFTW_INCLUDE={0}".format(fftw_prefix.include))
+            options.append(f"FFTW_INCLUDE={fftw_prefix.include}")
             if "+openmp" in spec:
                 fftw_ld_flags = spec["fftw:openmp"].libs.ld_flags
             else:
                 fftw_ld_flags = spec["fftw"].libs.ld_flags
-            options.append("FFT_LIBS={0}".format(fftw_ld_flags))
+            options.append(f"FFT_LIBS={fftw_ld_flags}")
 
         if "^amdfftw" in spec:
             fftw_prefix = spec["amdfftw"].prefix
-            options.append("FFTW_INCLUDE={0}".format(fftw_prefix.include))
+            options.append(f"FFTW_INCLUDE={fftw_prefix.include}")
             if "+openmp" in spec:
                 fftw_ld_flags = spec["amdfftw:openmp"].libs.ld_flags
             else:
                 fftw_ld_flags = spec["amdfftw"].libs.ld_flags
-            options.append("FFT_LIBS={0}".format(fftw_ld_flags))
+            options.append(f"FFT_LIBS={fftw_ld_flags}")
 
         # External BLAS and LAPACK requires the correct link line into
         # BLAS_LIBS, do no use LAPACK_LIBS as the autoconf scripts indicate
@@ -582,10 +582,10 @@ class GenericBuilder(generic.GenericBuilder):
         # However, MKL is correctly picked up by qe-6.5 for BLAS and FFT if
         # MKLROOT is set (which SPACK does automatically for ^mkl)
         if spec.satisfies("@:6.4"):  # set even if MKL is selected
-            options.append("BLAS_LIBS={0}".format(lapack_blas.ld_flags))
+            options.append(f"BLAS_LIBS={lapack_blas.ld_flags}")
         else:  # behavior changed at 6.5 and later
             if not is_using_intel_libraries:
-                options.append("BLAS_LIBS={0}".format(lapack_blas.ld_flags))
+                options.append(f"BLAS_LIBS={lapack_blas.ld_flags}")
 
         if "+scalapack" in spec:
             if is_using_intel_libraries:
@@ -595,9 +595,9 @@ class GenericBuilder(generic.GenericBuilder):
                     scalapack_option = "intel"
             else:
                 scalapack_option = "yes"
-            options.append("--with-scalapack={0}".format(scalapack_option))
+            options.append(f"--with-scalapack={scalapack_option}")
             scalapack_lib = spec["scalapack"].libs
-            options.append("SCALAPACK_LIBS={0}".format(scalapack_lib.ld_flags))
+            options.append(f"SCALAPACK_LIBS={scalapack_lib.ld_flags}")
 
         if "+libxc" in spec:
             options.append("--with-libxc=yes")
@@ -614,8 +614,8 @@ class GenericBuilder(generic.GenericBuilder):
 
             options.extend(
                 [
-                    "--with-elpa-include={0}".format(elpa_include),
-                    "--with-elpa-version={0}".format(elpa.version.version[0]),
+                    f"--with-elpa-include={elpa_include}",
+                    f"--with-elpa-version={elpa.version.version[0]}",
                 ]
             )
 
@@ -628,13 +628,13 @@ class GenericBuilder(generic.GenericBuilder):
                         "--with-elpa-lib={0}".format(
                             join_path(
                                 elpa.prefix.lib,
-                                "libelpa{elpa_suffix}.a".format(elpa_suffix=elpa_suffix),
+                                f"libelpa{elpa_suffix}.a",
                             )
                         )
                     ]
                 )
             else:
-                options.extend(["--with-elpa-lib={0}".format(elpa.libs[0])])
+                options.extend([f"--with-elpa-lib={elpa.libs[0]}"])
 
         if "+fox" in spec:
             options.append("--with-fox=yes")

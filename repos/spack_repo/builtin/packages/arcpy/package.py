@@ -53,7 +53,7 @@ class Arcpy(PythonCollectivePackage):
         ],
     }
 
-    for key in metalist.keys():
+    for key in metalist:
         version(key)
         for pairing in metalist[key]:
             depends_on(f"{pairing[0]}@{pairing[1]}", when=f"@{key}", type="run")

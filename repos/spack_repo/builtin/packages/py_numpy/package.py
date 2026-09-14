@@ -4,7 +4,6 @@
 
 import platform
 import subprocess
-from typing import Tuple
 
 from spack_repo.builtin.build_systems.python import PythonPackage
 
@@ -277,7 +276,7 @@ class PyNumpy(PythonPackage):
                 raise InstallError(
                     "The GCC version that the Intel compiler "
                     "uses must be >= 4.8. The GCC in use is "
-                    "{0}".format(gcc_version)
+                    f"{gcc_version}"
                 )
             if gcc_version <= Version("5.1"):
                 flags.append(self.compiler.c99_flag)
@@ -310,7 +309,7 @@ class PyNumpy(PythonPackage):
 
         return "mkl-dynamic-" + lp64_or_ilp64 + "-" + threads
 
-    def blas_lapack_pkg_config(self) -> Tuple[str, str, str]:
+    def blas_lapack_pkg_config(self) -> tuple[str, str, str]:
         """Convert library names to pkg-config names.
 
         Returns:
@@ -358,9 +357,7 @@ class PyNumpy(PythonPackage):
 
         if spec["blas"].satisfies("+ilp64") != spec["lapack"].satisfies("+ilp64"):
             raise InstallError(
-                "Either both blas and lapack must use ilp64 or none: ({0} vs. {1})".format(
-                    blas, lapack
-                )
+                f"Either both blas and lapack must use ilp64 or none: ({blas} vs. {lapack})"
             )
         use_ilp64 = spec["blas"].satisfies("+ilp64")
 
@@ -407,12 +404,12 @@ class PyNumpy(PythonPackage):
         # https://numpy.org/doc/1.25/user/building.html
         # https://github.com/numpy/numpy/blob/v1.25.2/site.cfg.example
         def write_library_dirs(f, dirs):
-            f.write("library_dirs = {0}\n".format(dirs))
+            f.write(f"library_dirs = {dirs}\n")
             if not (
                 (platform.system() == "Darwin")
                 and (Version(platform.mac_ver()[0]).up_to(2) == Version("10.12"))
             ):
-                f.write("rpath = {0}\n".format(dirs))
+                f.write(f"rpath = {dirs}\n")
 
         blas_libs = spec["blas"].libs
         blas_headers = spec["blas"].headers
@@ -453,73 +450,73 @@ class PyNumpy(PythonPackage):
                 # Spack.
                 f.write("libraries = {0}\n".format("mkl_rt"))
                 write_library_dirs(f, lapackblas_lib_dirs)
-                f.write("include_dirs = {0}\n".format(lapackblas_header_dirs))
+                f.write(f"include_dirs = {lapackblas_header_dirs}\n")
 
             if "^blis" in spec or "^amdblis" in spec:
                 f.write("[blis]\n")
-                f.write("libraries = {0}\n".format(blas_lib_names))
+                f.write(f"libraries = {blas_lib_names}\n")
                 write_library_dirs(f, blas_lib_dirs)
-                f.write("include_dirs = {0}\n".format(blas_header_dirs))
+                f.write(f"include_dirs = {blas_header_dirs}\n")
 
             if "^openblas" in spec:
                 f.write("[openblas]\n")
-                f.write("libraries = {0}\n".format(lapackblas_lib_names))
+                f.write(f"libraries = {lapackblas_lib_names}\n")
                 write_library_dirs(f, lapackblas_lib_dirs)
-                f.write("include_dirs = {0}\n".format(lapackblas_header_dirs))
+                f.write(f"include_dirs = {lapackblas_header_dirs}\n")
                 symbol_suffix = spec["openblas"].variants["symbol_suffix"].value
                 if symbol_suffix != "none":
-                    f.write("symbol_suffix = {0}\n".format(symbol_suffix))
+                    f.write(f"symbol_suffix = {symbol_suffix}\n")
 
             if "^libflame" in spec or "^amdlibflame" in spec:
                 f.write("[flame]\n")
-                f.write("libraries = {0}\n".format(lapack_lib_names))
+                f.write(f"libraries = {lapack_lib_names}\n")
                 write_library_dirs(f, lapack_lib_dirs)
-                f.write("include_dirs = {0}\n".format(lapack_header_dirs))
+                f.write(f"include_dirs = {lapack_header_dirs}\n")
 
             if "^atlas" in spec:
                 f.write("[atlas]\n")
-                f.write("libraries = {0}\n".format(lapackblas_lib_names))
+                f.write(f"libraries = {lapackblas_lib_names}\n")
                 write_library_dirs(f, lapackblas_lib_dirs)
-                f.write("include_dirs = {0}\n".format(lapackblas_header_dirs))
+                f.write(f"include_dirs = {lapackblas_header_dirs}\n")
 
             if "^veclibfort" in spec:
                 f.write("[accelerate]\n")
-                f.write("libraries = {0}\n".format(lapackblas_lib_names))
+                f.write(f"libraries = {lapackblas_lib_names}\n")
                 write_library_dirs(f, lapackblas_lib_dirs)
 
             if "^netlib-lapack" in spec or "^cray-libsci" in spec:
                 # netlib and Cray require blas and lapack listed
                 # separately so that scipy can find them
                 f.write("[blas]\n")
-                f.write("libraries = {0}\n".format(blas_lib_names))
+                f.write(f"libraries = {blas_lib_names}\n")
                 write_library_dirs(f, blas_lib_dirs)
-                f.write("include_dirs = {0}\n".format(blas_header_dirs))
+                f.write(f"include_dirs = {blas_header_dirs}\n")
                 f.write("[lapack]\n")
-                f.write("libraries = {0}\n".format(lapack_lib_names))
+                f.write(f"libraries = {lapack_lib_names}\n")
                 write_library_dirs(f, lapack_lib_dirs)
-                f.write("include_dirs = {0}\n".format(lapack_header_dirs))
+                f.write(f"include_dirs = {lapack_header_dirs}\n")
 
             if "^fujitsu-ssl2" in spec:
                 f.write("[blas]\n")
                 f.write("libraries = {0}\n".format(spec["blas"].libs.names[0]))
                 write_library_dirs(f, blas_lib_dirs)
-                f.write("include_dirs = {0}\n".format(blas_header_dirs))
+                f.write(f"include_dirs = {blas_header_dirs}\n")
                 f.write("extra_link_args = {0}\n".format(self.spec["blas"].libs.ld_flags))
                 f.write("[lapack]\n")
                 f.write("libraries = {0}\n".format(spec["lapack"].libs.names[0]))
                 write_library_dirs(f, lapack_lib_dirs)
-                f.write("include_dirs = {0}\n".format(lapack_header_dirs))
+                f.write(f"include_dirs = {lapack_header_dirs}\n")
                 f.write("extra_link_args = {0}\n".format(self.spec["lapack"].libs.ld_flags))
 
             if "^armpl-gcc" in spec or "^acfl" in spec:
                 f.write("[blas]\n")
-                f.write("libraries = {0}\n".format(blas_lib_names))
+                f.write(f"libraries = {blas_lib_names}\n")
                 write_library_dirs(f, blas_lib_dirs)
-                f.write("include_dirs = {0}\n".format(blas_header_dirs))
+                f.write(f"include_dirs = {blas_header_dirs}\n")
                 f.write("[lapack]\n")
-                f.write("libraries = {0}\n".format(lapack_lib_names))
+                f.write(f"libraries = {lapack_lib_names}\n")
                 write_library_dirs(f, lapack_lib_dirs)
-                f.write("include_dirs = {0}\n".format(lapack_header_dirs))
+                f.write(f"include_dirs = {lapack_header_dirs}\n")
 
     @run_before("install", when="@:1.25")
     def set_blas_lapack(self):

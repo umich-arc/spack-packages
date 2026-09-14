@@ -2,14 +2,12 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-import itertools
 import os
 import pathlib
 import sys
 
 from spack_repo.builtin.build_systems import autotools, cmake
 from spack_repo.builtin.build_systems.autotools import AutotoolsPackage
-from spack_repo.builtin.build_systems.cmake import CMakePackage
 
 from spack.package import *
 
@@ -232,7 +230,7 @@ class NetcdfC(AutotoolsPackage):
     depends_on("zlib@1.2.5:", when="^[virtuals=zlib-api] zlib")
     # Use the vendored bzip2 on Windows:
     for __p in ["darwin", "linux"]:
-        depends_on("bzip2", when="@4.9.0:+shared platform={0}".format(__p))
+        depends_on("bzip2", when=f"@4.9.0:+shared platform={__p}")
     del __p
     # Byte-range requires DAP starting version 4.9.3:
     requires("+dap", when="@4.9.3:+byterange")
@@ -469,7 +467,7 @@ class AutotoolsBuilder(AnyBuilder, autotools.AutotoolsBuilder):
         if self.spec.satisfies("@4.9.0:+shared"):
             # The plugins are not built when the shared libraries are disabled:
             config_args.extend(
-                ["--enable-plugins", "--with-plugin-dir={0}".format(self.prefix.plugins)]
+                ["--enable-plugins", f"--with-plugin-dir={self.prefix.plugins}"]
             )
 
         # The option was introduced in version 4.3.1 and does nothing starting version 4.6.1:
@@ -605,13 +603,13 @@ class AutotoolsBuilder(AnyBuilder, autotools.AutotoolsBuilder):
         # Remove duplicates and system prefixes:
         lib_search_dirs = filter_system_paths(dedupe(lib_search_dirs))
         config_args.append(
-            "LDFLAGS={0}".format(" ".join("-L{0}".format(d) for d in lib_search_dirs))
+            "LDFLAGS={0}".format(" ".join(f"-L{d}" for d in lib_search_dirs))
         )
 
         extra_lib_names = [n for libs in extra_libs for n in libs.names]
         # Remove duplicates in the reversed order:
         extra_lib_names = reversed(list(dedupe(reversed(extra_lib_names))))
-        config_args.append("LIBS={0}".format(" ".join("-l{0}".format(n) for n in extra_lib_names)))
+        config_args.append("LIBS={0}".format(" ".join(f"-l{n}" for n in extra_lib_names)))
 
         return config_args
 

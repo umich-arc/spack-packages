@@ -143,11 +143,11 @@ class Ncurses(AutotoolsPackage, GNUMirrorPackage):
         ]
 
         if spec.satisfies("@:6.2"):
-            opts.append("--with-pkg-config-libdir={0}/pkgconfig".format(prefix.lib))
+            opts.append(f"--with-pkg-config-libdir={prefix.lib}/pkgconfig")
         else:
-            pcstage = "{0}/lib/pkgconfig".format(self.stage.source_path)
+            pcstage = f"{self.stage.source_path}/lib/pkgconfig"
             mkdirp(pcstage)
-            opts.append("--with-pkg-config-libdir={0}".format(pcstage))
+            opts.append(f"--with-pkg-config-libdir={pcstage}")
 
         nwide_opts = ["--disable-widec", "--without-manpages", "--without-tests"]
 
@@ -171,7 +171,7 @@ class Ncurses(AutotoolsPackage, GNUMirrorPackage):
         if abi != "none":
             opts.append("--with-abi-version=" + abi)
 
-        prefix = "--prefix={0}".format(prefix)
+        prefix = f"--prefix={prefix}"
 
         configure = Executable("../configure")
 
@@ -200,16 +200,16 @@ class Ncurses(AutotoolsPackage, GNUMirrorPackage):
             symlink(os.path.join("ncursesw", h), os.path.join(prefix.include, h))
 
         if spec.satisfies("@6.3:"):
-            pc_stage = "{0}/lib/pkgconfig".format(self.stage.source_path)
-            pc_install = "{0}/pkgconfig".format(prefix.lib)
+            pc_stage = f"{self.stage.source_path}/lib/pkgconfig"
+            pc_install = f"{prefix.lib}/pkgconfig"
             mkdirp(pc_install)
             install_tree(pc_stage, pc_install)
 
     @run_after("install")
     def symlink_curses(self):
         soext = "so" if not self.spec.satisfies("platform=darwin") else "dylib"
-        libncurses = "{0}/libncurses.{1}".format(self.prefix.lib, soext)
-        libcurses = "{0}/libcurses.{1}".format(self.prefix.lib, soext)
+        libncurses = f"{self.prefix.lib}/libncurses.{soext}"
+        libcurses = f"{self.prefix.lib}/libcurses.{soext}"
         if not os.path.exists(libcurses) and os.path.exists(libncurses):
             symlink(libncurses, libcurses)
 

@@ -48,12 +48,12 @@ class Additivefoam(Package):
         outdir = self.stage.source_path
         indir = join_path(os.path.dirname(inspect.getfile(openfoam)), "common")
         for f in common:
-            tty.info("Added file {0}".format(f))
+            tty.info(f"Added file {f}")
             openfoam.install(join_path(indir, f), join_path(outdir, f))
 
         indir = join_path(self.package_dir, "assets", local_prefix)
         for f in local:
-            tty.info("Added file {0}".format(f))
+            tty.info(f"Added file {f}")
             openfoam.install(join_path(indir, f), join_path(outdir, f))
 
     def patch(self):
@@ -100,7 +100,6 @@ class Additivefoam(Package):
 
     def configure(self, spec, prefix):
         """Configure the environment for building."""
-        pass
 
     def build(self, spec, prefix):
         """Build with Allwmake script, wrapped to source environment first."""

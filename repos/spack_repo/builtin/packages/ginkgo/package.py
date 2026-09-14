@@ -221,7 +221,7 @@ class Ginkgo(CMakePackage, CudaPackage):
             archs = spec.variants["cuda_arch"].value
             if archs != "none":
                 arch_str = ";".join(archs)
-                args.append("-DGINKGO_CUDA_ARCHITECTURES={0}".format(arch_str))
+                args.append(f"-DGINKGO_CUDA_ARCHITECTURES={arch_str}")
 
         # if spec.satisfies("+rocm"):
         #    args.append("-DHIP_PATH={0}".format(spec["hip"].prefix))

@@ -243,7 +243,7 @@ class NodeJs(Package):
             )
 
         args = [
-            "--prefix={0}".format(self.prefix),
+            f"--prefix={self.prefix}",
             # Note: npm is updated more regularly than node.js, so we build
             # the package instead of using the bundled version
             "--without-npm",

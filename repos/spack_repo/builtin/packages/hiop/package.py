@@ -122,13 +122,13 @@ class Hiop(CMakePackage, CudaPackage):
     depends_on("mpi", when="+mpi")
 
     for arch in CudaPackage.cuda_arch_values:
-        cuda_dep = "+cuda cuda_arch={0}".format(arch)
-        depends_on("magma {0}".format(cuda_dep), when=cuda_dep)
-        depends_on("raja {0}".format(cuda_dep), when="+raja {0}".format(cuda_dep))
-        depends_on("ginkgo {0}".format(cuda_dep), when="+ginkgo {0}".format(cuda_dep))
-        depends_on("umpire {0}".format(cuda_dep), when="+raja {0}".format(cuda_dep))
+        cuda_dep = f"+cuda cuda_arch={arch}"
+        depends_on(f"magma {cuda_dep}", when=cuda_dep)
+        depends_on(f"raja {cuda_dep}", when=f"+raja {cuda_dep}")
+        depends_on(f"ginkgo {cuda_dep}", when=f"+ginkgo {cuda_dep}")
+        depends_on(f"umpire {cuda_dep}", when=f"+raja {cuda_dep}")
         # Camp GPU arch doesn't get propogated correctly
-        depends_on("camp {0}".format(cuda_dep), when="+raja {0}".format(cuda_dep))
+        depends_on(f"camp {cuda_dep}", when=f"+raja {cuda_dep}")
 
     # for arch in ROCmPackage.amdgpu_targets:
     #    rocm_dep = "+rocm amdgpu_target={0}".format(arch)
@@ -143,7 +143,7 @@ class Hiop(CMakePackage, CudaPackage):
 
     # Depends on Magma when +rocm or +cuda
     for magma_v, hiop_v in magma_ver_constraints:
-        depends_on("magma@{0}:".format(magma_v), when="@{0}:+cuda".format(hiop_v))
+        depends_on(f"magma@{magma_v}:", when=f"@{hiop_v}:+cuda")
         # depends_on("magma@{0}:".format(magma_v), when="@{0}:+rocm".format(hiop_v))
 
     # 1.0.2 fixes bug with cuda 12 compatibility

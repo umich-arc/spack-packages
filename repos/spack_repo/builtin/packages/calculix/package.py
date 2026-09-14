@@ -87,8 +87,8 @@ class Calculix(MakefilePackage):
             # C/Fortran symbol references between them resolve.
             filter_file(
                 "$(OCCXMAIN) ccx_2.20.a $(LIBS) -fopenmp",
-                "$(OCCXMAIN) -Wl,--start-group ccx_2.20.a {0} -Wl,--end-group "
-                "$(LIBS) -fopenmp".format(spooles_a),
+                f"$(OCCXMAIN) -Wl,--start-group ccx_2.20.a {spooles_a} -Wl,--end-group "
+                "$(LIBS) -fopenmp",
                 "Makefile",
                 string=True,
             )

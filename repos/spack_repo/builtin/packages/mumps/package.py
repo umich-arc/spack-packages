@@ -109,11 +109,11 @@ class Mumps(Package):
         """
         headers = glob.glob("include/*.h")
         intsize = 8 if "+int64" in self.spec else 4
-        filter_file("INTEGER *,", "INTEGER({0}),".format(intsize), *headers)
-        filter_file("INTEGER *::", "INTEGER({0}) ::".format(intsize), *headers)
+        filter_file("INTEGER *,", f"INTEGER({intsize}),", *headers)
+        filter_file("INTEGER *::", f"INTEGER({intsize}) ::", *headers)
         for typ in ("REAL", "COMPLEX", "LOGICAL"):
-            filter_file("{0} *,".format(typ), "{0}(4),".format(typ), *headers)
-            filter_file("{0} *::".format(typ), "{0}(4) ::".format(typ), *headers)
+            filter_file(f"{typ} *,", f"{typ}(4),", *headers)
+            filter_file(f"{typ} *::", f"{typ}(4) ::", *headers)
 
     def write_makefile_inc(self):
         # The makefile variables LIBBLAS, LSCOTCH, LMETIS, and SCALAP are only
@@ -210,14 +210,14 @@ class Mumps(Package):
         # partitionning environment with 64bit integers
 
         # The mumps.src-makefile.patch wants us to set these PIC variables
-        makefile_conf.append("FC_PIC_FLAG={0}".format(fpic))
-        makefile_conf.append("CC_PIC_FLAG={0}".format(cpic))
+        makefile_conf.append(f"FC_PIC_FLAG={fpic}")
+        makefile_conf.append(f"CC_PIC_FLAG={cpic}")
 
         opt_level = "3" if using_xl else "2"
 
-        optc = ["-O{0}".format(opt_level)]
-        optf = ["-O{0}".format(opt_level)]
-        optl = ["-O{0}".format(opt_level)]
+        optc = [f"-O{opt_level}"]
+        optf = [f"-O{opt_level}"]
+        optl = [f"-O{opt_level}"]
 
         if shared:
             optc.append(cpic)
@@ -300,9 +300,9 @@ class Mumps(Package):
         else:
             makefile_conf.extend(
                 [
-                    "CC = {0}".format(spack_cc),
-                    "FC = {0}".format(spack_fc),
-                    "FL = {0}".format(spack_fc),
+                    f"CC = {spack_cc}",
+                    f"FC = {spack_fc}",
+                    f"FL = {spack_fc}",
                     "MUMPS_TYPE = seq",
                 ]
             )
@@ -389,10 +389,9 @@ class Mumps(Package):
         with open(makefile_inc_template, "r") as fh:
             makefile_conf.extend(fh.read().split("\n"))
 
-        with working_dir("."):
-            with open("Makefile.inc", "w") as fh:
-                makefile_inc = "\n".join(makefile_conf)
-                fh.write(makefile_inc)
+        with working_dir("."), open("Makefile.inc", "w") as fh:
+            makefile_inc = "\n".join(makefile_conf)
+            fh.write(makefile_inc)
 
     def flag_handler(self, name, flags):
         if name == "fflags":

@@ -23,7 +23,7 @@ def cmake_cache_entry(name, value, vtype=None):
             vtype = "BOOL"
         else:
             vtype = "PATH"
-    return 'set({0} "{1}" CACHE {2} "")\n\n'.format(name, value, vtype)
+    return f'set({name} "{value}" CACHE {vtype} "")\n\n'
 
 
 class VtkH(CMakePackage, CudaPackage):
@@ -95,8 +95,8 @@ class VtkH(CMakePackage, CudaPackage):
     depends_on("vtk-m+cuda", when="+cuda")
     for _arch in CudaPackage.cuda_arch_values:
         depends_on(
-            "vtk-m+cuda cuda_arch={0}".format(_arch),
-            when="+cuda+openmp cuda_arch={0}".format(_arch),
+            f"vtk-m+cuda cuda_arch={_arch}",
+            when=f"+cuda+openmp cuda_arch={_arch}",
         )
 
     depends_on("vtk-m~shared", when="~shared")
@@ -162,7 +162,7 @@ class VtkH(CMakePackage, CudaPackage):
         cfg.write("##################################\n")
         cfg.write("# spack generated host-config\n")
         cfg.write("##################################\n")
-        cfg.write("# {0}-{1}\n".format(sys_type, spec.compiler))
+        cfg.write(f"# {sys_type}-{spec.compiler}\n")
         cfg.write("##################################\n\n")
 
         # Include path to cmake for reference

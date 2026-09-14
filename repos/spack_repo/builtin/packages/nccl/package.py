@@ -119,12 +119,12 @@ class Nccl(MakefilePackage, CudaPackage):
 
         return [
             "CUDA_HOME={0}".format(self.spec["cuda"].prefix),
-            "NVCC_GENCODE={0}".format(cuda_gencode),
+            f"NVCC_GENCODE={cuda_gencode}",
         ]
 
     @property
     def install_targets(self):
         if self.version >= Version("2.3.5-5"):
-            return ["PREFIX={0}".format(self.prefix), "src.install"]
+            return [f"PREFIX={self.prefix}", "src.install"]
         else:
-            return ["PREFIX={0}".format(self.prefix), "install"]
+            return [f"PREFIX={self.prefix}", "install"]

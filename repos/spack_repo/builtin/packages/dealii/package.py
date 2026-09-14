@@ -348,41 +348,41 @@ class Dealii(CMakePackage, CudaPackage):
     # Interfaces added in 8.5.0:
     for _package in ["gsl", "python"]:
         conflicts(
-            "+{0}".format(_package),
+            f"+{_package}",
             when="@:8.4.2",
-            msg="The interface to {0} is supported from version 8.5.0 "
+            msg=f"The interface to {_package} is supported from version 8.5.0 "
             "onwards. Please explicitly disable this variant "
-            "via ~{0}".format(_package),
+            f"via ~{_package}",
         )
 
     # Interfaces added in 9.0.0:
     for _package in ["assimp", "gmsh", "nanoflann", "scalapack", "adol-c"]:
         conflicts(
-            "+{0}".format(_package),
+            f"+{_package}",
             when="@:8.5.1",
-            msg="The interface to {0} is supported from version 9.0.0 "
+            msg=f"The interface to {_package} is supported from version 9.0.0 "
             "onwards. Please explicitly disable this variant "
-            "via ~{0}".format(_package),
+            f"via ~{_package}",
         )
 
     # interfaces added in 9.1.0:
     for _package in ["ginkgo", "symengine"]:
         conflicts(
-            "+{0}".format(_package),
+            f"+{_package}",
             when="@:9.0",
-            msg="The interface to {0} is supported from version 9.1.0 "
+            msg=f"The interface to {_package} is supported from version 9.1.0 "
             "onwards. Please explicitly disable this variant "
-            "via ~{0}".format(_package),
+            f"via ~{_package}",
         )
 
     # interfaces added in 9.3.0:
     for _package in ["simplex", "arborx"]:
         conflicts(
-            "+{0}".format(_package),
+            f"+{_package}",
             when="@:9.2",
-            msg="The interface to {0} is supported from version 9.3.0 "
+            msg=f"The interface to {_package} is supported from version 9.3.0 "
             "onwards. Please explicitly disable this variant "
-            "via ~{0}".format(_package),
+            f"via ~{_package}",
         )
 
     # Interfaces removed in 9.3.0:
@@ -418,11 +418,9 @@ class Dealii(CMakePackage, CudaPackage):
         "trilinos",
     ]:
         conflicts(
-            "+{0}".format(_package),
+            f"+{_package}",
             when="~mpi",
-            msg="To enable {0} it is necessary to build deal.II with MPI support enabled.".format(
-                _package
-            ),
+            msg=f"To enable {_package} it is necessary to build deal.II with MPI support enabled.",
         )
 
     # Optional dependencies:
@@ -504,9 +502,7 @@ class Dealii(CMakePackage, CudaPackage):
         # Performance
         # Set recommended flags for maximum (matrix-free) performance, see
         # https://groups.google.com/forum/?fromgroups#!topic/dealii/3Yjy8CBIrgU
-        if spec.satisfies("%gcc"):
-            cxx_flags_release.extend(["-O3"])
-        elif spec.satisfies("%intel"):
+        if spec.satisfies("%gcc") or spec.satisfies("%intel"):
             cxx_flags_release.extend(["-O3"])
         elif spec.satisfies("%clang") or spec.satisfies("%apple-clang"):
             cxx_flags_release.extend(["-O3", "-ffp-contract=fast"])
@@ -528,7 +524,7 @@ class Dealii(CMakePackage, CudaPackage):
             if cuda_arch != "none":
                 if len(cuda_arch) > 1:
                     raise InstallError("deal.II only supports compilation for a single GPU!")
-                flags = "-arch=sm_{0}".format(cuda_arch[0])
+                flags = f"-arch=sm_{cuda_arch[0]}"
                 # TODO: there are some compiler errors in dealii
                 # with: flags = ' '.join(self.cuda_flags(cuda_arch))
                 # Stick with -arch=sm_xy for now.
@@ -604,11 +600,11 @@ class Dealii(CMakePackage, CudaPackage):
             "vtk",
         ):
             options.append(
-                self.define_from_variant("DEAL_II_WITH_{0}".format(library.upper()), library)
+                self.define_from_variant(f"DEAL_II_WITH_{library.upper()}", library)
             )
             if ("+" + library) in spec:
                 options.append(
-                    self.define("{0}_DIR".format(library.upper()), spec[library].prefix)
+                    self.define(f"{library.upper()}_DIR", spec[library].prefix)
                 )
 
         # Optional dependencies that do not fit the above pattern:

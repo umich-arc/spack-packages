@@ -95,9 +95,7 @@ class Asio(AutotoolsPackage):
         return args
 
     def url_for_version(self, version):
-        return "https://github.com/chriskohlhoff/asio/archive/asio-{0}.tar.gz".format(
-            version.dashed
-        )
+        return f"https://github.com/chriskohlhoff/asio/archive/asio-{version.dashed}.tar.gz"
 
     @property
     def configure_directory(self):

@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 import os
 import re
-import sys
 
 from spack_repo.builtin.build_systems.autotools import AutotoolsPackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
@@ -693,11 +692,9 @@ with '-Wl,-commons,use_dylibs' and without
                 if cls._arc_pmix_major(prefix) == cls.arc_pmix_major:
                     return prefix
                 raise InstallError(
-                    "{0} points to PMIx {1}; ARC OpenMPI expects PMIx v{2}".format(
-                        env_var, cls._arc_pmix_version(prefix), cls.arc_pmix_major
-                    )
+                    f"{env_var} points to PMIx {cls._arc_pmix_version(prefix)}; ARC OpenMPI expects PMIx v{cls.arc_pmix_major}"
                 )
-            raise InstallError("{0} is set but is not a usable PMIx prefix".format(env_var))
+            raise InstallError(f"{env_var} is set but is not a usable PMIx prefix")
 
         root = "/opt/pmix"
         candidates = []
@@ -717,11 +714,9 @@ with '-Wl,-commons,use_dylibs' and without
 
         compatible = [x for x in candidates if cls._arc_pmix_major(x) == cls.arc_pmix_major]
         if not compatible:
-            found = ", ".join("{0} ({1})".format(x, cls._arc_pmix_version(x)) for x in candidates)
+            found = ", ".join(f"{x} ({cls._arc_pmix_version(x)})" for x in candidates)
             raise InstallError(
-                "ARC OpenMPI requires PMIx v{0} under /opt/pmix; found: {1}".format(
-                    cls.arc_pmix_major, found
-                )
+                f"ARC OpenMPI requires PMIx v{cls.arc_pmix_major} under /opt/pmix; found: {found}"
             )
 
         return sorted(compatible, key=lambda x: (cls._arc_pmix_version(x), x))[-1]
@@ -734,7 +729,7 @@ with '-Wl,-commons,use_dylibs' and without
             if recorded_prefix:
                 if not self._arc_pmix_is_usable(recorded_prefix):
                     raise InstallError(
-                        "Recorded ARC PMIx prefix is no longer usable: {0}".format(recorded_prefix)
+                        f"Recorded ARC PMIx prefix is no longer usable: {recorded_prefix}"
                     )
                 return recorded_prefix
         return self._detect_arc_pmix_prefix()
@@ -742,12 +737,12 @@ with '-Wl,-commons,use_dylibs' and without
     def _arc_slurm_mpi_type(self):
         major = self._arc_pmix_major(self._arc_pmix_prefix())
         if major:
-            return "pmix_v{0}".format(major)
+            return f"pmix_v{major}"
         return "pmix_v5"
 
     def _arc_config_args(self):
         return [
-            "--with-pmix={0}".format(self._arc_pmix_prefix()),
+            f"--with-pmix={self._arc_pmix_prefix()}",
             "--with-libevent=external",
             "--with-hwloc=external",
             "--with-slurm",
@@ -847,7 +842,7 @@ with '-Wl,-commons,use_dylibs' and without
         # In version 1.7, it was renamed to be --with-verbs.
         opt = "verbs" if self.spec.satisfies("@1.7:") else "openib"
         if not activated:
-            return "--without-{0}".format(opt)
+            return f"--without-{opt}"
         return "--with-{0}={1}".format(opt, self.spec["rdma-core"].prefix)
 
     def with_or_without_mxm(self, activated):
@@ -865,7 +860,7 @@ with '-Wl,-commons,use_dylibs' and without
         # In version 3.0.4, the old name was deprecated in favor of --with-ofi.
         opt = "ofi" if self.spec.satisfies("@3.0.4:") else "libfabric"
         if not activated:
-            return "--without-{0}".format(opt)
+            return f"--without-{opt}"
         return "--with-{0}={1}".format(opt, self.spec["libfabric"].prefix)
 
     def with_or_without_fca(self, activated):
@@ -1146,7 +1141,7 @@ with '-Wl,-commons,use_dylibs' and without
             return
 
         with open(self._arc_pmix_record_path, "w", encoding="utf-8") as fh:
-            fh.write("{0}\n".format(self._arc_pmix_prefix()))
+            fh.write(f"{self._arc_pmix_prefix()}\n")
 
     # For v4 and lower
     @run_after("install")

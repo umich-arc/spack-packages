@@ -85,8 +85,8 @@ class Bzip2(Package, SourcewarePackage):
 
         # bzip2 comes with two separate Makefiles for static and dynamic builds
         # Tell both to use Spack's compiler wrapper instead of GCC
-        filter_file(r"^CC=gcc", "CC={0}".format(spack_cc), "Makefile")
-        filter_file(r"^CC=gcc", "CC={0}".format(spack_cc), "Makefile-libbz2_so")
+        filter_file(r"^CC=gcc", f"CC={spack_cc}", "Makefile")
+        filter_file(r"^CC=gcc", f"CC={spack_cc}", "Makefile-libbz2_so")
 
         # The Makefiles use GCC flags that are incompatible with PGI
         if self.spec.satisfies("%nvhpc@:20.11"):
@@ -102,27 +102,25 @@ class Bzip2(Package, SourcewarePackage):
 
             mf = FileFilter("Makefile-libbz2_so")
             mf.filter(
-                "$(CC) -shared -Wl,-soname -Wl,libbz2.so.{0} -o libbz2.so.{1} $(OBJS)".format(
-                    v2, v3
-                ),
+                f"$(CC) -shared -Wl,-soname -Wl,libbz2.so.{v2} -o libbz2.so.{v3} $(OBJS)",
                 (
-                    "$(CC) -dynamiclib -Wl,-install_name -Wl,@rpath/libbz2.{0}.dylib "
-                    "-current_version {1} -compatibility_version {2} -o libbz2.{3}.dylib $(OBJS)"
-                ).format(v1, v2, v3, v3),
+                    f"$(CC) -dynamiclib -Wl,-install_name -Wl,@rpath/libbz2.{v1}.dylib "
+                    f"-current_version {v2} -compatibility_version {v3} -o libbz2.{v3}.dylib $(OBJS)"
+                ),
                 **kwargs,
             )
 
             mf.filter(
-                "$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.so.{0}".format(v3),
-                "$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.{0}.dylib".format(v3),
+                f"$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.so.{v3}",
+                f"$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.{v3}.dylib",
                 **kwargs,
             )
             mf.filter(
-                "rm -f libbz2.so.{0}".format(v2), "rm -f libbz2.{0}.dylib".format(v2), **kwargs
+                f"rm -f libbz2.so.{v2}", f"rm -f libbz2.{v2}.dylib", **kwargs
             )
             mf.filter(
-                "ln -s libbz2.so.{0} libbz2.so.{1}".format(v3, v2),
-                "ln -s libbz2.{0}.dylib libbz2.{1}.dylib".format(v3, v2),
+                f"ln -s libbz2.so.{v3} libbz2.so.{v2}",
+                f"ln -s libbz2.{v3}.dylib libbz2.{v2}.dylib",
                 **kwargs,
             )
 
@@ -147,7 +145,7 @@ class Bzip2(Package, SourcewarePackage):
             install("*.1", self.prefix.man.man1)
         else:
             make()
-            make("install", "PREFIX={0}".format(prefix))
+            make("install", f"PREFIX={prefix}")
 
         if spec.satisfies("+shared"):
             install("bzip2-shared", join_path(prefix.bin, "bzip2"))
@@ -155,10 +153,10 @@ class Bzip2(Package, SourcewarePackage):
             v1, v2, v3 = (self.spec.version.up_to(i) for i in (1, 2, 3))
             if "darwin" in self.spec.architecture:
                 lib = "libbz2.dylib"
-                lib1, lib2, lib3 = ("libbz2.{0}.dylib".format(v) for v in (v1, v2, v3))
+                lib1, lib2, lib3 = (f"libbz2.{v}.dylib" for v in (v1, v2, v3))
             else:
                 lib = "libbz2.so"
-                lib1, lib2, lib3 = ("libbz2.so.{0}".format(v) for v in (v1, v2, v3))
+                lib1, lib2, lib3 = (f"libbz2.so.{v}" for v in (v1, v2, v3))
 
             install(lib3, join_path(prefix.lib, lib3))
             with working_dir(prefix.lib):
@@ -180,13 +178,13 @@ class Bzip2(Package, SourcewarePackage):
         mkdirp(pkg_path)
 
         with open(join_path(pkg_path, "bzip2.pc"), "w") as f:
-            f.write("prefix={0}\n".format(self.prefix))
+            f.write(f"prefix={self.prefix}\n")
             f.write("exec_prefix=${prefix}/bin\n")
-            f.write("libdir={0}\n".format(libdir))
-            f.write("includedir={0}\n".format(self.prefix.include))
+            f.write(f"libdir={libdir}\n")
+            f.write(f"includedir={self.prefix.include}\n")
             f.write("\n")
             f.write("Name: bzip2\n")
             f.write("Description: a file compression library\n")
-            f.write("Version: {0}\n".format(self.spec.version))
+            f.write(f"Version: {self.spec.version}\n")
             f.write("Libs: -L${libdir} -lbz2\n")
             f.write("Cflags: -I${includedir}\n")

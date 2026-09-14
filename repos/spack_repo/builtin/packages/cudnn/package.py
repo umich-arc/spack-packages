@@ -519,7 +519,7 @@ class Cudnn(Package):
     license("MIT")
 
     for ver, packages in _versions.items():
-        key = "{0}-{1}".format(platform.system(), platform.machine())
+        key = f"{platform.system()}-{platform.machine()}"
         pkg = packages.get(key)
         cudnn_ver, cuda_ver_str = ver.split("-")
         cuda_ver = Version(cuda_ver_str)
@@ -537,7 +537,7 @@ class Cudnn(Package):
 
     def url_for_version(self, version):
         # Get the system and machine arch for building the file path
-        sys = "{0}-{1}".format(platform.system(), platform.machine())
+        sys = f"{platform.system()}-{platform.machine()}"
         # Munge it to match Nvidia's naming scheme
         sys_key = sys.lower()
         if version < Version("8.3.1"):
@@ -559,7 +559,7 @@ class Cudnn(Package):
             directory = version[:3]
             ver = version[:4]
             cuda = version[4:]
-            directory = "{0}/local_installers/{1}".format(directory, cuda)
+            directory = f"{directory}/local_installers/{cuda}"
         elif version >= Version("7.2"):
             directory = version[:3]
             ver = version[:4]

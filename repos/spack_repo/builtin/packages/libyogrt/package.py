@@ -66,9 +66,7 @@ class Libyogrt(AutotoolsPackage):
         if version < Version("1.21"):
             return f"https://github.com/LLNL/libyogrt/archive/{version}.tar.gz"
         else:
-            return "https://github.com/LLNL/libyogrt/releases/download/{0}/libyogrt-{0}.tar.gz".format(
-                version
-            )
+            return f"https://github.com/LLNL/libyogrt/releases/download/{version}/libyogrt-{version}.tar.gz"
 
     def flag_handler(self, name, flags):
         if name == "cflags":

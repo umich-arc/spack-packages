@@ -671,16 +671,16 @@ class AutotoolsBuilder(AutotoolsBuilder):
                     value = self.spec[package].command.path
                 elif attribute == "libs":
                     value = self.spec[package].libs.directories[0]
-                return "--with-{}={}".format(name, value)
+                return f"--with-{name}={value}"
             else:
-                return "--with-{}".format(name)
+                return f"--with-{name}"
         else:
-            return "--without-{}".format(name)
+            return f"--without-{name}"
 
     def configure_args(self):
         # https://trac.osgeo.org/gdal/wiki/BuildHints
         args = [
-            "--prefix={}".format(self.prefix),
+            f"--prefix={self.prefix}",
             # Required dependencies
             "--with-geotiff={}".format(self.spec["libgeotiff"].prefix),
             "--with-libjson-c={}".format(self.spec["json-c"].prefix),

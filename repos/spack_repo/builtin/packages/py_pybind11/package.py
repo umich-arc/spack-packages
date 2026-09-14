@@ -105,7 +105,7 @@ class PyPybind11(CMakePackage, PythonExtension):
         """see https://github.com/spack/spack/issues/13559"""
         filter_file(
             "import sys",
-            'import sys; return "{0}"'.format(self.prefix.include),
+            f'import sys; return "{self.prefix.include}"',
             "pybind11/__init__.py",
             string=True,
         )

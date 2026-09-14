@@ -44,7 +44,7 @@ class Gurobi(Package):
     depends_on("python@3.9:", when="@12")
 
     def url_for_version(self, version):
-        return "file://{0}/gurobi{1}_linux64.tar.gz".format(os.getcwd(), version)
+        return f"file://{os.getcwd()}/gurobi{version}_linux64.tar.gz"
 
     def patch(self):
         # Strip out existing PYTHONPATH as the presence of that will generally
@@ -65,4 +65,4 @@ class Gurobi(Package):
     @run_after("install", when="@:10")
     def gurobipy(self):
         with working_dir("linux64"):
-            python("setup.py", "install", "--prefix={0}".format(self.prefix))
+            python("setup.py", "install", f"--prefix={self.prefix}")

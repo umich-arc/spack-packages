@@ -49,14 +49,14 @@ class TruchasPbf(CMakePackage):
 
             if spec.satisfies("platform=linux"):
                 if nag or "%nag" in spec:
-                    opts.append("-C {}/config/linux-nag.cmake".format(root))
+                    opts.append(f"-C {root}/config/linux-nag.cmake")
                 elif "%gcc" in spec:
-                    opts.append("-C {}/config/linux-gcc.cmake".format(root))
+                    opts.append(f"-C {root}/config/linux-gcc.cmake")
                 elif "%intel" in spec:
-                    opts.append("-C {}/config/linux-intel.cmake".format(root))
+                    opts.append(f"-C {root}/config/linux-intel.cmake")
 
             elif spec.satisfies("platform=darwin"):
                 if "%apple-clang" in spec:
-                    opts.append("-C {}/config/mac-gcc-clang.cmake".format(root))
+                    opts.append(f"-C {root}/config/mac-gcc-clang.cmake")
 
         return opts

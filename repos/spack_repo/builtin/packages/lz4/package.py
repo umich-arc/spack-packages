@@ -55,9 +55,9 @@ class Lz4(CMakePackage, MakefilePackage):
         url = "https://github.com/lz4/lz4/archive"
 
         if version > Version("1.3.1"):
-            return "{0}/v{1}.tar.gz".format(url, version)
+            return f"{url}/v{version}.tar.gz"
         else:
-            return "{0}/r{1}.tar.gz".format(url, version.joined)
+            return f"{url}/r{version.joined}.tar.gz"
 
     def patch(self):
         # Remove flags not recognized by the NVIDIA compiler
@@ -107,7 +107,7 @@ class MakefileBuilder(MakefileBuilder):
     def install(self, pkg, spec, prefix):
         make(
             "install",
-            "PREFIX={0}".format(prefix),
+            f"PREFIX={prefix}",
             "BUILD_SHARED={0}".format("yes" if self.spec.satisfies("libs=shared") else "no"),
             "BUILD_STATIC={0}".format("yes" if self.spec.satisfies("libs=static") else "no"),
         )

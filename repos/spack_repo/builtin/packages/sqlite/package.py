@@ -166,9 +166,7 @@ class Sqlite(AutotoolsPackage, NMakePackage):
 
             # check for fts
             def query_fts(version):
-                return "CREATE VIRTUAL TABLE name USING fts{:d}(sender, title, body);".format(
-                    version
-                )
+                return f"CREATE VIRTUAL TABLE name USING fts{version:d}(sender, title, body);"
 
             rc_fts4 = call(exe, query_fts(4))
             rc_fts5 = call(exe, query_fts(5))

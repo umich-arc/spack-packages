@@ -55,12 +55,12 @@ class Shellcheck(Package):
     for ver, packages in _versions.items():
         system = platform.system().lower()
         machine = platform.machine().lower()
-        key = "{0}-{1}".format(system, machine)
+        key = f"{system}-{machine}"
         pkg_hash = packages.get(key)
         if pkg_hash:
             url = (
                 "https://github.com/koalaman/shellcheck/releases/download"
-                "/v{0}/shellcheck-v{0}.{1}.{2}.tar.xz".format(ver, system, machine)
+                f"/v{ver}/shellcheck-v{ver}.{system}.{machine}.tar.xz"
             )
             version(ver, sha256=pkg_hash, url=url)
 

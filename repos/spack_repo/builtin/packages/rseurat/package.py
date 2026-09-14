@@ -16,7 +16,7 @@ class Rseurat(RCollectivePackage):
     has_code = False
     metalist = {"5.5.1_R4.6.1": [("r", "4.6.1"), ("r-seurat", "5.5.1")]}
 
-    for key in metalist.keys():
+    for key in metalist:
         version(key)
         for pairing in metalist[key]:
             depends_on(f"{pairing[0]}@{pairing[1]}", when=f"@{key}", type="run")

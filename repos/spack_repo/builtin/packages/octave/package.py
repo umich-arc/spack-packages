@@ -245,8 +245,8 @@ class Octave(AutotoolsPackage, GNUMirrorPackage):
             if spec.satisfies("^[virtuals=fftw-api] intel-oneapi-mkl"):
                 config_args.extend(
                     [
-                        "--with-fftw3={0}".format(spec[fftw_string].libs.ld_flags),
-                        "--with-fftw3f={0}".format(spec[fftw_string].libs.ld_flags),
+                        f"--with-fftw3={spec[fftw_string].libs.ld_flags}",
+                        f"--with-fftw3f={spec[fftw_string].libs.ld_flags}",
                     ]
                 )
             elif spec.satisfies("^[virtuals=fftw-api] amdfftw"):
@@ -261,12 +261,8 @@ class Octave(AutotoolsPackage, GNUMirrorPackage):
                     AMD_FFTW3F_LIBS += " -lfftw3f_threads"
                 config_args.extend(
                     [
-                        "--with-fftw3=-L{0} {1}".format(
-                            spec[fftw_string].libs.directories[0], AMD_FFTW3_LIBS
-                        ),
-                        "--with-fftw3f=-L{0} {1}".format(
-                            spec[fftw_string].libs.directories[0], AMD_FFTW3F_LIBS
-                        ),
+                        f"--with-fftw3=-L{spec[fftw_string].libs.directories[0]} {AMD_FFTW3_LIBS}",
+                        f"--with-fftw3f=-L{spec[fftw_string].libs.directories[0]} {AMD_FFTW3F_LIBS}",
                     ]
                 )
             else:

@@ -34,12 +34,8 @@ class Libfuse(autotools.AutotoolsPackage, meson.MesonPackage):
 
     def url_for_version(self, version):
         if version < Version("3.0.0"):
-            return "https://github.com/libfuse/libfuse/releases/download/fuse-{0}/fuse-{1}.tar.gz".format(
-                version, version
-            )
-        return "https://github.com/libfuse/libfuse/archive/refs/tags/fuse-{0}.tar.gz".format(
-            version
-        )
+            return f"https://github.com/libfuse/libfuse/releases/download/fuse-{version}/fuse-{version}.tar.gz"
+        return f"https://github.com/libfuse/libfuse/archive/refs/tags/fuse-{version}.tar.gz"
 
     variant(
         "useroot",
@@ -136,7 +132,7 @@ class MesonBuilder(meson.MesonBuilder):
 
         if self.spec.satisfies("~system_install"):
             # Fix meson's setup if meson does not have the host system's udev package:
-            args.append("-Dudevrulesdir={0}".format(self.prefix.etc.rules.d))
+            args.append(f"-Dudevrulesdir={self.prefix.etc.rules.d}")
 
             if self.spec.satisfies("@3.12:"):
                 args.append("-Dinitscriptdir=")
@@ -153,9 +149,9 @@ class AutotoolsBuilder(autotools.AutotoolsBuilder):
 
     def configure_args(self):
         args = [
-            "MOUNT_FUSE_PATH={0}".format(self.prefix.sbin),
-            "UDEV_RULES_PATH={0}".format(self.prefix.etc),
-            "INIT_D_PATH={0}".format(self.prefix.etc),
+            f"MOUNT_FUSE_PATH={self.prefix.sbin}",
+            f"UDEV_RULES_PATH={self.prefix.etc}",
+            f"INIT_D_PATH={self.prefix.etc}",
         ]
 
         return args

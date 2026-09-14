@@ -155,11 +155,11 @@ class Salmon(CMakePackage):
 
         if self.spec.satisfies("@:0.14.1"):
             filter_file("curl -k.*", "", "scripts/fetchRapMap.sh")
-            symlink("./salmon-v{0}.zip".format(self.version), "./external/rapmap.zip")
+            symlink(f"./salmon-v{self.version}.zip", "./external/rapmap.zip")
 
         if self.spec.satisfies("@1.4.0:1.10"):
             filter_file("curl -k.*", "", "scripts/fetchPufferfish.sh")
-            symlink("./salmon-v{0}.zip".format(self.version), "./external/pufferfish.zip")
+            symlink(f"./salmon-v{self.version}.zip", "./external/pufferfish.zip")
             # Fix issues related to lto-wrapper during install
             filter_file(
                 "INTERPROCEDURAL_OPTIMIZATION True",

@@ -30,8 +30,8 @@ class NvptxTools(AutotoolsPackage):
         cuda_dir = self.spec["cuda"].prefix
 
         config_args = [
-            "--with-cuda-driver-include={0}".format(cuda_dir.include),
-            "--with-cuda-driver-lib={0}".format(cuda_dir.lib64),
+            f"--with-cuda-driver-include={cuda_dir.include}",
+            f"--with-cuda-driver-lib={cuda_dir.lib64}",
         ]
 
         return config_args

@@ -67,7 +67,7 @@ class Parmetis(CMakePackage):
         url = "http://glaros.dtc.umn.edu/gkhome/fetch/sw/parmetis"
         if version < Version("3.2.0"):
             url += "/OLD"
-        url += "/parmetis-{0}.tar.gz".format(version)
+        url += f"/parmetis-{version}.tar.gz"
         return url
 
     def cmake_args(self):

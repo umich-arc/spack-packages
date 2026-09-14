@@ -21,7 +21,7 @@ class Rtidyverse(RCollectivePackage):
         "2.0.0_R4.5.3": [("r", "4.5.3"), ("r-tidyverse", "2.0.0")],
     }
 
-    for key in metalist.keys():
+    for key in metalist:
         version(key)
         for pairing in metalist[key]:
             depends_on(f"{pairing[0]}@{pairing[1]}", when=f"@{key}", type="run")

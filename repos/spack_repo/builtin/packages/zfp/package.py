@@ -160,7 +160,7 @@ class Zfp(CMakePackage, CudaPackage):
 
             if not spec.satisfies("cuda_arch=none"):
                 cuda_arch = spec.variants["cuda_arch"].value
-                args.append("-DCMAKE_CUDA_FLAGS=-arch sm_{0}".format(cuda_arch[0]))
+                args.append(f"-DCMAKE_CUDA_FLAGS=-arch sm_{cuda_arch[0]}")
 
         return args
 

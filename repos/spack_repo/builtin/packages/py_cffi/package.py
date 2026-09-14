@@ -79,4 +79,4 @@ class PyCffi(PythonPackage):
         # spack compiler wrapper plus a few extra flags necessary for
         # building the shared library.
         if not sys.platform == "darwin":
-            env.set("LDSHARED", "{0} -shared -pthread".format(spack_cc))
+            env.set("LDSHARED", f"{spack_cc} -shared -pthread")

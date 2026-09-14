@@ -30,14 +30,14 @@ class Motioncor2(Package):
     depends_on("libtiff", type="run")
 
     def url_for_version(self, version):
-        return "file://{0}/MotionCor2_{1}.zip".format(os.getcwd(), version)
+        return f"file://{os.getcwd()}/MotionCor2_{version}.zip"
 
     def install(self, spec, prefix):
         cuda_version = spec["cuda"].version.up_to(2).joined
 
         mkdirp(prefix.bin)
         install(
-            "MotionCor2_{0}_Cuda{1}_*".format(spec.version, cuda_version),
+            f"MotionCor2_{spec.version}_Cuda{cuda_version}_*",
             join_path(prefix.bin, "MotionCor2"),
         )
 

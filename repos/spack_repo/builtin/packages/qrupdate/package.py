@@ -43,7 +43,6 @@ class Qrupdate(MakefilePackage, SourceforgePackage):
         makefile = FileFilter("Makeconf")
         makefile.filter("FC=gfortran", "FC ?= gfortran")
 
-        return
 
     # The Makefile does not take the simple "make" rule
     def build(self, spec, prefix):

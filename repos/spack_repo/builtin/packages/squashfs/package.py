@@ -78,7 +78,7 @@ class Squashfs(MakefilePackage):
             "LZO_SUPPORT={0}".format(1 if "+lzo" in spec else 0),
             "XZ_SUPPORT={0}".format(1 if "+xz" in spec else 0),
             "ZSTD_SUPPORT={0}".format(1 if "+zstd" in spec else 0),
-            "COMP_DEFAULT={0}".format(default),
+            f"COMP_DEFAULT={default}",
             "EXTRA_LDFLAGS={0}".format("-static" if "+static" in spec else ""),
         ]
 
@@ -89,6 +89,6 @@ class Squashfs(MakefilePackage):
 
     def install(self, spec, prefix):
         options = self.make_options(spec)
-        prefix_arg = "INSTALL_PREFIX={}".format(prefix)
+        prefix_arg = f"INSTALL_PREFIX={prefix}"
         with working_dir("squashfs-tools"):
             make("install", prefix_arg, *options)

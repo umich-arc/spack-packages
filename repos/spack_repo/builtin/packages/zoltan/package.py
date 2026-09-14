@@ -64,11 +64,11 @@ class Zoltan(AutotoolsPackage):
         # because of some complicated generic type problem.
         if spec.satisfies("@:3.6+fortran+mpi"):
             raise RuntimeError(
-                (
-                    "Cannot build Zoltan v{0} with +fortran and "
+
+                    f"Cannot build Zoltan v{self.version} with +fortran and "
                     "+mpi; please disable one of these features "
                     "or upgrade versions."
-                ).format(self.version)
+
             )
         if spec.satisfies("@:3.6"):
             zoltan_path = f"Zoltan_v{self.version}"

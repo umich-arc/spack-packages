@@ -277,10 +277,9 @@ class Strumpack(CMakePackage, CudaPackage):
                 self._test_example(test_exe_mpi, exe, args)
                 return
             except (Exception, ProcessError) as err:
-                tty.info(f"Skipping {exe}: {str(err)}")
+                tty.info(f"Skipping {exe}: {err!s}")
 
         assert False, "No MPI executable was found"
 
     def check(self):
         """Skip the builtin testsuite, use the stand-alone tests instead."""
-        pass

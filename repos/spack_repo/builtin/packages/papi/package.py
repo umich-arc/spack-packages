@@ -237,11 +237,10 @@ class Papi(AutotoolsPackage):
         test_dir = join_path(self.test_suite.current_test_cache_dir, self.test_src_dir)
         if not os.path.exists(test_dir):
             raise SkipTest("Skipping smoke tests, directory doesn't exist")
-        with working_dir(test_dir, create=False):
-            with set_env(PAPIROOT=self.prefix):
-                make = self.spec["gmake"].command
-                make()
-                exe_simple = which("simple", required=True)
-                exe_simple()
-                exe_threads = which("threads", required=True)
-                exe_threads()
+        with working_dir(test_dir, create=False), set_env(PAPIROOT=self.prefix):
+            make = self.spec["gmake"].command
+            make()
+            exe_simple = which("simple", required=True)
+            exe_simple()
+            exe_threads = which("threads", required=True)
+            exe_threads()

@@ -233,7 +233,7 @@ class Silo(autotools.AutotoolsPackage, cmake.CMakePackage):
                         maj_ver = int(spec["hdf5"].version[0])
                         min_ver = int(spec["hdf5"].version[1])
                     min_apiver = int(min_ver / 2) * 2
-                    flags.append("-DH5_USE_{0}{1}_API".format(maj_ver, min_apiver))
+                    flags.append(f"-DH5_USE_{maj_ver}{min_apiver}_API")
 
             if spec.satisfies("%clang") or spec.satisfies("%apple-clang"):
                 flags.append("-Wno-implicit-function-declaration")

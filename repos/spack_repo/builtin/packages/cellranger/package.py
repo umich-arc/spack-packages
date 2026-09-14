@@ -34,7 +34,7 @@ class Cellranger(Package):
     conflicts("target=:x86_64_v2")  # last generic architecture not to support avx
 
     def url_for_version(self, version):
-        return "file://{0}/cellranger-{1}.tar.gz".format(os.getcwd(), version)
+        return f"file://{os.getcwd()}/cellranger-{version}.tar.gz"
 
     def install(self, spec, prefix):
         install_tree(".", prefix)

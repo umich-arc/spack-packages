@@ -71,7 +71,7 @@ class LlvmOpenmp(CMakePackage):
     @property
     def root_cmakelists_dir(self):
         if self.spec.satisfies("@14"):
-            return "openmp-{}.src".format(self.version)
+            return f"openmp-{self.version}.src"
         else:
             return "."
 

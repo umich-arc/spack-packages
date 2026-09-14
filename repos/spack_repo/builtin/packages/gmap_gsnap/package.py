@@ -92,7 +92,7 @@ class GmapGsnap(AutotoolsPackage):
 
         for simd in spec.variants["simd"].value:
             with working_dir(simd, create=True):
-                configure("--with-simd-level={0}".format(simd), "--prefix={0}".format(prefix))
+                configure(f"--with-simd-level={simd}", f"--prefix={prefix}")
 
     def build(self, spec, prefix):
         for simd in spec.variants["simd"].value:

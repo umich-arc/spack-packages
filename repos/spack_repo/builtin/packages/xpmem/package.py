@@ -79,7 +79,7 @@ class Xpmem(AutotoolsPackage):
         # Override the compiler for kernel module source files. We need
         # this additional argument for all installation phases.
         if "+kernel-module" in self.spec:
-            make.add_default_arg("CC={0}".format(spack_cc))
+            make.add_default_arg(f"CC={spack_cc}")
 
     def configure_args(self):
         args = []

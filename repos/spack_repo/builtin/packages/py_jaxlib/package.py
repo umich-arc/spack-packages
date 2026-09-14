@@ -233,19 +233,11 @@ class PyJaxlib(PythonPackage, CudaPackage):
     # backports https://github.com/abseil/abseil-cpp/pull/1732
     patch("jaxxlatsl.patch", when="@0.4.28:0.4.32 target=aarch64:")
 
-    patch(
-        "https://github.com/openxla/xla/commit/d4a61075c1eba08e4f419e7d7572c75685796dfe.patch?full_index=1",
-        sha256="0c953475f54ec1c7f64e4191344c7e1a47bd8d1c00854118a0a0664101904940",
-        when="@0.11.1 +rocm",
-        working_dir="xla",
-    )
-
-    with when("@0.7.1:"):
-        with default_args(msg="Clang is the only acceptable compiler."):
-            requires("%c,cxx=llvm", when="platform=linux")
-            # Order here is important. Place the most common compiler first so that the
-            # concretizer will not try to use v0.7.0 to avoid taking a penalty on requirements
-            requires("%c,cxx=apple-clang", "%c,cxx=llvm", when="platform=darwin")
+    with when("@0.7.1:"), default_args(msg="Clang is the only acceptable compiler."):
+        requires("%c,cxx=llvm", when="platform=linux")
+        # Order here is important. Place the most common compiler first so that the
+        # concretizer will not try to use v0.7.0 to avoid taking a penalty on requirements
+        requires("%c,cxx=apple-clang", "%c,cxx=llvm", when="platform=darwin")
 
     conflicts(
         "cuda_arch=none",

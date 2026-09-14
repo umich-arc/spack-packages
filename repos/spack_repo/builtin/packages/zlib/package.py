@@ -85,7 +85,7 @@ class MakefileBuilder(makefile.MakefileBuilder, SetupEnvironment):
         config_args = []
         if "~shared" in self.spec:
             config_args.append("--static")
-        configure("--prefix={0}".format(prefix), *config_args)
+        configure(f"--prefix={prefix}", *config_args)
 
         if "+shared" in self.spec:
             # We need to fix the building of the shared libraries with compilers that are not
@@ -106,7 +106,7 @@ class MakefileBuilder(makefile.MakefileBuilder, SetupEnvironment):
                     # However, we need the flag for the objects of the shared library:
                     filter_file(
                         r"^(SFLAGS *=.*)$",
-                        r"\1 {0}".format(self.pkg.compiler.cc_pic_flag),
+                        rf"\1 {self.pkg.compiler.cc_pic_flag}",
                         "Makefile",
                     )
                 if self.spec.satisfies("platform=linux"):
@@ -116,10 +116,8 @@ class MakefileBuilder(makefile.MakefileBuilder, SetupEnvironment):
                         # Note that we should use '-Wl,` and not self.pkg.compiler.linker_arg
                         # because the former is understood by virtually every C compiler and the
                         # latter might be meant for the Fortran compiler only (e.g. NAG):
-                        r"\1 {0} -shared "
-                        r"-Wl,-soname,libz.{1}.{2},--version-script,zlib.map".format(
-                            spack_cc, dso_suffix, self.spec.version.up_to(1)
-                        ),
+                        rf"\1 {spack_cc} -shared "
+                        rf"-Wl,-soname,libz.{dso_suffix}.{self.spec.version.up_to(1)},--version-script,zlib.map",
                         "Makefile",
                     )
 

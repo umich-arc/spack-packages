@@ -23,7 +23,7 @@ class Blast2go(Package):
     depends_on("java", type="build")
 
     def url_for_version(self, version):
-        fname = "Blast2GO_unix_{0}.zip".format(version.underscored)
+        fname = f"Blast2GO_unix_{version.underscored}.zip"
         return "http://resources.biobam.com/software/blast2go/nico/%s" % fname
 
     def install(self, spec, prefix):

@@ -46,7 +46,7 @@ class Nss(MakefilePackage):
 
         targets.extend(
             [
-                "CCC={}".format(spack_cxx),
+                f"CCC={spack_cxx}",
                 "USE_64=1",
                 "BUILD_OPT=1",
                 "NSS_USE_SYSTEM_SQLITE=1",
@@ -71,14 +71,14 @@ class Nss(MakefilePackage):
         mkdirp(pkg_path)
 
         with open(join_path(pkg_path, "nss.pc"), "w") as f:
-            f.write("prefix={0}\n".format(self.prefix))
+            f.write(f"prefix={self.prefix}\n")
             f.write("exec_prefix=${prefix}\n")
-            f.write("libdir={0}\n".format(self.prefix.lib))
-            f.write("includedir={0}\n".format(self.prefix.include.nss))
+            f.write(f"libdir={self.prefix.lib}\n")
+            f.write(f"includedir={self.prefix.include.nss}\n")
             f.write("\n")
             f.write("Name: NSS\n")
             f.write("Description: Network Security Services\n")
-            f.write("Version: {0}\n".format(self.spec.version))
+            f.write(f"Version: {self.spec.version}\n")
             f.write("Requires: nspr\n")
             f.write("Cflags: -I${includedir}\n")
             f.write("Libs: -L${libdir} -lssl3 -lsmime3 -lnss3 -lnssutil3\n")

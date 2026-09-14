@@ -108,7 +108,7 @@ class Bcftools(AutotoolsPackage):
     def set_make_options(self):
         options = []
 
-        options.append("prefix={0}".format(self.prefix))
+        options.append(f"prefix={self.prefix}")
         options.append("HTSDIR={0}".format(self.spec["htslib"].prefix))
 
         if self.spec.satisfies("+libgsl"):

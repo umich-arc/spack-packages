@@ -41,12 +41,12 @@ class Rhash(MakefilePackage):
     @when("@:1.3.5")
     def build(self, spec, prefix):
         # Doesn't build shared libraries by default
-        make("PREFIX={0}".format(prefix))
+        make(f"PREFIX={prefix}")
 
         if spec.satisfies("platform=darwin"):
-            make("PREFIX={0}".format(prefix), "-C", "librhash", "dylib")
+            make(f"PREFIX={prefix}", "-C", "librhash", "dylib")
         else:
-            make("PREFIX={0}".format(prefix), "lib-shared")
+            make(f"PREFIX={prefix}", "lib-shared")
 
     @when("@1.3.6:")
     def build(self, spec, prefix):
@@ -78,22 +78,22 @@ class Rhash(MakefilePackage):
     def install(self, spec, prefix):
         # Some things are installed to $(DESTDIR)$(PREFIX) while other things
         # are installed to $DESTDIR/etc.
-        make("install", "DESTDIR={0}".format(prefix), "PREFIX=")
-        make("install-lib-static", "DESTDIR={0}".format(prefix), "PREFIX=")
+        make("install", f"DESTDIR={prefix}", "PREFIX=")
+        make("install-lib-static", f"DESTDIR={prefix}", "PREFIX=")
 
         if spec.satisfies("platform=darwin"):
             install("librhash/*.dylib", prefix.lib)
         else:
-            make("install-lib-shared", "DESTDIR={0}".format(prefix), "PREFIX=")
+            make("install-lib-shared", f"DESTDIR={prefix}", "PREFIX=")
             symlink(join_path(prefix.lib, "librhash.so.0"), join_path(prefix.lib, "librhash.so"))
 
     @when("@1.3.6:")
     def install(self, spec, prefix):
         # Intermittent issues during installation, prefix.bin directory already exists
-        make("install", "DESTDIR={0}".format(prefix), parallel=False)
-        make("install-pkg-config", "DESTDIR={0}".format(prefix))
-        make("install-lib-so-link", "DESTDIR={0}".format(prefix))
-        make("install-lib-headers", "DESTDIR={0}".format(prefix))
+        make("install", f"DESTDIR={prefix}", parallel=False)
+        make("install-pkg-config", f"DESTDIR={prefix}")
+        make("install-lib-so-link", f"DESTDIR={prefix}")
+        make("install-lib-headers", f"DESTDIR={prefix}")
 
     @run_after("install")
     def darwin_fix(self):

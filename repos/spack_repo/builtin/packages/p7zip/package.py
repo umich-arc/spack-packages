@@ -47,13 +47,9 @@ class P7zip(MakefilePackage):
     # Old package is abandoned, newer versions come from a fork
     def url_for_version(self, version):
         if version >= Version("17"):
-            return "https://github.com/p7zip-project/p7zip/archive/refs/tags/v{0}.tar.gz".format(
-                version
-            )
+            return f"https://github.com/p7zip-project/p7zip/archive/refs/tags/v{version}.tar.gz"
         else:
-            return "https://downloads.sourceforge.net/project/p7zip/p7zip/{0}/p7zip_{0}_src_all.tar.bz2".format(
-                version
-            )
+            return f"https://downloads.sourceforge.net/project/p7zip/p7zip/{version}/p7zip_{version}_src_all.tar.bz2"
 
     def edit(self, spec, prefix):
         # Use the suggested makefile
@@ -73,4 +69,4 @@ class P7zip(MakefilePackage):
 
     @property
     def install_targets(self):
-        return ["DEST_HOME={0}".format(self.prefix), "install"]
+        return [f"DEST_HOME={self.prefix}", "install"]

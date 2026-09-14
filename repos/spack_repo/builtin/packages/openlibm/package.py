@@ -33,12 +33,12 @@ class Openlibm(MakefilePackage):
 
     def make(self, spec, prefix):
         args = [
-            "prefix={0}".format(prefix),
+            f"prefix={prefix}",
             "USE_GCC={0}".format("1" if self.compiler.name == "gcc" else "0"),
             "USE_CLANG={0}".format("1" if self.compiler.name == "clang" else "0"),
         ]
         make(*args)
 
     def install(self, spec, prefix):
-        args = ["prefix={0}".format(prefix)]
+        args = [f"prefix={prefix}"]
         make("install", *args)

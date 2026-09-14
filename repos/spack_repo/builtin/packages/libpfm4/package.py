@@ -53,7 +53,7 @@ class Libpfm4(MakefilePackage):
     @property
     def install_targets(self):
         return [
-            "DESTDIR={0}".format(self.prefix),
+            f"DESTDIR={self.prefix}",
             "LIBDIR=/lib",
             "INCDIR=/include",
             "MANDIR=/man",

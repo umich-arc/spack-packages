@@ -65,7 +65,7 @@ class LibflameBase(AutotoolsPackage):
         opt_val = self.spec.variants["threads"].value
         if opt_val == "none":
             opt_val = "no"
-        return ["--enable-multithreading={0}".format(opt_val)]
+        return [f"--enable-multithreading={opt_val}"]
 
     def configure_args(self):
         # Libflame has a secondary dependency on BLAS,

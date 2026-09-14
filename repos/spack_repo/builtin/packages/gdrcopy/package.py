@@ -62,8 +62,8 @@ class Gdrcopy(MakefilePackage, CudaPackage):
         mkdir(prefix.include)
         mkdir(prefix.lib64)
         if spec.satisfies("@2.2:"):
-            make("lib_install", "prefix={0}".format(self.prefix))
-            make("exes_install", "prefix={0}".format(self.prefix))
+            make("lib_install", f"prefix={self.prefix}")
+            make("exes_install", f"prefix={self.prefix}")
         else:
-            make("lib_install", "PREFIX={0}".format(self.prefix))
-            make("exes_install", "PREFIX={0}".format(self.prefix))
+            make("lib_install", f"PREFIX={self.prefix}")
+            make("exes_install", f"PREFIX={self.prefix}")

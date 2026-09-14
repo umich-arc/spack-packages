@@ -113,19 +113,19 @@ class Hipsycl(CMakePackage):
             raise InstallError(
                 "concretized llvm dependency must provide "
                 "a unique directory containing CMake client "
-                "files, found: {0}".format(llvm_cmake_dirs)
+                f"files, found: {llvm_cmake_dirs}"
             )
-        args.append("-DLLVM_DIR:String={0}".format(os.path.dirname(llvm_cmake_dirs[0])))
+        args.append(f"-DLLVM_DIR:String={os.path.dirname(llvm_cmake_dirs[0])}")
         # clang internal headers directory
         llvm_clang_include_dirs = find(spec["llvm"].prefix, "__clang_cuda_runtime_wrapper.h")
         if len(llvm_clang_include_dirs) != 1:
             raise InstallError(
                 "concretized llvm dependency must provide a "
                 "unique directory containing clang internal "
-                "headers, found: {0}".format(llvm_clang_include_dirs)
+                f"headers, found: {llvm_clang_include_dirs}"
             )
         args.append(
-            "-DCLANG_INCLUDE_PATH:String={0}".format(os.path.dirname(llvm_clang_include_dirs[0]))
+            f"-DCLANG_INCLUDE_PATH:String={os.path.dirname(llvm_clang_include_dirs[0])}"
         )
         # target clang++ executable
         llvm_clang_bin = os.path.join(spec["llvm"].prefix.bin, "clang++")
@@ -133,9 +133,9 @@ class Hipsycl(CMakePackage):
             raise InstallError(
                 "concretized llvm dependency must provide a "
                 "valid clang++ executable, found invalid: "
-                "{0}".format(llvm_clang_bin)
+                f"{llvm_clang_bin}"
             )
-        args.append("-DCLANG_EXECUTABLE_PATH:String={0}".format(llvm_clang_bin))
+        args.append(f"-DCLANG_EXECUTABLE_PATH:String={llvm_clang_bin}")
         # explicit CUDA toolkit
         if spec.satisfies("+cuda"):
             args.append("-DCUDA_TOOLKIT_ROOT_DIR:String={0}".format(spec["cuda"].prefix))
@@ -153,7 +153,7 @@ class Hipsycl(CMakePackage):
             if len(config_file_paths) != 1:
                 raise InstallError(
                     "installed hipSYCL must provide a unique compiler driver"
-                    "configuration file ({0}), found: {1}".format(filename, config_file_paths)
+                    f"configuration file ({filename}), found: {config_file_paths}"
                 )
             config_file_path = config_file_paths[0]
             with open(config_file_path) as f:
@@ -190,7 +190,7 @@ class Hipsycl(CMakePackage):
                     raise InstallError(
                         "concretized llvm dependency must provide a "
                         "unique directory containing libc++.so, "
-                        "found: {0}".format(so_paths)
+                        f"found: {so_paths}"
                     )
                 rpaths.add(os.path.dirname(so_paths[0]))
                 so_paths = find_libraries(
@@ -200,13 +200,13 @@ class Hipsycl(CMakePackage):
                     raise InstallError(
                         "concretized llvm dependency must provide a "
                         "unique directory containing libc++abi, "
-                        "found: {0}".format(so_paths)
+                        f"found: {so_paths}"
                     )
                 rpaths.add(os.path.dirname(so_paths[0]))
 
                 def adjust_cuda_config(config):
                     config["default-cuda-link-line"] += " " + " ".join(
-                        "-rpath {0}".format(p) for p in rpaths
+                        f"-rpath {p}" for p in rpaths
                     )
                     return config
 

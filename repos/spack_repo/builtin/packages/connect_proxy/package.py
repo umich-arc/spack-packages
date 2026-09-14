@@ -21,7 +21,7 @@ class ConnectProxy(MakefilePackage):
     depends_on("c", type="build")
 
     def build(self, spec, prefix):
-        make("CC={0}".format(spack_cc))
+        make(f"CC={spack_cc}")
 
     def install(self, spec, prefix):
         mkdir(prefix.bin)

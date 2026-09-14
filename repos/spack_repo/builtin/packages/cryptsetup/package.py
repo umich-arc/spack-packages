@@ -55,7 +55,7 @@ class Cryptsetup(AutotoolsPackage):
 
     def configure_args(self):
         args = [
-            "systemd_tmpfilesdir={0}/tmpfiles.d".format(self.prefix),
+            f"systemd_tmpfilesdir={self.prefix}/tmpfiles.d",
             "--with-crypto_backend=openssl",
         ]
         return args

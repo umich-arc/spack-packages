@@ -68,5 +68,5 @@ class MesonBuilder(meson.MesonBuilder):
         return [
             "-Ddefault_library={0}".format("shared" if "+shared" in self.spec else "static"),
             "-Dopenmp={0}".format(str("+openmp" in self.spec).lower()),
-            "-Dlapack={0}".format(lapack),
+            f"-Dlapack={lapack}",
         ]

@@ -8,8 +8,8 @@ from spack.package import *
 
 
 def fedora_patch(commit, file, **kwargs):
-    prefix = "https://src.fedoraproject.org/rpms/tcsh/raw/{0}/f/".format(commit)
-    patch("{0}{1}".format(prefix, file), **kwargs)
+    prefix = f"https://src.fedoraproject.org/rpms/tcsh/raw/{commit}/f/"
+    patch(f"{prefix}{file}", **kwargs)
 
 
 class Tcsh(AutotoolsPackage):
@@ -124,5 +124,5 @@ class Tcsh(AutotoolsPackage):
 
     @run_after("install")
     def link_csh(self):
-        symlink("tcsh", "{0}/csh".format(self.prefix.bin))
-        symlink("tcsh.1", "{0}/csh.1".format(self.prefix.share.man.man1))
+        symlink("tcsh", f"{self.prefix.bin}/csh")
+        symlink("tcsh.1", f"{self.prefix.share.man.man1}/csh.1")

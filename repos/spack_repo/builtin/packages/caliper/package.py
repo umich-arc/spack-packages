@@ -124,13 +124,7 @@ class Caliper(CachedCMakePackage, CudaPackage):
         hostname = socket.gethostname()
         if "SYS_TYPE" in env:
             hostname = hostname.rstrip("1234567890")
-        return "{0}-{1}-{2}@{3}-{4}.cmake".format(
-            hostname,
-            self._get_sys_type(self.spec),
-            self.spec.compiler.name,
-            self.spec.compiler.version,
-            self.spec.dag_hash(8),
-        )
+        return f"{hostname}-{self._get_sys_type(self.spec)}-{self.spec.compiler.name}@{self.spec.compiler.version}-{self.spec.dag_hash(8)}.cmake"
 
     def initconfig_compiler_entries(self):
         spec = self.spec
@@ -171,7 +165,7 @@ class Caliper(CachedCMakePackage, CudaPackage):
                 filter(gcc_toolchain_regex.match, spec.compiler_flags["cxxflags"])
             )
             if using_toolchain:
-                cuda_flags.append("-Xcompiler {}".format(using_toolchain[0]))
+                cuda_flags.append(f"-Xcompiler {using_toolchain[0]}")
 
             if cuda_flags:
                 entries.append(cmake_cache_string("CMAKE_CUDA_FLAGS", " ".join(cuda_flags)))
@@ -294,7 +288,7 @@ class Caliper(CachedCMakePackage, CudaPackage):
         """build and run cxx-example"""
 
         exe = "cxx-example"
-        source_file = "{0}.cpp".format(exe)
+        source_file = f"{exe}.cpp"
 
         source_path = find_required_file(
             self.test_suite.current_test_cache_dir, source_file, expected=1, recursive=True
@@ -306,8 +300,8 @@ class Caliper(CachedCMakePackage, CudaPackage):
         test_dir = os.path.dirname(source_path)
         with working_dir(test_dir):
             cxx(
-                "-L{0}".format(lib_dir),
-                "-I{0}".format(self.prefix.include),
+                f"-L{lib_dir}",
+                f"-I{self.prefix.include}",
                 source_path,
                 "-o",
                 exe,

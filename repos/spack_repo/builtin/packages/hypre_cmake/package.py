@@ -89,7 +89,7 @@ class HypreCmake(CMakePackage, CudaPackage):
             env.set("CUDA_PATH", self.spec["cuda"].prefix)
             cuda_arch = self.spec.variants["cuda_arch"].value
             if cuda_arch:
-                arch_sorted = list(sorted(cuda_arch, reverse=True))
+                arch_sorted = sorted(cuda_arch, reverse=True)
                 env.set("HYPRE_CUDA_SM", arch_sorted[0])
             # In CUDA builds hypre currently doesn't handle flags correctly
             env.append_flags("CXXFLAGS", "-O2" if self.spec.satisfies("~debug") else "-g")

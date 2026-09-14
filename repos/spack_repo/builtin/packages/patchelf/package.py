@@ -57,20 +57,14 @@ class Patchelf(AutotoolsPackage):
 
     def url_for_version(self, version):
         if version < Version("0.12"):
-            return "https://nixos.org/releases/patchelf/patchelf-{0}/patchelf-{1}.tar.gz".format(
-                version, version
-            )
+            return f"https://nixos.org/releases/patchelf/patchelf-{version}/patchelf-{version}.tar.gz"
 
         # Prefer gz over bz2
         if version >= Version("0.13.1"):
-            return "https://github.com/NixOS/patchelf/releases/download/{0}/patchelf-{1}.tar.gz".format(
-                version, version
-            )
+            return f"https://github.com/NixOS/patchelf/releases/download/{version}/patchelf-{version}.tar.gz"
 
         return (
-            "https://github.com/NixOS/patchelf/releases/download/{0}/patchelf-{1}.tar.bz2".format(
-                version, version
-            )
+            f"https://github.com/NixOS/patchelf/releases/download/{version}/patchelf-{version}.tar.bz2"
         )
 
     def test_version(self):

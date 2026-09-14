@@ -179,7 +179,7 @@ class Slurm(AutotoolsPackage):
 
         sysconfdir = spec.variants["sysconfdir"].value
         if sysconfdir != "PREFIX/etc":
-            args.append("--sysconfdir={0}".format(sysconfdir))
+            args.append(f"--sysconfdir={sysconfdir}")
 
         return args
 

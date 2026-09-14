@@ -529,7 +529,7 @@ class Hdf5(CMakePackage):
 
             match = re.search(r"Default API mapping: (\S+)", output)
             if match and match.group(1) in set(["v200", "v114", "v112", "v110", "v18", "v16"]):
-                variants.append("api={0}".format(match.group(1)))
+                variants.append(f"api={match.group(1)}")
 
             results.append(" ".join(variants))
 

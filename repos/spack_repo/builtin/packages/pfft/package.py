@@ -31,7 +31,7 @@ class Pfft(AutotoolsPackage):
     depends_on("mpi")
 
     def configure(self, spec, prefix):
-        options = ["--prefix={0}".format(prefix)]
+        options = [f"--prefix={prefix}"]
         if not self.compiler.f77 or not self.compiler.fc:
             options.append("--disable-fortran")
 
