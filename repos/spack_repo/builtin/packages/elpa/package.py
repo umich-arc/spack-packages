@@ -157,7 +157,7 @@ class Elpa(AutotoolsPackage, CudaPackage):
 
         incdir = os.path.join(
             self.spec.prefix.include,
-            "elpa{suffix}-{version}".format(suffix=suffix, version=elpa_version),
+            f"elpa{suffix}-{elpa_version}",
         )
 
         hlist = find_all_headers(incdir)
@@ -229,8 +229,8 @@ class Elpa(AutotoolsPackage, CudaPackage):
             # Can't yet be changed to the new option --enable-nvidia-gpu-kernels
             # https://github.com/marekandreas/elpa/issues/55
             options.append(f"--enable-{cuda_flag}")
-            options.append("--with-cuda-path={0}".format(prefix))
-            options.append("--with-cuda-sdk-path={0}".format(prefix))
+            options.append(f"--with-cuda-path={prefix}")
+            options.append(f"--with-cuda-sdk-path={prefix}")
 
             if spec.satisfies("+gpu_streams"):
                 options.append("--enable-gpu-streams=nvidia")
@@ -239,7 +239,7 @@ class Elpa(AutotoolsPackage, CudaPackage):
 
             if cuda_arch != "none":
                 options.append(
-                    "--with-{0}-compute-capability=sm_{1}".format(cuda_flag.upper(), cuda_arch)
+                    f"--with-{cuda_flag.upper()}-compute-capability=sm_{cuda_arch}"
                 )
         else:
             options.append(f"--disable-{cuda_flag}" + kernels)

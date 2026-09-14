@@ -34,4 +34,4 @@ class Jackcess(Package):
     depends_on("commons-logging@1.1.1", when="@1.2.14.3", type="run")
 
     def install(self, spec, prefix):
-        install("jackcess-{0}.jar".format(self.version), prefix)
+        install(f"jackcess-{self.version}.jar", prefix)

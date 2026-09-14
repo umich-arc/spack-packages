@@ -109,7 +109,7 @@ class Arrayfire(CMakePackage, CudaPackage):
 
         if self.spec.satisfies("+cuda"):
             arch_list = [
-                "{}.{}".format(arch[:-1], arch[-1])
+                f"{arch[:-1]}.{arch[-1]}"
                 for arch in self.spec.variants["cuda_arch"].value
             ]
             args.append(self.define("CUDA_architecture_build_targets", arch_list))

@@ -147,6 +147,7 @@ class Archivetar(Package):
         self._configure_make_install(
             join_path(deps, "libcircle-0.3.0"),
             prefix,
+            f"--with-lwgrp={prefix.install}",
         )
         self._configure_make_install(
             join_path(deps, f"lwgrp-{lwgrp_version}"),
@@ -173,22 +174,14 @@ class Archivetar(Package):
 
     def _install_bundled_mpifileutils(self, spec, prefix):
         source_dir = join_path(self.stage.source_path, "mpifileutils")
-
-        args = [
-            source_dir,
-            f"-DCMAKE_INSTALL_PREFIX={prefix.install}",
-            f"-DCMAKE_C_COMPILER={spec['mpi'].mpicc}",
-            f"-DCMAKE_CXX_COMPILER={spec['mpi'].mpicxx}",
-            f"-DWITH_DTCMP_PREFIX={prefix.install}",
-            f"-DWITH_LibCircle_PREFIX={prefix.install}",
-        ]
-
-        if spec.satisfies("@1.1.0:"):
-            args.extend(
-                [
-                    "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
-                    f"-DWITH_LibArchive_PREFIX={prefix.install}",
-                ]
+        with working_dir("spack-build-mpifileutils", create=True):
+            cmake(
+                source_dir,
+                f"-DCMAKE_INSTALL_PREFIX={prefix.install}",
+                "-DCMAKE_C_COMPILER={0}".format(spec["mpi"].mpicc),
+                "-DCMAKE_CXX_COMPILER={0}".format(spec["mpi"].mpicxx),
+                f"-DWITH_DTCMP_PREFIX={prefix.install}",
+                f"-DWITH_LibCircle_PREFIX={prefix.install}",
             )
 
         with working_dir("spack-build-mpifileutils", create=True):

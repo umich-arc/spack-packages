@@ -887,7 +887,7 @@ class Root(CMakePackage):
 
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         env.set("ROOTSYS", self.prefix)
-        env.set("ROOT_VERSION", "v{0}".format(self.version.up_to(1)))
+        env.set("ROOT_VERSION", f"v{self.version.up_to(1)}")
         env.prepend_path("PYTHONPATH", self.prefix.lib.root)
         # the following vars are copied from thisroot.sh; silence a cppyy warning
         env.set("CLING_STANDARD_PCH", "none")
@@ -902,7 +902,7 @@ class Root(CMakePackage):
 
     def setup_dependent_build_environment(self, env: EnvironmentModifications, dependent_spec):
         env.set("ROOTSYS", self.prefix)
-        env.set("ROOT_VERSION", "v{0}".format(self.version.up_to(1)))
+        env.set("ROOT_VERSION", f"v{self.version.up_to(1)}")
         env.prepend_path("PYTHONPATH", self.prefix.lib.root)
         env.prepend_path("PATH", self.prefix.bin)
         env.append_path("CMAKE_MODULE_PATH", self.prefix.cmake)
