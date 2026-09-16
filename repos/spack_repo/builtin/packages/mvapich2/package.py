@@ -49,7 +49,7 @@ class Mvapich2(MpichEnvironmentModifications, AutotoolsPackage):
 
     provides("mpi")
     provides("mpi@:3.1", when="@2.3:")
-    provides("mpi@:3.0", when="@2.1:2.2")
+    provides("mpi@:3.0", when="@2.1:")
 
     variant("wrapperrpath", default=True, description="Enable wrapper rpath")
     variant("debug", default=False, description="Enable debug info and error messages at run-time")
@@ -156,11 +156,11 @@ class Mvapich2(MpichEnvironmentModifications, AutotoolsPackage):
 
     # Fix segmentation fault in `MPIR_Attr_delete_list`:
     # <https://lists.osu.edu/pipermail/mvapich-discuss/2023-January/010695.html>.
-    patch("mpir_attr_delete_list_segfault.patch", when="@2.3.7")
+    #patch("mpir_attr_delete_list_segfault.patch", when="@2.3.7")
 
     conflicts("fabrics=psm2", when="@:2.1")  # psm2 support was added at version 2.2
 
-    patch("fix-torque.patch", when="@2.3.7-1")
+    #patch("fix-torque.patch", when="@2.3.7-1")
 
     filter_compiler_wrappers("mpicc", "mpicxx", "mpif77", "mpif90", "mpifort", relative_root="bin")
 

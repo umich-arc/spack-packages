@@ -25,6 +25,7 @@ spack:
     - boost@1.90.0~mpi
     - geos@3.14.1
     - openmpi@5.0.10
+    - mvapich2
     - openblas@0.3.33
     - netlib-lapack@3.12.1
     - libaec@1.1.4
@@ -32,7 +33,7 @@ spack:
     - hdf5@1.14.6+cxx+fortran+hl+threadsafe~mpi ^libaec@1.1.4
     - hdf5@1.14.6+threadsafe ^libaec@1.1.4
     - netcdf-c+blosc+hdf4+mpi+parallel-netcdf+szip+zstd
-    - netcdf-cxx4 
+    - netcdf-cxx4
     - netcdf-fortran
     - libjpeg-turbo@3.1.3
     - libtiff@4.7.1
@@ -48,14 +49,25 @@ spack:
     - fiji@2026.03.07
     - cuda@13
     - fftw+mpi
+    - fftw+mpi ^mvapich2
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
     - mumps +complex+double+float+metis+parmetis+scotch+mpi
-    - lua-luaposix
-    - lua@5.4.8
-    - aocc@5.2.0 +license-agreed
-    - nvhpc@26.5
-    - intel-oneapi-compilers-classic@2021.13.1
-    - llvm
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi ^mvapich2
+    - ruby
+    - julia cpu_target=znver5
+    - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %gcc@14.3.1 ^ffmpeg/ipusu3b
+    - gromacs+cuda+mpi %gcc@14.3.1
+    - quantum-espresso %gcc@14.3.1 ^fftw/q2kkuso
+    - rclone
+    - jags
+    - nco ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
+    - pgplot
+    - ncview ^libxaw@1.0.15 ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
+    - gh
+    - nvtop
+    - gdal/wj3bifx
+    - maven
+    - amdlibm
     override:
       packages:
         c:
@@ -96,7 +108,22 @@ spack:
           hdf5~threadsafe: 'hdf5/{version}-nonatomic'
           intel-oneapi-compilers-classic: 'intel/{version}'
           miniforge3: 'mamba/{version}'
-          py-mpi4py: 'mpi4py/{version}' 
+          py-mpi4py: 'mpi4py/{version}'
+          intel-oneapi-mpi: 'impi/{version}'
+          gh: 'github-cli/{version}'
+          mumps^mvapich2: 'mumps/{version}-mvapich2'
+          netlib-scalapack^mvapich2: 'netlib-scalapack/{version}-mvapich2'
+          scotch^mvapich2: 'scotch/{version}-mvapich2'
+          parmetis^mvapich2: 'parmetis/{version}-mvapich2'
+        glew:
+          suffixes:
+            '^glx': glx
+        gl2ps:
+          suffixes:
+            '^glx': glx
+        vtk:
+          suffixes:
+            '^glx': glx
         hash_length: 0
         core_compilers:
           - gcc@14.3.1
