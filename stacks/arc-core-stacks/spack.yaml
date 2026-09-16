@@ -29,6 +29,7 @@ spack:
     - boost@1.89.0~mpi
     - geos@3.14.1
     - openmpi@5.0.10
+    - mvapich2
     - openblas@0.3.33
     - netlib-lapack@3.12.1
     - libaec@1.1.4
@@ -54,8 +55,10 @@ spack:
     - fiji@2026.03.07
     - cuda@13
     - fftw+mpi
+    - fftw+mpi ^mvapich2
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
     - mumps +complex+double+float+metis+parmetis+scotch+mpi
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi ^mvapich2
     - ruby
     - julia cpu_target=znver5
     - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %gcc@14.3.1 ^ffmpeg/ipusu3b
@@ -69,6 +72,8 @@ spack:
     - gh
     - nvtop
     - gdal/wj3bifx
+    - maven
+    - amdlibm
     override:
       packages:
         c:
@@ -157,6 +162,10 @@ spack:
           py-mpi4py: 'mpi4py/{version}'
           intel-oneapi-mpi: 'impi/{version}'
           gh: 'github-cli/{version}'
+          mumps^mvapich2: 'mumps/{version}-mvapich2'
+          netlib-scalapack^mvapich2: 'netlib-scalapack/{version}-mvapich2'
+          scotch^mvapich2: 'scotch/{version}-mvapich2'
+          parmetis^mvapich2: 'parmetis/{version}-mvapich2'
         glew:
           suffixes:
             '^glx': glx
