@@ -399,11 +399,38 @@ with '-Wl,-commons,use_dylibs' and without
     depends_on("pbs", when="schedulers=tm")
     depends_on("slurm", when="schedulers=slurm")
 
-    # with when("+rocm"):
+    #with when("+rocm"):
     #    libfabric_requirement = ""
     #    if is_CrayEX() or check_FI_HMEM_ROCR() or slingshot_network():
     #        libfabric_requirement = "fabrics=cxi"
     #    requires("fabrics=ucx ^ucx +rocm", f"^libfabric {libfabric_requirement}", policy="one_of")
+
+    # PMIx is unavailable for @1, and required for @2:
+    # OpenMPI @2: includes a vendored version:
+    #with when("~internal-pmix"):
+    #    depends_on("pmix", when="@3:")
+    #    depends_on("pmix@3.2:", when="@4:")
+    #    depends_on("pmix@4.2.4:", when="@5:")
+
+    #    # pmix@4.2.3 contains a breaking change, compat fixed in openmpi@4.1.6
+    #    # See https://www.mail-archive.com/announce@lists.open-mpi.org//msg00158.html
+    #    depends_on("pmix@:4.2.2", when="@:4.1.5")
+
+    #    # @:4 does not depend on prrte and used orte
+    #    with when("@5"):
+    #        # When an external PMIx is used, also an external PRRTE should be used
+    #        # https://github.com/open-mpi/ompi/issues/13275#issuecomment-2907903468
+    #        depends_on("prrte", type=("build", "link", "run"))
+
+    #        # only prrte knows about schedulers
+    #        # https://github.com/spack/spack-packages/pull/1145#issuecomment-3208378366
+    #        for scheduler in [s for s in SCHEDULERS if s not in ("loadleveler")] + ["none"]:
+    #            depends_on(f"prrte schedulers={scheduler}", when=f"schedulers={scheduler}")
+
+    # Libevent is required when *vendored* PMIx is used
+    #depends_on("libevent@2:", when="~internal-libevent")
+
+    depends_on("openssh", type="run", when="+rsh")
 
     depends_on("cuda", type=("build", "link", "run"), when="@5: +cuda")
     # depends_on("hip", type=("build", "link", "run"), when="@5: +rocm")

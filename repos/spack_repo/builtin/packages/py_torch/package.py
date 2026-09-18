@@ -22,7 +22,7 @@ class PyTorch(PythonPackage, CudaPackage):
     import_modules = ["torch", "torch.autograd", "torch.nn", "torch.utils"]
 
     license("BSD-3-Clause")
-    maintainers("adamjstewart")
+    maintainers("adamjstewart", "renjithravindrankannath")
 
     tags = ["e4s"]
 
