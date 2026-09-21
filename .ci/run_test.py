@@ -1,6 +1,6 @@
 from globus_compute_sdk import Executor, ShellFunction
 
-endpoint_id = "113871fa-ecc5-4b54-af3a-1b5b0e7206bf"
+endpoint_id = "8c7f597d-af89-4af0-b4b5-75619ef793f1"
 
 func = ShellFunction("spack audit packages", return_dict=True)
 with Executor(
