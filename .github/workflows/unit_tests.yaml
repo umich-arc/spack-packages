@@ -20,7 +20,7 @@ jobs:
       with:
         python-version: ${{ '3.12' }}
     - name: Install Python packages
-      run: pip install --upgrade globus-sdk globus-compute-sdk
+      run: pip install --upgrade globus-sdk globus-compute-sdk pytest
     #- uses: ./.github/actions/checkout-spack
     - name: Request run on GL2
       run: python ./.ci/run_test.py
