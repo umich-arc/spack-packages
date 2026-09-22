@@ -25,6 +25,7 @@ jobs:
     - name: Request run on GL2
       run: python ./.ci/run_test.py
       env:
+        COMMIT_SHA: ${{ github.ref }}
         GLOBUS_COMPUTE_CLIENT_ID: "2fb86cff-e99e-4107-8c84-5da383294a4b"
         GLOBUS_COMPUTE_CLIENT_SECRET: ${{ secrets.GLOBUS_CLIENT_SECRET }}
 
