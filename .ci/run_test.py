@@ -14,7 +14,10 @@ def func():
 
 with Executor(
     endpoint_id=endpoint_id,
-    user_endpoint_config={"commit_sha": os.environ["COMMIT_SHA"]},
+    user_endpoint_config={
+        "commit_sha": os.environ["COMMIT_SHA"],
+        "gh_token": os.environ["GH_TOKEN"],
+    },
 ) as ex:
     ex.serializer = ComputeSerializer(strategy_code=PureSourceDill, strategy_data=JSONData)
     fut = ex.submit(func)
