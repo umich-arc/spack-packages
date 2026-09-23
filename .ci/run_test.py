@@ -1,4 +1,5 @@
 import os
+import sys
 
 from globus_compute_sdk import Executor
 from globus_compute_sdk.serialize import ComputeSerializer, JSONData, PureSourceDill
@@ -24,5 +25,5 @@ with Executor(
     fut = ex.submit(func)
     res = fut.result()
 
-print(res)
+sys.exit(res)
 # ADD RESULT PROCESSING LOGIC
