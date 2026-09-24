@@ -8,8 +8,12 @@ endpoint_id = "8c7f597d-af89-4af0-b4b5-75619ef793f1"
 
 
 def func():
+    import os
+
     import pytest
 
+    working_dir = os.environ["WORKDIR"] + "/" + "spack-packages"
+    os.chdir(working_dir)
     return pytest.main(["-v", "--exitfirst"])
 
 
