@@ -414,7 +414,7 @@ class Paraview(CMakePackage, CudaPackage):
     patch("vtk-fine-grained-viskores-targets-pv61.patch", working_dir="VTK", when="@6.0:6.1")
     patch("vtk-consolidate-viskores-wrapping-pv60.patch", working_dir="VTK", when="@6.0")
     patch("vtk-consolidate-viskores-wrapping-pv61.patch", working_dir="VTK", when="@6.1")
-
+    
     generator("ninja", "make", default="ninja")
     # https://gitlab.kitware.com/paraview/paraview/-/issues/21223
     conflicts("generator=ninja", when="%xl")
