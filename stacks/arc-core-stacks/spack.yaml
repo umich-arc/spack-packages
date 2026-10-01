@@ -20,6 +20,7 @@ spack:
     - gcc@14.3.1/o4xno4x
     - python@3.14.7
     - python@3.13.13
+    - python@3.11 
     - python@3.9.24
     - python@3.10.19
     - miniforge3@26.3.2-3+notebook+pytorch pytorch-cuda=13
@@ -57,7 +58,8 @@ spack:
     - fftw+mpi
     - fftw+mpi ^mvapich2
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi
+    - mumps +complex~double+float+metis~parmetis+scotch~mpi ^scotch~mpi
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi # using glibc libm
     - mumps +complex+double+float+metis+parmetis+scotch+mpi ^mvapich2
     - ruby
     - julia cpu_target=znver5
@@ -74,6 +76,12 @@ spack:
     - gdal/wj3bifx
     - maven
     - amdlibm
+    #- mana@1.4.0
+    - mpifileutils@0.12
+    - cmake/g5xxe7a
+    - gmake/3nhmrgc
+    - nasm
+    - yasm
     override:
       packages:
         c:
@@ -107,8 +115,9 @@ spack:
     - llvm/ganxupa ^python@3.10.19 
     - gcc@10.3.0+binutils
     - gcc@12.3.0+binutils
-    - go ^gcc/o4xno4x
+    - go/psk2nbe ^gcc/o4xno4x
     - rust
+    - cairo@1.54.0
     override:
       packages:
         c:
@@ -126,8 +135,9 @@ spack:
   - group: imaging
     specs:
     - freesurfer
-    - vtk/mby2353
-    - vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10 ^harfbuzz@11.4
+    - vtk/mby2353 
+    - vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10 
+    - vtk~mpi ^freetype@2.14.3 ^proj@8.1.0
     - fsl@6.0.5.2+cuda cuda_arch=80 ^openblas@0.3.33
     override:
       packages:
@@ -137,9 +147,6 @@ spack:
           prefer: [gcc@14.3.1]
         fortran:
           prefer: [gcc@14.3.1]
-  - group: paraview
-    specs:
-    - paraview@6.1.1+cuda+mpi+qt+raytracing+hdf5 cuda_arch=80 ^ninja@1.13.2 ^python/c3sfkjb ^meson@1.11.1
   concretizer:
     unify: false
     reuse: true
@@ -162,10 +169,13 @@ spack:
           py-mpi4py: 'mpi4py/{version}'
           intel-oneapi-mpi: 'impi/{version}'
           gh: 'github-cli/{version}'
+          paraview~mpi~cuda: 'paraview/{version}-nompicuda'
+          mumps~mpi: 'mumps/{version}-seq'
           mumps^mvapich2: 'mumps/{version}-mvapich2'
           netlib-scalapack^mvapich2: 'netlib-scalapack/{version}-mvapich2'
           scotch^mvapich2: 'scotch/{version}-mvapich2'
           parmetis^mvapich2: 'parmetis/{version}-mvapich2'
+          ninja: 'ninja/{version}-py{^python.version.up_to_2}'
         glew:
           suffixes:
             '^glx': glx

@@ -1,0 +1,11 @@
+--- a/tomviz/pybind11/CMakeLists.txt
++++ b/tomviz/pybind11/CMakeLists.txt
+@@ -24,6 +24,8 @@
+   ctvlib/ctvlib.cxx
+   ctvlib/eigenConversion.h
+   ctvlib/WrappingCtvlib.cxx)
++target_include_directories(ctvlib PRIVATE
++  "${TOMVIZ_PARAVIEW_INCLUDE_DIR}")
+ target_link_libraries(ctvlib
+   PRIVATE tomvizcore VTK::eigen TBB::tbb)
+ 

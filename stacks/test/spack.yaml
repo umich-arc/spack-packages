@@ -6,9 +6,6 @@ spack:
   config:
     install_tree:
       root: /sw/test/opt
-      padded_length: 128
-  mirrors:
-    buildcache: file:///sw/spack/buildcache
   upstreams:
     arc-compiler-stacks:
       install_tree: /sw/spack/opt/pkgs
@@ -21,7 +18,7 @@ spack:
   ##########################################################################################
   - group: bioinformatics
     specs:
-    - paraview@6.1.1+cuda+mpi+qt+raytracing+hdf5 cuda_arch=80 ^ninja@1.13.2 ^python/c3sfkjb ^meson@1.11.1
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi ldflags="-L/sw/spack/opt/pkgs/amdlibm/5.3-gcc-14.3.1-lk57/lib -Wl,-rpath,/sw/spack/opt/pkgs/amdlibm/5.3-gcc-14.3.1-lk57/lib" ldlibs="-lamdlibm"
     override:
       packages:
         c:

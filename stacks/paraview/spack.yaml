@@ -13,8 +13,17 @@ spack:
   ##########################################################################################
   - group: paraview
     specs:
-    - paraview@6.1.1+cuda+mpi+qt+raytracing+hdf5 cuda_arch=80 ^ninja@1.13.2 ^python/c3sfkjb ^meson@1.11.1
-    - paraview@6.1.1~cuda~mpi+qt+raytracing+hdf5 ^ninja@1.13.2 ^python/c3sfkjb ^meson@1.11.1
+    - ispc/y5ga4wt # needed for ospray as runtime dependency
+    - paraview@6.1.1+cuda+mpi+qt+raytracing+hdf5+python cuda_arch=80 ^ninja@1.13.2 ^python@3.10
+    - paraview@6.1.1~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^python@3.10
+    - paraview@6.1.0+cuda+mpi+qt+raytracing+hdf5+python cuda_arch=80 ^ninja@1.13.2 ^python@3.10
+    - paraview@6.1.0~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^python@3.10
+  - group: paraview-5
+    specs:
+    - paraview@5~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^python@3.10 ^fontconfig/iolzgck
+  - group: tomviz-3
+    specs:
+    - tomviz@3.0.0 ^python@3.10
   concretizer:
     unify: false
     reuse: true
@@ -36,6 +45,7 @@ spack:
           intel-oneapi-mpi: 'impi/{version}'
           gh: 'github-cli/{version}'
           paraview~mpi~cuda: 'paraview/{version}-nompicuda'
+          ninja: 'ninja/{version}-py{^python.version.up_to_2}'
         hash_length: 0
         all:
           suffixes:

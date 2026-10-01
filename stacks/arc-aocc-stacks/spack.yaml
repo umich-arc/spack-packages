@@ -38,6 +38,7 @@ spack:
     - r@4.6.1 %c,cxx=aocc@5.2.0 %fortran=gcc@14.3.1 ^flexiblas/xs4rhnv # gcc flexiblas
     - r@4.5.3 %c,cxx=aocc@5.2.0 %fortran=gcc@14.3.1 ^flexiblas/xs4rhnv # gcc flexiblas
     - mumps +complex+double+float+metis+parmetis+scotch+mpi
+    - mumps +complex+double+float+metis~parmetis+scotch~mpi ^scotch~mpi %c,fortran=aocc@5.2.0
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
     - fftw+mpi %aocc@5.2.0
     - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %aocc@5.2.0 ^ffmpeg/avaqiff
@@ -89,6 +90,7 @@ spack:
           py-mpi4py: 'mpi4py/{version}'
           intel-oneapi-mpi: 'impi/{version}'
           gh: 'github-cli/{version}'
+          mumps~mpi: 'mumps/{version}-seq'
         hash_length: 0
         core_compilers:
           - gcc@14.3.1
