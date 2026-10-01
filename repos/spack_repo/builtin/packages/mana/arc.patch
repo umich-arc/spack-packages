@@ -1,0 +1,116 @@
+diff --git a/mpi-proxy-split/mpi_plugin.cpp b/mpi-proxy-split/mpi_plugin.cpp
+index 2a62576..2a40f3c 100644
+--- a/mpi-proxy-split/mpi_plugin.cpp
++++ b/mpi-proxy-split/mpi_plugin.cpp
+@@ -448,6 +448,18 @@ mana_signal_sa_handler_wrapper(int signum)
+     setFS(uh_fsbase);
+   }
+ 
++  if (signum == SIGSEGV && getenv(MANA_SEGV_DEBUG_LOOP)) {
++    void *frames[32];
++    int count = backtrace(frames, 32);
++    backtrace_symbols_fd(frames, count, 2);
++    int maps = open("/proc/self/maps", O_RDONLY);
++    char buf[4096];
++    ssize_t n;
++    while ((n = read(maps, buf, sizeof(buf))) > 0) write(2, buf, n);
++    close(maps);
++    volatile int paused = 1;
++    while (paused) sleep(1);
++  }
+   userSignalHandlers[signum].sa_handler(signum);
+ 
+   if (fsbase != uh_fsbase) {
+diff --git a/mpi-proxy-split/record-replay.cpp b/mpi-proxy-split/record-replay.cpp
+index 7db4787..8213837 100644
+--- a/mpi-proxy-split/record-replay.cpp
++++ b/mpi-proxy-split/record-replay.cpp
+@@ -306,7 +306,7 @@ restoreTypeCreateStruct(MpiRecord& rec)
+   int count = rec.args(0);
+   int *blocklengths = rec.args(1);
+   MPI_Aint *displs = rec.args(2);
+-  MPI_Datatype *types = (MPI_Datatype*)rec.args(3);
++  MPI_Datatype *types = (MPI_Datatype*)rec.args(3)._data;
+   MPI_Datatype newtype = MPI_DATATYPE_NULL;
+   retval = FNC_CALL(Type_create_struct, rec)(count, blocklengths,
+                                        displs, types, &newtype);
+diff --git a/mpi-proxy-split/record-replay.h b/mpi-proxy-split/record-replay.h
+index f6d8aa5..c239f2d 100644
+--- a/mpi-proxy-split/record-replay.h
++++ b/mpi-proxy-split/record-replay.h
+@@ -437,7 +437,8 @@ namespace dmtcp_mpi
+ 	    {
+               MPI_Datatype newtype = (MPI_Datatype)(int)rec->args(4);
+               int count = rec->args(0);
+-              MPI_Datatype *oldtypes = (MPI_Datatype*)rec->args(3);
++              // CREATE_LOG_BUF owns the copied array, not a pointer to it.
++              MPI_Datatype *oldtypes = (MPI_Datatype*)rec->args(3)._data;
+               datatype_create(newtype);
+               datatype_incRef(count, oldtypes);
+               break;
+diff --git a/mpi-proxy-split/virtual_id.cpp b/mpi-proxy-split/virtual_id.cpp
+index 830fcbb..ff44bc3 100644
+--- a/mpi-proxy-split/virtual_id.cpp
++++ b/mpi-proxy-split/virtual_id.cpp
+@@ -417,14 +417,14 @@ void init_predefined_virt_ids() {
+ 
+ mana_mpi_handle add_virt_id(mana_mpi_handle real_id, void *desc, int kind) {
+   static int next_id = 0;
+-  mana_mpi_handle new_virt_id;
++  mana_mpi_handle new_virt_id = {};
+   do {
+     new_virt_id._handle = kind << MANA_VIRT_ID_KIND_SHIFT;
+     new_virt_id._handle = new_virt_id._handle | next_id;
+     next_id++;
+   } while (is_predefined_id({._handle = new_virt_id._handle}));
+ 
+-  virt_id_entry *entry = (virt_id_entry*)malloc(sizeof(entry));
++  virt_id_entry *entry = (virt_id_entry*)malloc(sizeof(*entry));
+   entry->real_id = real_id;
+   entry->desc = desc;
+   virt_ids[new_virt_id._handle] = entry;
+@@ -432,7 +432,6 @@ mana_mpi_handle add_virt_id(mana_mpi_handle real_id, void *desc, int kind) {
+   return new_virt_id;
+ }
+ 
+-#define DEBUG_VIRTID
+ virt_id_entry* get_virt_id_entry(mana_mpi_handle virt_id) {
+   // virt_id is a 64 bit union: _handle is a int32_t 
+   // FIXME: this assumes a little-endian CPU
+@@ -442,13 +441,10 @@ virt_id_entry* get_virt_id_entry(mana_mpi_handle virt_id) {
+     // If it's not in the virt_id, table, check if it's a predefined
+     // handle (MPI constant).
+     fprintf(stderr, "Invalid MPI handle value: 0x%x\n", virt_id._handle);
+-
+-#ifdef DEBUG_VIRTID
+-    volatile int dummy = 1;
+-    while (dummy);
+-#else
++    // Previously this spun forever (volatile dummy while-loop) under
++    // DEBUG_VIRTID, which surfaced as an unexplained hang instead of a
++    // diagnosable crash. Abort immediately so the caller gets a backtrace.
+     abort();
+-#endif
+   }
+   return it->second;
+ }
+@@ -473,10 +469,11 @@ mana_mpi_handle get_real_id(mana_mpi_handle virt_id) {
+    *
+    * FIXME: This will fail with big-endian CPUs.
+    */
+-  if (virt_id._handle < virt_id._handle64) {
++  // Open MPI predefined handles are full-width pointers. Check them before
++  // the signed 32-bit fallback used by integer-handle MPI implementations.
++  it = upper_to_lower_constants.find(virt_id._handle64);
++  if (it == upper_to_lower_constants.end()) {
+     it = upper_to_lower_constants.find((int64_t)virt_id._handle);
+-  } else {
+-    it = upper_to_lower_constants.find(virt_id._handle64);
+   }
+   
+   if (it != upper_to_lower_constants.end()) {
+@@ -530,4 +527,3 @@ void update_virt_id(mana_mpi_handle virt_id, mana_mpi_handle real_id) {
+   virt_id_entry *entry = it->second;
+   entry->real_id = real_id;
+ }
+-
