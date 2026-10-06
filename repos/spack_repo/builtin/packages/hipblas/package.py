@@ -124,7 +124,8 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage):
     #    "7.2.3",
     #    "7.13.0",
     #    "7.14.0",
-    # ]:
+    #    "10.0.0",
+    #]:
     #    depends_on(f"rocm-cmake@{ver}", when=f"+rocm @{ver}")
     #    depends_on(f"rocsolver@{ver}", when=f"+rocm @{ver}")
     #    depends_on(f"rocblas@{ver}", when=f"+rocm @{ver}")

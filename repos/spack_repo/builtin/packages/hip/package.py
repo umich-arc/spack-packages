@@ -133,6 +133,7 @@ class Hip(ROCmLibrary, CMakePackage):
     #        "7.2.3",
     #        "7.13.0",
     #        "7.14.0",
+    #        "10.0.0",
     #    ]:
     #        depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
     #        depends_on(f"comgr@{ver}", when=f"@{ver}")

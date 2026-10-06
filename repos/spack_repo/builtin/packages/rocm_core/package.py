@@ -89,7 +89,8 @@ class RocmCore(ROCmLibrary, CMakePackage):
     #    "7.2.3",
     #    "7.13.0",
     #    "7.14.0",
-    # ]:
+    #    "10.0.0",
+    #]:
     #    depends_on("llvm-amdgpu", when=f"@{ver}+asan")
 
     @classmethod
