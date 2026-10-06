@@ -46,8 +46,9 @@ class PyJaxlib(PythonPackage, CudaPackage):
     url = "https://github.com/jax-ml/jax/archive/refs/tags/jax-v0.4.34.tar.gz"
 
     license("Apache-2.0")
-    maintainers("adamjstewart", "jonas-eschle")
+    maintainers("adamjstewart", "jonas-eschle", "afzpatel")
 
+    version("0.11.2", sha256="12dd77d86ec5a316be6038c9a597a1479bce13c828722a249b022e774b2eff75")
     version("0.11.1", sha256="ef9826243bcb8eae6d39ac71580bb39154fbeca51b40c2371aab5db1a797dfb4")
     version("0.11.0", sha256="007ef373573ff2fb8a5485679b791581fda328754fd7ae491de3bcdb0fc70d07")
     version("0.10.2", sha256="fa7214ab31ed1cd418b4305807e9c4f3f175c783eeea40c28e0f77c3f4c24bc7")
@@ -105,6 +106,7 @@ class PyJaxlib(PythonPackage, CudaPackage):
         depends_on("cuda@12.1:", when="@0.4.26:")
         depends_on("cuda@11.8:", when="@0.4.11:")
         depends_on("cuda@11.4:", when="@0.4.0:0.4.7")
+        depends_on("cudnn@9.10.2:9", when="@0.11.2:")
         depends_on("cudnn@9.8:9", when="@0.7.1:")
         depends_on("cudnn@9.1:9", when="@0.4.31:0.7.0")
         depends_on("cudnn@9", when="@0.4.29:0.4.30")
@@ -136,7 +138,8 @@ class PyJaxlib(PythonPackage, CudaPackage):
 
         # Bazel tends to be backwards-compatible within major versions
         # .bazelversion
-        depends_on("bazel@7.7.1:7", when="@0.11.1:")
+        depends_on("bazel@8.7.0:8", when="@0.11.2:")
+        depends_on("bazel@7.7.1:7", when="@0.11.1")
         depends_on("bazel@7.7.0:7", when="@0.8.1:0.11.0")
         depends_on("bazel@7.4.1:7", when="@0.5.3:0.8.0")
         depends_on("bazel@6.5.0:6", when="@0.4.28:0.5.2")
@@ -286,6 +289,13 @@ class PyJaxlib(PythonPackage, CudaPackage):
         #    for pkg_dep in rocm_dependencies:
         #        env.prepend_path("TF_ROCM_MULTIPLE_PATHS", spec[pkg_dep].prefix)
         #        env.prune_duplicate_paths("TF_ROCM_MULTIPLE_PATHS")
+
+        # if spec.satisfies("@0.11:"):
+        # # xla is not compatible with multiple ROCm paths if a singular ROCM_PATH is set
+        # # The HIPCC flags also pass --rocm-path so unset them as well
+        # env.unset("HIPCC_COMPILE_FLAGS_APPEND")
+        # env.unset("HIPCC_LINK_FLAGS_APPEND")
+        # env.unset("ROCM_PATH")
 
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         if "+cuda" in self.spec:

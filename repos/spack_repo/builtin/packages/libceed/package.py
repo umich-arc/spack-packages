@@ -47,6 +47,7 @@ class Libceed(MakefilePackage, CudaPackage):
     depends_on("c", type="build")  # generated
     depends_on("cxx", type="build")  # generated
     depends_on("fortran", type="build")  # generated
+    depends_on("pkgconf", type="build")
 
     # with when("+rocm"):
     #    depends_on("hip@3.8.0:", when="@0.8:")

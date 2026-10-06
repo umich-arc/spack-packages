@@ -40,7 +40,7 @@ class PyTensorflow(Package, CudaPackage, PythonExtension):
     import_modules = ["tensorflow"]
 
     license("Apache-2.0")
-    maintainers("adamjstewart", "aweits")
+    maintainers("adamjstewart", "aweits", "afzpatel")
     tags = ["e4s"]
 
     # version(
@@ -441,6 +441,10 @@ class PyTensorflow(Package, CudaPackage, PythonExtension):
     conflicts("%clang@:15", when="@2.18:")
     # https://github.com/tensorflow/tensorflow/issues/62416
     conflicts("%clang@17:", when="@:2.14")
+
+    # https://github.com/bazelbuild/bazel/issues/31381
+    # https://github.com/llvm/llvm-project/pull/223362
+    patch("llvm-mirror.patch", when="@2.21.0")
 
     # https://github.com/tensorflow/tensorflow/issues/103590
     patch(
