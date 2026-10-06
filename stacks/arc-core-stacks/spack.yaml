@@ -82,6 +82,7 @@ spack:
     - gmake/3nhmrgc
     - nasm
     - yasm
+    - pbzip2
     override:
       packages:
         c:
@@ -161,6 +162,8 @@ spack:
       lmod:
         projections:
           r: 'R/{version}'
+          'libmng ^libtiff@4.0.10': 'libmng/{version}-tiff4.0.10'
+          'lcms ^libtiff@4.0.10': 'lcms/{version}-tiff4.0.10'
           hdf5~threadsafe+mpi: 'phdf5/{version}-nonatomic'
           hdf5+threadsafe+mpi: 'phdf5/{version}'
           hdf5~threadsafe~mpi: 'hdf5/{version}-nonatomic'
