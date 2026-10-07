@@ -72,6 +72,15 @@ spack:
     - gh
     - nvtop
     - gdal/wj3bifx
+    - maven
+    - amdlibm
+    #- mana@1.4.0
+    - mpifileutils@0.12
+    - cmake/g5xxe7a
+    - gmake/3nhmrgc
+    - nasm
+    - yasm
+    - pbzip2 ^bzip2/4cpvt2c #os external
     override:
       packages:
         c:
