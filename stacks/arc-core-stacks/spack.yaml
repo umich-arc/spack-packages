@@ -82,7 +82,7 @@ spack:
     - gmake/3nhmrgc
     - nasm
     - yasm
-    - pbzip2
+    - pbzip2 ^bzip2/4cpvt2c #os external
     override:
       packages:
         c:

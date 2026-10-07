@@ -83,4 +83,8 @@ class QtTools(QtPackage):
             self.define_qt_feature_from_variant("designer"),
             self.define_qt_feature_from_variant("zstd", "designer"),
             self.define_qt_feature_from_variant("linguist"),
+            self.define(
+                "CMAKE_DISABLE_FIND_PACKAGE_WrapLibClang",
+                "~qdoc" in self.spec,
+            ),
         ]

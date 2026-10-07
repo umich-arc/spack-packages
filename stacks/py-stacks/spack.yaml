@@ -75,6 +75,7 @@ spack:
         - autoconf
         - compiler-wrapper
         - util-macros
-        - poppler-data
+        - poppler-data        
+        - python-venv
         gcc-runtime:
           template: gcc-runtime.lua

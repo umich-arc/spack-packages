@@ -49,6 +49,18 @@ spack:
         hash_length: 0
         all:
           suffixes:
+            # Keep distinct builds from overwriting modules owned by earlier stacks.
+            '/iolzgckz5jjr7hfuvjwou6hnceghj3ko': paraview # fontconfig@2.15.0
+            #'/tyxecpqhlzighn7cmzmwxxky5iwngbgv': paraview # glew@2.3.1
+            '/x3l5a2mhruryicz56thlvl4dggxdzubj': paraview # glib-bootstrap@2.88.2
+            '/mpfvhwtibzlygmvtvcbeo5s5aylc7nyk': paraview # glib@2.88.2
+            '/2wxc7xoffmxwcikmeyebvgn3qmwdq5kq': paraview # gobject-introspection@1.86.0
+            '/u54qqq7n6s25vktylwcuvkpcfcke23ck': paraview # harfbuzz@11.5.1
+            '/h4hvbmz5slbfaol3fdh75644pk2ttpsm': paraview # perl@5.40.2
+            '/b6vzyzk52s6mt3jxdw3sd6mwvuhdbu75': paraview # py-mpi4py@4.1.1
+            '/c6lhkrhz3lqnhnrzpx77oaf732wm72o6': paraview # py-packaging@26.2
+            '/mheerxd6ko4xsiexdebeqszicxpqrqfh': paraview # py-pillow@12.3.0
+            '/hda7fmlh52z7dfuper7c4gipaei6fhnr': paraview # py-pygments@2.20.0
             'binutils target=x86_64': x86_64
             'gmp target=x86_64': x86_64
             'mpc target=x86_64': x86_64
