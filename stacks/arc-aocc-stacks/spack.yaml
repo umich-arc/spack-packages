@@ -44,6 +44,7 @@ spack:
     - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %aocc@5.2.0 ^ffmpeg/avaqiff
     #- gromacs+cuda+mpi %aocc@5.2.0
     - quantum-espresso %aocc@5.2.0 ^fftw/o2447w4
+    - paraview@6.1.1 ^perl/uap4 ^hwloc/s6nl ^openmpi/oupaoka ^boost/se5l5sw
     override:
       packages:
         c:
@@ -102,6 +103,8 @@ spack:
             - mpi
         archivetar:
           autoload: none
+        'llvm %aocc':
+          template: llvm-stacked.lua
         core_specs:
         - gcc@14.3.1
         - gcc-runtime@14.3.1
