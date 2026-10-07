@@ -83,6 +83,7 @@ spack:
     - nasm
     - yasm
     - pbzip2 ^bzip2/4cpvt2c #os external
+    - llama-cpp@0.6.0 ^curl/zhvfjjx
     override:
       packages:
         c:

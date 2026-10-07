@@ -5,6 +5,7 @@ import os
 import shlex
 import subprocess
 import sys
+import tempfile
 
 parser = argparse.ArgumentParser()
 parser.add_argument("environment")
@@ -53,8 +54,9 @@ for h in json.load(sys.stdin):
     if not spack.repo.PATH.exists(spec.name):
         continue
     writer = spack.modules.module_types['lmod'](spec, 'default')
-    if not writer.conf.excluded:
-        paths[h] = writer.layout.filename
+    paths[h] = None if writer.conf.excluded else {
+        'path': writer.layout.filename, 'use_name': writer.layout.use_name
+    }
 print(json.dumps(paths))
 """
     result = subprocess.run(
@@ -70,10 +72,13 @@ print(json.dumps(paths))
 downstream = hashes(args.environment)
 inherited = set()
 parent_paths = {}
+dependency_owners = {}
 for parent in args.parents:
     parent_hashes = hashes(parent)
-    for h, path in module_paths(parent, parent_hashes - inherited).items():
-        parent_paths.setdefault(path, h)
+    for h, module in module_paths(parent, parent_hashes - inherited).items():
+        dependency_owners[h] = None if module is None else module['use_name']
+        if module is not None:
+            parent_paths.setdefault(module['path'], h)
     inherited.update(parent_hashes)
 
 owned = sorted(downstream - inherited)
@@ -89,7 +94,10 @@ if not owned:
 # Check all candidates together, before batching, so no partial refresh occurs.
 claimed_paths = dict(parent_paths)
 collisions = []
-for h, path in module_paths(args.environment, owned).items():
+for h, module in module_paths(args.environment, owned).items():
+    if module is None:
+        continue
+    path = module['path']
     previous = claimed_paths.setdefault(path, h)
     if previous != h:
         collisions.append(f"{path}\n  /{previous}\n  /{h}")
@@ -99,19 +107,18 @@ if collisions:
           + "\nAdd distinct projections or suffixes for these builds.", file=sys.stderr)
     raise SystemExit(1)
 
-# Batch requests to stay below command-line size limits.
-for start in range(0, len(owned), 100):
-    command = [
-        spack,
-        "-e",
-        args.environment,
-        "module",
-        "lmod",
-        "refresh",
-        "-y",
-        *("/" + h for h in owned[start : start + 100]),
-    ]
-    if args.apply:
-        subprocess.run(command, check=True)
-    else:
-        print(shlex.join(command))
+# Pass the parent names to each refresh without changing the child's layout.
+with tempfile.NamedTemporaryFile(mode="w", suffix=".json") as ownership:
+    json.dump(dependency_owners, ownership)
+    ownership.flush()
+    refresh_env = dict(os.environ, SPACK_LMOD_DEPENDENCY_OWNERS=ownership.name)
+    # Batch requests to stay below command-line size limits.
+    for start in range(0, len(owned), 100):
+        command = [
+            spack, "-e", args.environment, "module", "lmod", "refresh", "-y",
+            *("/" + h for h in owned[start : start + 100]),
+        ]
+        if args.apply:
+            subprocess.run(command, check=True, env=refresh_env)
+        else:
+            print(shlex.join(command))
