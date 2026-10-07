@@ -6,8 +6,8 @@ spack:
   config:
       install_tree:
         root: /sw/spack/opt/pkgs
-  mirrors:
-    buildcache: file:///sw/spack/buildcache
+  #mirrors:
+  #  buildcache: file:///sw/spack/buildcache
   view: false
   specs:
   ##########################################################################################
@@ -64,13 +64,23 @@ spack:
     - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %gcc@14.3.1 ^ffmpeg/ipusu3b
     - gromacs+cuda+mpi %gcc@14.3.1
     - quantum-espresso %gcc@14.3.1 ^fftw/q2kkuso
-    - rclone 
+    - rclone
     - jags
     - nco ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
     - pgplot
     - ncview ^libxaw@1.0.15 ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
     - gh
     - nvtop
+    - gdal/wj3bifx
+    - maven
+    - amdlibm
+    #- mana@1.4.0
+    - mpifileutils@0.12
+    - cmake/g5xxe7a
+    - gmake/3nhmrgc
+    - nasm
+    - yasm
+    - pbzip2 ^bzip2/4cpvt2c #os external
     override:
       packages:
         c:
@@ -101,7 +111,7 @@ spack:
     - intel-oneapi-mpi@2021.18.0
     - aocc@5.2.0 +license-agreed
     - nvhpc@26.5
-    - llvm ^python@3.10.19
+    - llvm/ganxupa ^python@3.10.19
     - gcc@10.3.0+binutils
     - gcc@12.3.0+binutils
     - go ^gcc/o4xno4x
@@ -151,8 +161,6 @@ spack:
       lmod:
         projections:
           r: 'R/{version}'
-          'libmng ^libtiff@4.0.10': 'libmng/{version}-tiff4.0.10'
-          'lcms ^libtiff@4.0.10': 'lcms/{version}-tiff4.0.10'
           hdf5~threadsafe+mpi: 'phdf5/{version}-nonatomic'
           hdf5+threadsafe+mpi: 'phdf5/{version}'
           hdf5~threadsafe~mpi: 'hdf5/{version}-nonatomic'
