@@ -55,6 +55,7 @@ spack:
     - py-mpi4py ^python@3.13.13 ^openmpi@5.0.10
     - fiji@2026.03.07
     - cuda@13
+    - fftw~mpi
     - fftw+mpi
     - fftw+mpi ^mvapich2
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
