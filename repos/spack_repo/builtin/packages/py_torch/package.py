@@ -106,8 +106,8 @@ class PyTorch(PythonPackage, CudaPackage):
     # conflicts("+rocm", when="@2.12", msg="Rocm doesn't support py-torch 2.12 release")
     # conflicts("+rocm", when="@2.13", msg="Rocm doesn't support py-torch 2.13 release")
     # conflicts("+tensorpipe", when="+rocm ^hip@:5.1", msg="TensorPipe not supported until ROCm 5.2")
-    conflicts("+breakpad", when="target=ppc64:")
-    conflicts("+breakpad", when="target=ppc64le:")
+    #conflicts("+breakpad", when="target=ppc64:")
+    #conflicts("+breakpad", when="target=ppc64le:")
 
     # https://github.com/pytorch/pytorch/issues/77811
     conflicts("+qnnpack", when="platform=darwin target=aarch64:")
@@ -290,6 +290,85 @@ class PyTorch(PythonPackage, CudaPackage):
     # https://github.com/pytorch/pytorch/issues/151592
     patch("macos_rpath.patch", when="@:2.12")
 
+    # https://github.com/pytorch/pytorch/issues/151316
+    patch(
+        "https://github.com/pytorch/pytorch/commit/331423e5c24170b218e743b3392acbad4480340d.patch?full_index=1",
+        sha256="493cde279804346e13cf21862fddc48040a4d7da65d4e5d3de5f717a15e0aa62",
+        when="@2.7.0",
+    )
+    patch("apple_clang_17.patch", when="@1.12:2.6")
+
+    # https://github.com/pytorch/pytorch/issues/146239
+    patch(
+        "https://github.com/pytorch/pytorch/commit/93da9952a77f59cb29a2d599362ba9c7ba22eaec.patch?full_index=1",
+        sha256="e5a030aae1603a9b57f9e9995902544da7087502fe60261698780f0cb8e5fb7b",
+        when="@2.6:2.8",
+    )
+
+    # Fixes 'FindBLAS.cmake' error: unknown command check_function_exists
+    patch(
+        "https://github.com/pytorch/pytorch/commit/8d91bfd9654589c41b3bbb589bcb0bf95443c53e.patch?full_index=1",
+        sha256="2c9e0c8986c388f38288dacfb3208b457b2eec340963b8c8c8779e9f487adc07",
+        when="@:2.6",
+    )
+
+    # https://github.com/pytorch/pytorch/issues/90448
+    patch(
+        "https://github.com/pytorch/pytorch/commit/9a18968253e28ba8d8bdf646731087000c7876b7.patch?full_index=1",
+        sha256="b4f299f6751e03fcf5d9a318541156edbc49c00e8a9c78785031e438e38f5533",
+        when="@1.10:2.0",
+    )
+
+    # Fix BLAS being overridden by MKL
+    # https://github.com/pytorch/pytorch/issues/60328
+    patch(
+        "59220.patch",
+        sha256="6d5717267f901e8ee493dfacd08734d9bcc48ad29a76ca9ef702368e96bee675",
+        when="@:1.11",
+    )
+
+    # Fixes build on older systems with glibc <2.12
+    patch(
+        "https://github.com/pytorch/pytorch/commit/13c975684a220ec096216ec6468ccd0dc90ff50a.patch?full_index=1",
+        sha256="a999e9376a69bbb8620ab358b485d1529c8e1c23a09ca34c5d287f6b77d2f5d9",
+        when="@:1.8.1",
+    )
+
+    # https://github.com/pytorch/pytorch/issues/70297
+    #patch(
+    #    "https://github.com/google/breakpad/commit/605c51ed96ad44b34c457bbca320e74e194c317e.patch?full_index=1",
+    #    sha256="694d83db3a2147d543357f22ba5c8d5683d0ed43e693d42bca8f24ec50080f98",
+    #    when="+breakpad",
+    #    working_dir="third_party/breakpad",
+    #)
+
+    # Fixes CMake configuration error when XNNPACK is disabled
+    # https://github.com/pytorch/pytorch/issues/141083
+    # https://github.com/google/XNNPACK/commit/5f23827e66cca435fa400b6e221892ac95af0079
+    patch("xnnpack2.patch", when="@2.6", working_dir="third_party/XNNPACK")
+
+    # PR 152569 is to set ROCM_INCLUDE_DIRS the include path
+    # of required rocm packages in LoadHIP.cmake.
+    # https://github.com/pytorch/pytorch/pull/152569
+    # patch("PR152569-Update-spack-includes-2.5.patch", when="@2.5+rocm")
+    # patch("PR152569-Update-spack-includes-2.6.patch", when="@2.6+rocm")
+    # patch("PR152569-Update-spack-includes-2.7.patch", when="@2.7+rocm")
+
+    # https://github.com/pytorch/pytorch/pull/147993
+    # prevents pytorch from potentially using system version of config.h
+    # and instead prioritize the CK submodule's version
+    # patch(
+    #    "https://github.com/pytorch/pytorch/commit/38e81a53324146d445a81eb8f80bccebe623eb35.patch?full_index=1",
+    #    sha256="ef05dfff1502963b87679295c07d5f2bd452879708f7124274cc549ed67cd587",
+    #    when="@2.6:2.7+rocm",
+    # )
+
+    # Fixes build failure from py-torch version 1.5 to 2.2 with rocm
+    # patch(
+    #    "https://github.com/ROCm/pytorch/commit/bac5378c734e74b5d58b8e82f9dbaa1454cfa5bd.patch?full_index=1",
+    #    sha256="f0a64e6347e67ec84286994f1ac5e77dba7fa6992c5f083e70a4e2765a86c0c6",
+    #    when="@1.5:2.2 +rocm",
+    # )
     # to detect openmp settings used by Fujitsu compiler.
     patch("detect_omp_of_fujitsu_compiler.patch", when="%fj")
 
