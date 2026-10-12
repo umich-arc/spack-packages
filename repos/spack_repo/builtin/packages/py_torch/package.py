@@ -106,8 +106,8 @@ class PyTorch(PythonPackage, CudaPackage):
     # conflicts("+rocm", when="@2.12", msg="Rocm doesn't support py-torch 2.12 release")
     # conflicts("+rocm", when="@2.13", msg="Rocm doesn't support py-torch 2.13 release")
     # conflicts("+tensorpipe", when="+rocm ^hip@:5.1", msg="TensorPipe not supported until ROCm 5.2")
-    conflicts("+breakpad", when="target=ppc64:")
-    conflicts("+breakpad", when="target=ppc64le:")
+    #conflicts("+breakpad", when="target=ppc64:")
+    #conflicts("+breakpad", when="target=ppc64le:")
 
     # https://github.com/pytorch/pytorch/issues/77811
     conflicts("+qnnpack", when="platform=darwin target=aarch64:")
@@ -335,12 +335,12 @@ class PyTorch(PythonPackage, CudaPackage):
     )
 
     # https://github.com/pytorch/pytorch/issues/70297
-    patch(
-        "https://github.com/google/breakpad/commit/605c51ed96ad44b34c457bbca320e74e194c317e.patch?full_index=1",
-        sha256="694d83db3a2147d543357f22ba5c8d5683d0ed43e693d42bca8f24ec50080f98",
-        when="+breakpad",
-        working_dir="third_party/breakpad",
-    )
+    #patch(
+    #    "https://github.com/google/breakpad/commit/605c51ed96ad44b34c457bbca320e74e194c317e.patch?full_index=1",
+    #    sha256="694d83db3a2147d543357f22ba5c8d5683d0ed43e693d42bca8f24ec50080f98",
+    #    when="+breakpad",
+    #    working_dir="third_party/breakpad",
+    #)
 
     # Fixes CMake configuration error when XNNPACK is disabled
     # https://github.com/pytorch/pytorch/issues/141083
