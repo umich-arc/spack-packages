@@ -332,6 +332,8 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage):
     depends_on("blas")
     depends_on("lapack")
 
+    depends_on("libwignernj", when="@2027:")
+
     depends_on("libxs@1:+fortran", when="smm=libxs")
     depends_on("libxsmm@2:", when="+libxsmm")
 
