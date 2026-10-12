@@ -5,7 +5,7 @@
 set -uo pipefail
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-environments=(arc-core-stacks arc-aocc-stacks r-stacks bioinformatics paraview py-stacks)
+environments=(arc-core-stacks arc-aocc-stacks r-stacks bioinformatics paraview py-stacks arc-gcc10-stacks arc-gcc12-stacks)
 if (($# > 1)); then
     printf 'Usage: %s [environment]\n' "$0" >&2
     exit 2

@@ -61,6 +61,8 @@ class Octave(AutotoolsPackage, GNUMirrorPackage):
     # patches
     # see https://savannah.gnu.org/bugs/?50234
     patch("patch_4.2.1_inline.diff", when="@4.2.1")
+    # The release configure script runs its C++ openpty probe with the C compiler.
+    patch("openpty-configure.patch", when="@11.1.0", sha256="0700f35ae202c3b7c86683767a8108fae94b3e4ac9fca83765ff28563270578a")
 
     # Variants
     variant("readline", default=True, description="Use readline")
