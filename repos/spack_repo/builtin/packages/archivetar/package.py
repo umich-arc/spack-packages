@@ -13,9 +13,19 @@ class Archivetar(Package):
 
     license("MIT")
 
-    version("0.18.2", tag="v0.18.2", commit="13af5a1591c36548c00ff6519e8b9f2f73da8a23")
-    version("0.17.2", tag="v0.17.2", commit="9d08f622dac18f59a04d3684fd8d134d12475eb2")
+    version("1.1.0", tag="v1.1.0")
+    version(
+        "0.18.2",
+        tag="v0.18.2",
+        commit="13af5a1591c36548c00ff6519e8b9f2f73da8a23",
+    )
+    version(
+        "0.17.2",
+        tag="v0.17.2",
+        commit="9d08f622dac18f59a04d3684fd8d134d12475eb2",
+    )
 
+    # Common resource for all versions.
     resource(
         name="libcircle",
         url="https://github.com/hpc/libcircle/releases/download/v0.3/libcircle-0.3.0.tar.gz",
@@ -23,12 +33,15 @@ class Archivetar(Package):
         destination="deps",
         placement="libcircle-0.3.0",
     )
+
+    # Original bundled stack for older versions.
     resource(
         name="lwgrp",
         url="https://github.com/llnl/lwgrp/releases/download/v1.0.2/lwgrp-1.0.2.tar.gz",
         sha256="c9d4233946e40f01efd0b4644fd9224becec51b9b5f8cbf45f5bac3129b5b536",
         destination="deps",
         placement="lwgrp-1.0.2",
+        when="@:1.0",
     )
     resource(
         name="dtcmp",
@@ -36,11 +49,49 @@ class Archivetar(Package):
         sha256="fd2c4485eee560a029f62c8f227df4acdb1edc9340907f4ae2dbee59f05f057d",
         destination="deps",
         placement="dtcmp-1.1.0",
+        when="@:1.0",
     )
     resource(
         name="mpifileutils",
         git="https://github.com/brockpalen/mpifileutils.git",
         branch="master",
+        destination=".",
+        placement="mpifileutils",
+        when="@:1.0",
+    )
+
+    # Updated bundled stack for 1.1.0 and later.
+    resource(
+        name="lwgrp",
+        url="https://github.com/llnl/lwgrp/releases/download/v1.0.6/lwgrp-1.0.6.tar.gz",
+        sha256="9f697978361b4bd9914beaaafffcee0b62a480a9a7dd3d75176910cebda81438",
+        destination="deps",
+        placement="lwgrp-1.0.6",
+        when="@1.1.0:",
+    )
+    resource(
+        name="dtcmp",
+        url="https://github.com/llnl/dtcmp/releases/download/v1.1.5/dtcmp-1.1.5.tar.gz",
+        sha256="959c28999b8d1dd2e8703172db55392e38114fde0cd54dfad04555622c5e5974",
+        destination="deps",
+        placement="dtcmp-1.1.5",
+        when="@1.1.0:",
+    )
+    resource(
+        name="libarchive",
+        url="https://github.com/libarchive/libarchive/releases/download/v3.7.7/libarchive-3.7.7.tar.gz",
+        sha256="4cc540a3e9a1eebdefa1045d2e4184831100667e6d7d5b315bb1cbc951f8ddff",
+        destination="deps",
+        placement="libarchive-3.7.7",
+        when="@1.1.0:",
+    )
+    resource(
+        name="mpifileutils",
+        git="https://github.com/brockpalen/mpifileutils.git",
+        tag="v0.12.1-brockp",
+        destination=".",
+        placement="mpifileutils",
+        when="@1.1.0:",
     )
 
     depends_on("c", type="build")
@@ -50,13 +101,7 @@ class Archivetar(Package):
     depends_on("gmake", type="build")
     depends_on("pkgconfig", type="build")
     depends_on("python+arc", type=("build", "run"))
-
-    # mpiFileUtils still finds these through CMake; keeping them as ordinary
-    # dependencies makes the bundled build less dependent on host OS headers.
-    # depends_on("bzip2")
-    # depends_on("libarchive")
-    # depends_on("libcap", when="platform=linux")
-    # depends_on("openssl")
+    depends_on("libxml2", when="@1.1.0:", type=("build", "link"))
 
     app_source_entries = (
         "GlobusTransfer",
@@ -94,13 +139,30 @@ class Archivetar(Package):
 
     def _install_bundled_autotools(self, prefix):
         deps = join_path(self.stage.source_path, "deps")
-        self._configure_make_install(join_path(deps, "libcircle-0.3.0"), prefix)
-        self._configure_make_install(join_path(deps, "lwgrp-1.0.2"), prefix)
+        new_stack = self.spec.satisfies("@1.1.0:")
+
+        lwgrp_version = "1.0.6" if new_stack else "1.0.2"
+        dtcmp_version = "1.1.5" if new_stack else "1.1.0"
+
         self._configure_make_install(
-            join_path(deps, "dtcmp-1.1.0"),
+            join_path(deps, "libcircle-0.3.0"),
+            prefix,
+        )
+        self._configure_make_install(
+            join_path(deps, f"lwgrp-{lwgrp_version}"),
+            prefix,
+        )
+        self._configure_make_install(
+            join_path(deps, f"dtcmp-{dtcmp_version}"),
             prefix,
             f"--with-lwgrp={prefix.install}",
         )
+
+        if new_stack:
+            self._configure_make_install(
+                join_path(deps, "libarchive-3.7.7"),
+                prefix,
+            )
 
     def _configure_make_install(self, source_dir, prefix, *extra_args):
         with working_dir(source_dir):
@@ -111,15 +173,26 @@ class Archivetar(Package):
 
     def _install_bundled_mpifileutils(self, spec, prefix):
         source_dir = join_path(self.stage.source_path, "mpifileutils")
-        with working_dir("spack-build-mpifileutils", create=True):
-            cmake(
-                source_dir,
-                f"-DCMAKE_INSTALL_PREFIX={prefix.install}",
-                "-DCMAKE_C_COMPILER={0}".format(spec["mpi"].mpicc),
-                "-DCMAKE_CXX_COMPILER={0}".format(spec["mpi"].mpicxx),
-                f"-DWITH_DTCMP_PREFIX={prefix.install}",
-                f"-DWITH_LibCircle_PREFIX={prefix.install}",
+
+        args = [
+            source_dir,
+            f"-DCMAKE_INSTALL_PREFIX={prefix.install}",
+            f"-DCMAKE_C_COMPILER={spec['mpi'].mpicc}",
+            f"-DCMAKE_CXX_COMPILER={spec['mpi'].mpicxx}",
+            f"-DWITH_DTCMP_PREFIX={prefix.install}",
+            f"-DWITH_LibCircle_PREFIX={prefix.install}",
+        ]
+
+        if spec.satisfies("@1.1.0:"):
+            args.extend(
+                [
+                    "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
+                    f"-DWITH_LibArchive_PREFIX={prefix.install}",
+                ]
             )
+
+        with working_dir("spack-build-mpifileutils", create=True):
+            cmake(*args)
             make()
             make("install")
 
@@ -138,7 +211,9 @@ class Archivetar(Package):
             try:
                 pipenv("install", "--dev", "--system", "--deploy")
             except ProcessError:
-                tty.warn("pipenv locked install failed; falling back to direct pip install")
+                tty.warn(
+                    "pipenv locked install failed; falling back to direct pip install"
+                )
                 python(
                     "-m",
                     "pip",
@@ -153,6 +228,7 @@ class Archivetar(Package):
                 )
 
             mkdirp(prefix.archivetar.dist)
+
             for command in sorted(os.listdir("bin")):
                 script = join_path("bin", command)
                 if not os.path.isfile(script):
@@ -175,6 +251,7 @@ class Archivetar(Package):
 
     def _install_application_source(self, prefix):
         mkdirp(prefix.archivetar.src)
+
         for entry in self.app_source_entries:
             src = join_path(self.stage.source_path, entry)
             if os.path.isdir(src):
@@ -184,6 +261,7 @@ class Archivetar(Package):
 
     def _link_commands(self, prefix):
         mkdirp(prefix.bin)
+
         for command in os.listdir(prefix.archivetar.dist):
             src = join_path(prefix.archivetar.dist, command)
             dst = join_path(prefix.bin, command)

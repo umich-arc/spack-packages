@@ -1,0 +1,21 @@
+--- a/configure
++++ b/configure
+@@ -102763,8 +102763,6 @@
+ /* end confdefs.h.  */
+ 
+-namespace conftest {
+-  extern "C" int openpty ();
+-}
++extern int openpty ();
+ #ifdef F77_DUMMY_MAIN
+ 
+ #  ifdef __cplusplus
+@@ -102778,7 +102776,7 @@
+ int
+ main (void)
+ {
+-return conftest::openpty ();
++return openpty ();
+   ;
+   return 0;
+ }

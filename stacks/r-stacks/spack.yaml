@@ -90,6 +90,9 @@ spack:
         r-curl^r@4.5.3:
           require:
           - "/rahzyli"
+        compiler-wrapper:
+          prefer:
+          - "/wp7asibsssk2itijb564k4erh4zbpcgu"
   concretizer:
     unify: false
     reuse: true

@@ -98,6 +98,7 @@ spack:
           py-mpi4py: 'mpi4py/{version}'
           py-nanoplot: 'nanoplot/{version}'
           py-multiqc: 'multiqc/{version}'
+          py-quast: 'quast/{version}'
         hash_length: 0
         core_compilers:
         - gcc@14.3.1
