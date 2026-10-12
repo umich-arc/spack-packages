@@ -1,0 +1,131 @@
+# This is a Spack Environment file.
+#
+# It describes a set of packages to be installed, along with
+# configuration settings.
+spack:
+  config:
+      install_tree:
+        root: /sw/spack/opt/pkgs
+  #mirrors:
+  #  buildcache: file:///sw/spack/buildcache
+  view: false
+  specs:
+  ##########################################################################################
+  #                                       Software                                         #
+  ##########################################################################################
+  - group: Base-GCC12-Compiler
+    specs:
+    - cmake
+    - gmake
+    - openmpi@5.0.10+arc
+    - octave
+    override:
+      packages:
+        # Use the installed compiler binaries without importing their build DAG.
+        gcc:
+          externals:
+          - spec: gcc@12.3.0 languages=c,c++,fortran
+            prefix: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.3.1-j5ra
+            extra_attributes:
+              compilers:
+                c: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.3.1-j5ra/bin/gcc
+                cxx: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.3.1-j5ra/bin/g++
+                fortran: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.3.1-j5ra/bin/gfortran
+        c:
+          require: [gcc@12.3.0]
+        cxx:
+          require: [gcc@12.3.0]
+        fortran:
+          require: [gcc@12.3.0]
+  concretizer:
+    unify: false
+    reuse: true
+    compiler_mixing: true
+    ##########################################################################################
+    #                                         Modules                                        #
+    ##########################################################################################
+  modules:
+    default:
+      roots:
+        lmod: /sw/spack/opt/Compilers/gcc/12.3.0/modules
+        tcl: /sw/spack/opt/Compilers/gcc/12.3.0/modules
+      lmod:
+        projections:
+          r: 'R/{version}'
+          'libmng ^libtiff@4.0.10': 'libmng/{version}-tiff4.0.10'
+          'lcms ^libtiff@4.0.10': 'lcms/{version}-tiff4.0.10'
+          hdf5~threadsafe+mpi: 'phdf5/{version}-nonatomic'
+          hdf5+threadsafe+mpi: 'phdf5/{version}'
+          hdf5~threadsafe~mpi: 'hdf5/{version}-nonatomic'
+          intel-oneapi-compilers-classic: 'intel/{version}'
+          miniforge3: 'mamba/{version}'
+          py-mpi4py: 'mpi4py/{version}'
+          intel-oneapi-mpi: 'impi/{version}'
+          gh: 'github-cli/{version}'
+          paraview~mpi~cuda: 'paraview/{version}-nompicuda'
+          mumps~mpi: 'mumps/{version}-seq'
+          mumps^mvapich2: 'mumps/{version}-mvapich2'
+          netlib-scalapack^mvapich2: 'netlib-scalapack/{version}-mvapich2'
+          scotch^mvapich2: 'scotch/{version}-mvapich2'
+          parmetis^mvapich2: 'parmetis/{version}-mvapich2'
+          ninja: 'ninja/{version}-py{^python.version.up_to_2}'
+        glew:
+          suffixes:
+            '^glx': glx
+        gl2ps:
+          suffixes:
+            '^glx': glx
+        vtk:
+          suffixes:
+            '^glx': glx
+        hash_length: 0
+        all:
+          suffixes:
+            'binutils target=x86_64': x86_64
+            'gmp target=x86_64': x86_64
+            'mpc target=x86_64': x86_64
+            'mpfr target=x86_64': x86_64
+            'zlib-ng target=x86_64': x86_64
+            'zstd target=x86_64': x86_64
+        core_compilers:
+          - gcc@12.3.0
+        hide_implicits: true
+        hierarchy:
+          - r
+          - mpi
+        core_specs:
+        - gcc@12.3.0
+        - gcc-runtime@12.3.0
+        exclude:
+        - gcc@12.3.0
+        - gcc-runtime@12.3.0
+        - glibc
+        - autoconf
+        - compiler-wrapper
+        - util-macros
+        - py-pip
+        - py-setuptools
+        - py-wheel
+        - py-cython
+        - python-venv
+        gcc-runtime:
+          template: gcc-runtime.lua
+        miniforge3:
+          environment:
+            set:
+              CONDA_ENVS_PATH: "~/.conda/envs"
+              CONDA_PKGS_DIRS: "~/.conda/pkgs"
+        openmpi@5.0.10+arc:
+          environment:
+            set:
+              UCX_LOG_LEVEL: error
+        intel-oneapi-mpi@2021.18.0:
+          environment:
+            set:
+              SLURM_MPI_TYPE: pmi2
+              I_MPI_HYDRA_BOOSTRAP: slurm
+              I_MPI_PMI_LIBRARY: /usr/lib64/libpmi2.so
+        aocc@5.2.0:
+          environment:
+            prepend_path:
+              MODULEPATH: /sw/spack/chemistry/opt/modules/linux-rhel10-x86_64/aocc/5.2.0

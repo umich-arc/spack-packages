@@ -46,7 +46,7 @@ spack:
     - libtiff@4.7.1
     - libtiff@4.0.10
     - sqlite@3.53.1
-    #- archivetar@0.18.2 ^python@3.13.13 ^openmpi@5.0.10
+    - archivetar@1.1.0 ^python@3.13.13 ^openmpi@5.0.10
     - libsodium@1.0.22
     - libgd@2.3.3
     - r@4.6.1
@@ -85,6 +85,7 @@ spack:
     - yasm
     - pbzip2 ^bzip2/4cpvt2c #os external
     - llama-cpp@0.6.0 ^curl/zhvfjjx
+    - octave +fftw+fontconfig+gnuplot+hdf5+zlib+opengl+qt ^harfbuzz/gcoqsik
     override:
       packages:
         c:
@@ -207,6 +208,7 @@ spack:
         core_specs:
         - gcc@14.3.1
         - gcc-runtime@14.3.1
+        - archivetar@1.1.0
         exclude:
         - gcc-runtime@14.3.1
         - glibc
@@ -239,3 +241,11 @@ spack:
           environment:
             prepend_path:
               MODULEPATH: /sw/spack/chemistry/opt/modules/linux-rhel10-x86_64/aocc/5.2.0
+        gcc@10.3.0:
+          environment:
+            prepend_path:
+              MODULEPATH: /sw/spack/opt/Compilers/gcc/10.3.0/modules/linux-rhel10-x86_64/Core
+        gcc@12.3.0:
+          environment:
+            prepend_path:
+              MODULEPATH: /sw/spack/opt/Compilers/gcc/12.3.0/modules/linux-rhel10-x86_64/Core
