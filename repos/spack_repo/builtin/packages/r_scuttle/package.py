@@ -18,6 +18,7 @@ class RScuttle(RPackage):
     bioc = "scuttle"
 
     with default_args(get_full_repo=True):
+        version("1.22.0", commit="d56a81e414939eefecd55ec68712a4be3d6858ab")
         version("1.10.0", commit="02e864cb80414f71bb312cdf6d68e0036326e10b")
         version("1.8.0", commit="dabf6b95e478d599557ebbed03edd44031fd6b78")
         version("1.6.3", commit="df23680da9fa4d685df77e4561467f491c850b50")
@@ -36,5 +37,6 @@ class RScuttle(RPackage):
     depends_on("r-genomicranges", type=("build", "run"))
     depends_on("r-summarizedexperiment", type=("build", "run"))
     depends_on("r-delayedarray", type=("build", "run"))
+    depends_on("r-delayedarray@0.35.2:", type=("build", "run"), when="@1.22.0:")
     depends_on("r-delayedmatrixstats", type=("build", "run"))
     depends_on("r-beachmat", type=("build", "run"))
