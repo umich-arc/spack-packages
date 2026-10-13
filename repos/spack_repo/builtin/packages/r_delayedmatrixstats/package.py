@@ -34,6 +34,7 @@ class RDelayedmatrixstats(RPackage):
 
     depends_on("r-matrixgenerics", type=("build", "run"), when="@1.12.2:")
     depends_on("r-matrixgenerics@1.5.3:", type=("build", "run"), when="@1.16.0:")
+    depends_on("r-matrixgenerics@1.15.1:", type=("build", "run"), when="@1.34.0:")
     depends_on("r-delayedarray", type=("build", "run"))
     depends_on("r-delayedarray@0.5.27:", type=("build", "run"), when="@1.2.0:")
     depends_on("r-delayedarray@0.7.37:", type=("build", "run"), when="@1.4.0:")
