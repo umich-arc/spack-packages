@@ -57,5 +57,6 @@ class RHdf5array(RPackage):
     depends_on("r-s4vectors@0.27.13:", type=("build", "run"), when="@1.18.0:")
     depends_on("r-iranges", type=("build", "run"))
     depends_on("r-rhdf5lib", type=("build", "run"), when="@1.12.3:")
+    depends_on("r-h5mread", type=("build", "run"), when="@1.40.0:")
     depends_on("gmake", type="build")
     depends_on("zlib-api")
