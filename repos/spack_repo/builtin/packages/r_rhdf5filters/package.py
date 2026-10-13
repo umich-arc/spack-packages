@@ -17,6 +17,7 @@ class RRhdf5filters(RPackage):
     license("BSD-2-Clause")
 
     with default_args(get_full_repo=True):
+        version("1.14.0", commit="e8e69aeb225fa48c33f4c413925e75dc81ebe891")
         version("1.12.0", commit="4deabdef71c0349c4eaf7e5604cb7f389809f006")
         version("1.10.0", commit="6131538e2c5896dca0af33882bc2da961d79e49a")
         version("1.8.0", commit="b0b588b71a5595b30f4e698a50b84310dc19745d")
