@@ -37,7 +37,8 @@ class RDelayedarray(RPackage):
 
     depends_on("c", type="build")
 
-    depends_on("r@4.0:", type=("build", "run"), when="@0.20:")
+    depends_on("r@4.6:", type=("build", "run"), when="@0.38.2:")
+    depends_on("r@4.0:4.5", type=("build", "run"), when="@0.20:0.34.1")
     depends_on("r@3.4:", type=("build", "run"))
 
     depends_on("r-biocgenerics@0.53.3:", type=("build", "run"), when="@0.33.2:")
