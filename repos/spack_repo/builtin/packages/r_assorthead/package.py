@@ -9,7 +9,7 @@ from spack.package import *
 
 
 class RAssorthead(RPackage):
-    """Vendors an assortment of useful header-only C++ libraries. """
+    """Vendors an assortment of useful header-only C++ libraries."""
 
     homepage = "https://github.com/LTLA/assorthead"
     url = "https://bioconductor.org/packages/3.23/bioc/src/contrib/assorthead_1.6.4.tar.gz"

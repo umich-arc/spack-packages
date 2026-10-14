@@ -33,5 +33,3 @@ class RH5mread(RPackage):
         depends_on("r-s4vectors")
         depends_on("r-iranges")
         depends_on("r-s4arrays")
-
-
