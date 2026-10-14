@@ -8,9 +8,9 @@ from spack.package import *
 
 
 class Rmonocle3(RCollectivePackage):
-    """Easily Install and Load the Seurat.
+    """Easily Install and Load monocle3.
 
-    Seurat is a single cell analysis package for R."""
+    monocle3 is a single cell analysis package for R."""
 
     license("MIT")
     has_code = False

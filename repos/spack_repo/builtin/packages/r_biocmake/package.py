@@ -25,4 +25,3 @@ class RBiocmake(RPackage):
 
     with default_args(type=("build", "run")):
         depends_on("r-dir-expiry")
-
