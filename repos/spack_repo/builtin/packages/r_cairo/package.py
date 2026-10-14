@@ -26,6 +26,7 @@ class RCairo(RPackage):
 
     cran = "Cairo"
 
+    version("1.7-0", sha256="fcb84a614bbb85b976dd4fd1c17e2f7fd2f4fa21c3ac9e930819d88099a61d52")
     version("1.6-2", sha256="6b6f4c6f93178a1295860a9dc6dc45e60fec70f684d5c8d0b59baf5b8dd44d62")
     version("1.6-0", sha256="c762ac1d8daa4af527342360c256ed742de4e3031d997e9e59c9a369fcafb7d3")
     version("1.5-15", sha256="bb3ab1ff6431c15eb01a66ddf90695cd9a2af3d5a384753f5180cd0401d2e89d")

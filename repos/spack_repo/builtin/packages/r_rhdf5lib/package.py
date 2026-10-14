@@ -15,6 +15,7 @@ class RRhdf5lib(RPackage):
     bioc = "Rhdf5lib"
 
     with default_args(get_full_repo=True):
+        version("2.0.0", commit="21f3087035b375f46b89b27f67d11493aaef2171")
         version("1.22.0", commit="2bf06b364e8d478549b07a298eaf60177a050dc9")
         version("1.20.0", commit="760679995f17996a9de328cf7a8bcaa6c87286d4")
         version("1.18.2", commit="d104bbfdb91ac5ec7db3c453f23e4d1d6feb671f")
@@ -30,5 +31,6 @@ class RRhdf5lib(RPackage):
     depends_on("r@3.3.0:", type="build", when="@1.12.1:")
     depends_on("r@4.0.0:", type="build", when="@1.16.0:")
     depends_on("r@4.2.0:", type=("build", "run"), when="@1.22.0:")
+    depends_on("r-biocmake", type=("build", "run"), when="@2.0.0:")
     depends_on("gmake", type="build")
     depends_on("zlib-api")

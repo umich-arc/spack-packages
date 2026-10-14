@@ -19,6 +19,7 @@ class RBeachmat(RPackage):
     bioc = "beachmat"
 
     with default_args(get_full_repo=True):
+        version("2.28.0", commit="a5ec637c732e3ce1e978036e67f5030253503624")
         version("2.16.0", commit="4cc8e50dcae767a2ef84ffc7a581ea182f05f300")
         version("2.14.0", commit="5a4b85f4a22f3447f12d03157ab95de73f6137c6")
         version("2.12.0", commit="3e6af145bdcdf0a0b722d8256ba1a38b8a36b2f5")
@@ -36,7 +37,9 @@ class RBeachmat(RPackage):
     depends_on("r-delayedarray", type=("build", "run"))
     depends_on("r-delayedarray@0.5.30:", type=("build", "run"), when="@1.2.1")
     depends_on("r-delayedarray@0.7.38:", type=("build", "run"), when="@1.4.0")
-    depends_on("r-delayedarray@0.15.14:", type=("build", "run"), when="@2.6.4")
+    depends_on("r-delayedarray@0.15.14:0.35.1", type=("build", "run"), when="@2.6.4:2.16.0")
+    depends_on("r-delayedarray@0.35.2:", type=("build", "run"), when="@2.28.0:")
+    depends_on("r-assorthead", type=("build", "run"), when="@2.28.0:")
     depends_on("r-biocgenerics", type=("build", "run"), when="@1.4.0:")
     depends_on("r-matrix", type=("build", "run"), when="@2.6.4:")
     depends_on("r-rcpp@0.12.14:", type=("build", "run"), when="@1.0.2:")

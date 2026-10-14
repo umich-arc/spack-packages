@@ -19,6 +19,7 @@ spack:
         - rtidyverse@2.0.0_R4.6.1 ^r/hsmq64i ^meson/mydduah
         - rgeospatial@1.5-18_R4.6.1 ^r/hsmq64i ^libtiff@4.7.1 ^gdal/wj3bifx ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk ^meson/mydduah
         - rseurat@5.5.1_R4.6.1 ^r@4.6.1/hsmq64i ^r-reticulate@1.46.0 ^r-dotcall64@1.2
+        - rmonocle3@1.4.27_R4.6.1 ^r@4.6.1/hsmq64i ^hdf+shared
       - - '%c,cxx=gcc@14.3.1'
     override:
       packages:
