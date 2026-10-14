@@ -2,12 +2,14 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-from spack_repo.builtin.build_systems.r import RPackage, RBuilder
+from spack_repo.builtin.build_systems.r import RBuilder, RPackage
 
 from spack.package import *
 
+
 class RSubBuilder(RBuilder):
     '''Install the package starting in the subdirectory "r"'''
+
     def install(self, pkg, spec, prefix):
         """Installs an R package."""
         mkdirp(pkg.module.r_lib_dir)
@@ -26,7 +28,6 @@ class RSubBuilder(RBuilder):
         args.extend([f"--library={pkg.module.r_lib_dir}", self.stage.source_path + "/r"])
 
         pkg.module.R(*args)
-
 
 
 class RBpcells(RPackage):
@@ -72,4 +73,3 @@ class RBpcells(RPackage):
         depends_on("r-rcolorbrewer")
         depends_on("r-hexbin")
         depends_on("r-rcppeigen")
-
