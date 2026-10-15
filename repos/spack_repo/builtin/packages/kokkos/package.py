@@ -128,7 +128,8 @@ class Kokkos(CMakePackage, CudaPackage):
     requires(
         "+serial", when="~hpx ~openmp ~threads", msg="Kokkos requires at least one host backend"
     )
-    requires("~cuda~rocm~sycl", when="+openacc", msg="Can not mix other GPU backends with OpenACC")
+    #requires("~cuda~rocm~sycl", when="+openacc", msg="Can not mix other GPU backends with OpenACC")
+    requires("~cuda~sycl", when="+openacc", msg="Can not mix other GPU backends with OpenACC")
     # only NVHPC compilers are currently supported
     requires("%cxx=nvhpc", when="+openacc")
 
