@@ -21,6 +21,7 @@ spack:
         - rseurat@5.5.1_R4.6.1 ^r@4.6.1/hsmq64i ^r-reticulate@1.46.0 ^r-dotcall64@1.2
         - rmonocle3@1.4.27_R4.6.1 ^r@4.6.1/hsmq64i ^hdf+shared
         - rglmgampoi@1.24.0_R4.6.1 ^r@4.6.1/hsmq64i
+        - rchipenrich@1.24.0_R4.6.1 ^r@4.6.1/hsmq64i
       - - '%c,cxx=gcc@14.3.1'
     override:
       packages:
