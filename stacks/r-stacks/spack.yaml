@@ -22,6 +22,7 @@ spack:
         - rmonocle3@1.4.27_R4.6.1 ^r@4.6.1/hsmq64i ^hdf+shared
         - rglmgampoi@1.24.0_R4.6.1 ^r@4.6.1/hsmq64i
         - rchipenrich@1.24.0_R4.6.1 ^r@4.6.1/hsmq64i
+        - rarchr@1.0.3_R4.6.1 ^r@4.6.1/hsmq64i
       - - '%c,cxx=gcc@14.3.1'
     override:
       packages:
