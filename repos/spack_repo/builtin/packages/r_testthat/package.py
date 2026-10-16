@@ -18,6 +18,7 @@ class RTestthat(RPackage):
 
     license("MIT")
 
+    version("3.3.2", sha256="5d2e2fa2c3dcb523afb6898c02be9544c24c1c7e0789149c436fef768a409808")
     version("3.2.1.1", sha256="d785ce3975939e28b61048b0e28d881c80904534ff21e5b1a79a0a934124e9f7")
     version("3.1.7", sha256="1ad86b1739481c6c46359a6634ecc706bf513f34b26d7a62cbc719bbd4658eab")
     version("3.1.5", sha256="a8f56b9426206ddfc30b550c82ff2f042ebe1c2f5bfd4184aec8facac8f5b7fc")

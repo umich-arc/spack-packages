@@ -16,6 +16,7 @@ class RCner(RPackage):
     bioc = "CNEr"
 
     with default_args(get_full_repo=True):
+        version("1.48.0", commit="a626956b6fd3e3e21202523ce0c87fd12fa67f24")
         version("1.36.0", commit="4f2feeb395cfc071ed97ba8b6327425dfd42d6b5")
         version("1.34.0", commit="878de98d18f6f959ad5e014ecd8165d3105d8b48")
         version("1.32.0", commit="1c92f3d7f3dccf76ab7d54f286117b09bc470b8f")
