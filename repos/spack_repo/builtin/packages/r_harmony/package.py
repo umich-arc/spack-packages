@@ -9,7 +9,7 @@ from spack.package import *
 
 
 class RHarmony(RPackage):
-    """Implementation of the Harmony algorithm for single cell integration, described in Patikas, Yao, et al"""
+    """Implementation of the Harmony algorithm for single cell integration"""
 
     homepage = "https://pati-ni.github.io/harmony/"
     cran = "harmony"

@@ -8,7 +8,7 @@ from spack.package import *
 
 
 class RRhandsontable(RPackage):
-    """An R interface to the 'Handsontable' JavaScript library, """
+    """An R interface to the 'Handsontable' JavaScript library,"""
 
     homepage = "http://jrowen.github.io/rhandsontable/"
     cran = "rhandsontable"

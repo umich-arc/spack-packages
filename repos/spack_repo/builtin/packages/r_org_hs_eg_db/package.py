@@ -52,11 +52,6 @@ class ROrgHsEgDb(RPackage):
         sha256="1dc9bb6019e0f0a222b9ec84a1c5870cdbca480f45d9ad08e35f77278baa3c5f",
     )
     version(
-        "3.14.0",
-        url="https://www.bioconductor.org/packages/3.14/data/annotation/src/contrib/org.Hs.eg.db_3.14.0.tar.gz",
-        sha256="0f87b3f1925a1d7007e5ad9200bdf511788bd1d7cb76f1121feeb109889c2b00",
-    )
-    version(
         "3.12.0",
         url="https://www.bioconductor.org/packages/3.12/data/annotation/src/contrib/org.Hs.eg.db_3.12.0.tar.gz",
         sha256="48a1ab5347ec7a8602c555d9aba233102b61ffa2765826e5c8890ff0003249bb",

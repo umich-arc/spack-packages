@@ -296,7 +296,7 @@ class PyTorch(PythonPackage, CudaPackage):
         sha256="493cde279804346e13cf21862fddc48040a4d7da65d4e5d3de5f717a15e0aa62",
         when="@2.7.0",
     )
-    patch("apple_clang_17.patch", when="@1.12:2.6")
+
 
     # https://github.com/pytorch/pytorch/issues/146239
     patch(
@@ -319,14 +319,6 @@ class PyTorch(PythonPackage, CudaPackage):
         when="@1.10:2.0",
     )
 
-    # Fix BLAS being overridden by MKL
-    # https://github.com/pytorch/pytorch/issues/60328
-    patch(
-        "59220.patch",
-        sha256="6d5717267f901e8ee493dfacd08734d9bcc48ad29a76ca9ef702368e96bee675",
-        when="@:1.11",
-    )
-
     # Fixes build on older systems with glibc <2.12
     patch(
         "https://github.com/pytorch/pytorch/commit/13c975684a220ec096216ec6468ccd0dc90ff50a.patch?full_index=1",
@@ -342,10 +334,6 @@ class PyTorch(PythonPackage, CudaPackage):
     #    working_dir="third_party/breakpad",
     #)
 
-    # Fixes CMake configuration error when XNNPACK is disabled
-    # https://github.com/pytorch/pytorch/issues/141083
-    # https://github.com/google/XNNPACK/commit/5f23827e66cca435fa400b6e221892ac95af0079
-    patch("xnnpack2.patch", when="@2.6", working_dir="third_party/XNNPACK")
 
     # PR 152569 is to set ROCM_INCLUDE_DIRS the include path
     # of required rocm packages in LoadHIP.cmake.
