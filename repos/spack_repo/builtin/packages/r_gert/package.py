@@ -20,6 +20,7 @@ class RGert(RPackage):
 
     license("MIT")
 
+    version("2.5.0", sha256="b818f3fcfe5c2676b6587eeacbf69268376d6342cbb8a6ab2ff6ef6969732caf")
     version("2.1.1", sha256="42037c041b284ae7ef4da68b784f2dfc3f72701534a8330265b1abc382eda964")
     version("1.9.2", sha256="42ca1b4bcafb1fdbbc7f54df0ee4476ecd19e9e7d563b53fe7064e0086ab665e")
     version("1.9.1", sha256="751d18760a08ae00b8de73dc3e564cf4e76b1f47c7179101320e1b70152e1fdd")
