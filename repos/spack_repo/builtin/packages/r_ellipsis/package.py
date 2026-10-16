@@ -19,6 +19,7 @@ class REllipsis(RPackage):
 
     license("MIT")
 
+    version("0.3.3", sha256="da1782bce5c1baf1cf8c69877078db51fabf2693a393b55ff044fd2e32966873")
     version("0.3.2", sha256="a90266e5eb59c7f419774d5c6d6bd5e09701a26c9218c5933c9bce6765aa1558")
     version("0.3.1", sha256="4f8a15158dfc27cdc0f7554c7a61e92b02e4d70bfc3d968f01a99da2189b75db")
     version("0.3.0", sha256="0bf814cb7a1f0ee1f2949bdc98752a0d535f2a9489280dd4d8fcdb10067ee907")
