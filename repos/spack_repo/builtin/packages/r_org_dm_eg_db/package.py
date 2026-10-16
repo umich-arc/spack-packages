@@ -22,4 +22,3 @@ class ROrgDmEgDb(RPackage):
 
     with default_args(type=("build", "run")):
         depends_on("r-annotationdbi")
-

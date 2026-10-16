@@ -15,7 +15,6 @@ class RPwalign(RPackage):
     url = "https://bioconductor.org/packages/3.23/bioc/src/contrib/pwalign_1.8.0.tar.gz"
     bioc = "pwalign"
 
-
     supplier = "Hervé Pagès"
     maintainers("theAeon")
 

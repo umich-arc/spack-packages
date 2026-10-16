@@ -41,6 +41,8 @@ class AprUtil(AutotoolsPackage):
     depends_on("pkgconfig", type="build", when="+crypto ^openssl~shared")
     depends_on("libxcrypt", when="platform=linux")
 
+    patch("apr-util-1.6.5-noengine.patch", when="@1.6.5")
+
     @property
     def libs(self):
         return find_libraries(
