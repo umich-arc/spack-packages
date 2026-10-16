@@ -15,6 +15,7 @@ class AprUtil(AutotoolsPackage):
 
     license("Apache-2.0")
 
+    version("1.6.5", sha256="f43a1c8c79eef497a022ec6c99dddbdf57e42001da6ccbfae259631ed5aa2805")
     version("1.6.3", sha256="2b74d8932703826862ca305b094eef2983c27b39d5c9414442e9976a9acf1983")
     version("1.6.1", sha256="b65e40713da57d004123b6319828be7f1273fbc6490e145874ee1177e112c459")
     version("1.6.0", sha256="483ef4d59e6ac9a36c7d3fd87ad7b9db7ad8ae29c06b9dd8ff22dda1cc416389")
