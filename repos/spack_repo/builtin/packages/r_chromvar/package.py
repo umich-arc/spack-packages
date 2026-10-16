@@ -49,3 +49,4 @@ class RChromvar(RPackage):
         depends_on("r-summarizedexperiment")
         depends_on("r-rcolorbrewer")
         depends_on("r-bsgenome")
+        depends_on("r-rcpparmadillo")

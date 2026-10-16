@@ -37,3 +37,4 @@ class RMotifmatchr(RPackage):
         depends_on("r-iranges")
         depends_on("r-rsamtools")
         depends_on("r-seqinfo")
+        depends_on("r-rcpparmadillo")
