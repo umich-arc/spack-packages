@@ -44,5 +44,3 @@ class RChipenrich(RPackage):
         depends_on("r-rtracklayer")
         depends_on("r-s4vectors@0.23.10:")
         depends_on("r-stringr")
-
-

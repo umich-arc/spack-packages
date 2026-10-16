@@ -34,4 +34,3 @@ class RPresto(RPackage):
         depends_on("r-matrix")
         depends_on("r-rlang")
         depends_on("r-rcpparmadillo")
-
