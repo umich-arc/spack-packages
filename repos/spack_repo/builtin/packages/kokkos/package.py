@@ -126,7 +126,7 @@ class Kokkos(CMakePackage, CudaPackage):
         "openmptarget": [False, "@:5.0", "Whether to build the OpenMPTarget backend"],
     }
     requires(
-        "+serial", when="~hpx ~openmp ~threads", msg="Kokkos requires at least one host backend"
+        "+serial", when="~openmp ~threads", msg="Kokkos requires at least one host backend"
     )
     #requires("~cuda~rocm~sycl", when="+openacc", msg="Can not mix other GPU backends with OpenACC")
     requires("~cuda~sycl", when="+openacc", msg="Can not mix other GPU backends with OpenACC")
@@ -134,7 +134,7 @@ class Kokkos(CMakePackage, CudaPackage):
     requires("%cxx=nvhpc", when="+openacc")
 
     tpls_variants = {
-        "hpx": [False, None, "Whether to enable the HPX library"],
+        #"hpx": [False, None, "Whether to enable the HPX library"],
         "hwloc": [False, None, "Whether to enable the HWLOC library"],
         "numactl": [False, "@:4", "Whether to enable the LIBNUMA library"],
         "memkind": [False, "@:4", "Whether to enable the MEMKIND library"],
@@ -145,7 +145,7 @@ class Kokkos(CMakePackage, CudaPackage):
         "aggressive_vectorization": [False, None, "Aggressively vectorize loops"],
         "atomics_bypass": [
             False,
-            "@4.6: +serial~threads~cuda~hpx~openmp~sycl~openmptarget",
+            "@4.6: +serial~threads~cuda~openmp~sycl~openmptarget",
             "Make atomics non-atomic for non-threaded MPI-only use cases",
         ],
         "compiler_warnings": [False, "@:4", "Print all compiler warnings"],
@@ -161,7 +161,7 @@ class Kokkos(CMakePackage, CudaPackage):
         "debug_bounds_check": [False, None, "Use bounds checking - will increase runtime"],
         "debug_dualview_modify_check": [False, "@:4", "Debug check on dual views"],
         "deprecated_code": [False, "@:4", "Whether to enable deprecated code"],
-        "hpx_async_dispatch": [False, "@:4", "Whether HPX supports asynchronous dispath"],
+        #"hpx_async_dispatch": [False, "@:4", "Whether HPX supports asynchronous dispath"],
         "tuning": [False, None, "Create bindings for tuning tools"],
         "tests": [False, None, "Build for tests"],
     }
@@ -375,11 +375,11 @@ class Kokkos(CMakePackage, CudaPackage):
 
     # TODO new major: add new standard version here
     # HPX should use the same C++ standard
-    for cxxstd in ["14", "17", "20", "23"]:
-        depends_on(f"hpx cxxstd={cxxstd}", when=f"+hpx cxxstd={cxxstd}")
+    #for cxxstd in ["14", "17", "20", "23"]:
+    #    depends_on(f"hpx cxxstd={cxxstd}", when=f"+hpx cxxstd={cxxstd}")
 
     # HPX version constraints
-    depends_on("hpx@1.7:", when="+hpx")
+    #depends_on("hpx@1.7:", when="+hpx")
 
     # TODO deprecation of some versions in 4: remove
     # Patches
