@@ -290,13 +290,6 @@ class PyJaxlib(PythonPackage, CudaPackage):
         #        env.prepend_path("TF_ROCM_MULTIPLE_PATHS", spec[pkg_dep].prefix)
         #        env.prune_duplicate_paths("TF_ROCM_MULTIPLE_PATHS")
 
-            if spec.satisfies("@0.11:"):
-                # xla is not compatible with multiple ROCm paths if a singular ROCM_PATH is set
-                # The HIPCC flags also pass --rocm-path so unset them as well
-                env.unset("HIPCC_COMPILE_FLAGS_APPEND")
-                env.unset("HIPCC_LINK_FLAGS_APPEND")
-                env.unset("ROCM_PATH")
-
     def setup_run_environment(self, env: EnvironmentModifications) -> None:
         if "+cuda" in self.spec:
             libs = find_libraries(
