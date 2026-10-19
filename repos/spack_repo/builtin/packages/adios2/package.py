@@ -52,7 +52,8 @@ class Adios2(CMakePackage, CudaPackage):
     # Features
     variant("mpi", default=True, description="Enable MPI")
 
-    # Compression libraries
+    # Compression libraries description="Enable the Python bindings")
+    variant("fortran", default=True)
     variant(
         "libpressio", default=False, when="@2.8:", description="Enable LibPressio for compression"
     )

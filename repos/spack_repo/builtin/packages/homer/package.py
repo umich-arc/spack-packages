@@ -39,7 +39,7 @@ class Homer(Package):
         # override homer base directory in configure script
         filter_file(
             "my $homeDir = $1;",
-            f'my $homeDir = "{basedir}";',
+            'my $homeDir = "{0}";'.format(basedir),
             "configureHomer.pl",
             string=True,
         )
