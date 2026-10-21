@@ -7,6 +7,16 @@ spack:
     install_tree:
       root: /sw/spack/opt/pkgs
   view: false
+  packages:
+    r:
+      externals::
+      - spec: r@4.3.1
+        prefix: /sw/spack/opt/pkgs/r/4.3.1-gcc-14.4.0-hgr2
+      - spec: r@4.5.3
+        prefix: /sw/spack/opt/pkgs/r/4.5.3-gcc-14.4.0-vz5n
+      - spec: r@4.6.1
+        prefix: /sw/spack/opt/pkgs/r/4.6.1-gcc-14.4.0-syb3
+      buildable: false
   specs:
   ##########################################################################################
   #                                       Software                                         #
@@ -14,24 +24,24 @@ spack:
   - group: R stacks
     specs:
     - matrix:
-      - - rtidyverse@2.0.0_R4.5.3 ^r/w4z6lu4 ^meson/mydduah
-        - rgeospatial@1.5-18_R4.5.3 ^r/w4z6lu4 ^libtiff@4.7.1 ^gdal/wj3bifx ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk ^meson/mydduah
-        - rtidyverse@2.0.0_R4.6.1 ^r/hsmq64i ^meson/mydduah
-        - rgeospatial@1.5-18_R4.6.1 ^r/hsmq64i ^libtiff@4.7.1 ^gdal/wj3bifx ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk ^meson/mydduah
-        - rseurat@5.5.1_R4.6.1 ^r@4.6.1/hsmq64i ^r-reticulate@1.46.0 ^r-dotcall64@1.2
-        - rmonocle3@1.4.27_R4.6.1 ^r@4.6.1/hsmq64i ^hdf+shared
-        - rglmgampoi@1.24.0_R4.6.1 ^r@4.6.1/hsmq64i
-        - rchipenrich@1.24.0_R4.6.1 ^r@4.6.1/hsmq64i
-        - rarchr@1.0.3_R4.6.1 ^r@4.6.1/hsmq64i
-      - - '%c,cxx=gcc@14.3.1'
+      - - rtidyverse@2.0.0_R4.6.1
+        - rgeospatial@1.5-18_R4.5.3 ^libtiff@4.7.1 ^gdal ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk
+        - rtidyverse@2.0.0_R4.6.1 
+        - rgeospatial@1.5-18_R4.6.1 ^libtiff@4.7.1 ^gdal ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk 
+        - rseurat@5.5.1_R4.6.1 ^r-reticulate@1.46.0 ^r-dotcall64@1.2
+        - rmonocle3@1.4.27_R4.6.1 ^hdf+shared
+        - rglmgampoi@1.24.0_R4.6.1 
+        - rchipenrich@2.36.0_R4.6.1 
+        #- rarchr@1.0.3_R4.6.1 ^r@4.6.1/hsmq64i
+      - - '%c,cxx=gcc@14.4.0'
     override:
       packages:
         c:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         cxx:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         fortran:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         python:
           require:
           - +arc
@@ -87,16 +97,13 @@ spack:
           - "@1.0.7"
         meson:
           prefer:
-          - "/mydduah"
+          - "/jtv2mgc"
         curl:
           require:
-          - "/zhvfjjx"
-        r-curl^r@4.5.3:
-          require:
-          - "/rahzyli"
+          - "/mlxgqdb"
         compiler-wrapper:
           prefer:
-          - "/wp7asibsssk2itijb564k4erh4zbpcgu"
+          - "/ab637if"
   concretizer:
     unify: when_possible
     reuse: true
@@ -106,8 +113,8 @@ spack:
   modules:
     default:
       roots:
-        lmod: /sw/spack/opt/modules
-        tcl: /sw/spack/opt/modules
+        lmod: /sw/spack/opt/RStacks
+        tcl: /sw/spack/opt/RStacks
       lmod:
         projections:
           r: R/{version}
@@ -124,15 +131,15 @@ spack:
         hash_length: 0
         #hide_implicits: true
         core_compilers:
-        - gcc@14.3.1
+        - gcc@14.4.0
         hierarchy:
         - r
         - mpi
         core_specs:
-        - gcc@14.3.1
-        - gcc-runtime@14.3.1
+        - gcc@14.4.0
+        - gcc-runtime@14.4.0
         exclude:
-        - gcc-runtime@14.3.1
+        - gcc-runtime@14.4.0
         - glibc
         - autoconf
         - compiler-wrapper

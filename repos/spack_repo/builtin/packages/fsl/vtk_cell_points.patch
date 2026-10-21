@@ -1,0 +1,22 @@
+--- a/src/mist/common/shape.cpp
++++ b/src/mist/common/shape.cpp
+@@ -354,12 +354,16 @@
+     for (vtkIdType i = 0; i < cells->GetNumberOfIds(); i++)
+     {
+-        vtkIdType npoints;
+-        vtkIdType *points;
++        vtkSmartPointer<vtkIdList> points = vtkSmartPointer<vtkIdList>::New();
+ 
+-        m_polyData->GetCellPoints(cells->GetId(i), npoints, points);
++        m_polyData->GetCellPoints(cells->GetId(i), points);
+ 
+-        polys.push_back(std::vector<vtkIdType>(points, points + npoints));
++        std::vector<vtkIdType> polygon;
++        for (vtkIdType j = 0; j < points->GetNumberOfIds(); j++)
++        {
++            polygon.push_back(points->GetId(j));
++        }
++        polys.push_back(polygon);
+     }
+ 
+     return polys;

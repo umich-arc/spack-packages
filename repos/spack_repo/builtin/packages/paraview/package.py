@@ -184,7 +184,7 @@ class Paraview(CMakePackage, CudaPackage):
     depends_on("py-numpy", when="+python", type=("build", "run"))
     depends_on("py-mpi4py", when="+python+mpi", type=("build", "run"))
 
-    depends_on("py-matplotlib", when="+python", type="run")
+    #depends_on("py-matplotlib", when="+python", type="run") # ARC Paraview, don't need matplotlib
     depends_on("py-pandas@0.21:", when="+python", type="run")
 
     # openPMD is implemented as a Python module and provides ADIOS2 and HDF5 backends

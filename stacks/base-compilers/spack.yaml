@@ -1,0 +1,36 @@
+# This is a Spack Environment file.
+#
+# It describes a set of packages to be installed, along with
+# configuration settings.
+spack:
+  config:
+    install_tree:
+      root: /sw/spack/base-gcc/opt
+  view: false
+  packages:
+    gcc:
+      externals::
+      - spec: gcc@14.3.1 languages:='c,c++,fortran'
+        prefix: /usr
+        extra_attributes:
+          compilers:
+            c: /usr/bin/gcc
+            cxx: /usr/bin/g++
+            fortran: /usr/bin/gfortran
+      buildable: true
+  specs:
+  ##########################################################################################
+  #                                       Software                                         #
+  ##########################################################################################
+  - group: Base-Compiler
+    specs:
+    - gcc@14.4.0+binutils languages:='c,c++,fortran' 
+  concretizer:
+    unify: false
+    reuse: false
+    ##########################################################################################
+    #                                         Modules                                        #
+    ##########################################################################################
+  'modules:':
+    default:
+      enable: []

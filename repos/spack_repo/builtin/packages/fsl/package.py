@@ -68,6 +68,7 @@ class Fsl(Package, CudaPackage):
     # allow newer compilers
     patch("libxmlpp_bool.patch")
     patch("gcc14_v2.patch", when="@6.0.5.2 %gcc@14:")
+    patch("vtk_cell_points.patch", when="@6.0.5.2")
 
     # These patches disable FSL's attempts to try to submit a subset of FSL
     # computations to an SGE queue system. That auto-submit mechanism only

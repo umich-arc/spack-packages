@@ -18,6 +18,7 @@ class Tomviz(CMakePackage):
     license("BSD-3-Clause")
 
     version("3.0.0", tag="3.0.0", submodules=True)
+    version("3.1.0", tag="3.1.0", submodules=True)
 
     generator("ninja")
     requires("%gcc", msg="This starter recipe uses GCC")
@@ -35,8 +36,9 @@ class Tomviz(CMakePackage):
     depends_on("qt-svg@6:")
     depends_on("qt-tools@6: +assistant")
     depends_on("freetype")
+    depends_on("intel-tbb")
 
-    patch("pybind11_ctvlib_vtk-eigen.patch", when="@3.0.0")
+    patch("pybind11_ctvlib_vtk-eigen.patch", when="@:3.0.0")
 
     def cmake_args(self):
         spec = self.spec
