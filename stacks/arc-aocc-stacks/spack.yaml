@@ -14,37 +14,38 @@ spack:
 
   - group: Base-AOCC-Compiler
     specs:
-    - python@3.13.13
+    - python@3.13.13 %aocc@5.2.0
     - python@3.14.7 %aocc@5.2.0
     - armadillo ^flexiblas
-    - flexiblas@3.4.2
-    - boost@1.90.0~mpi
-    - geos@3.14.1
-    - openmpi@5.0.10
+    - flexiblas@3.4.2 %aocc@5.2.0
+    - boost@1.90.0~mpi %aocc@5.2.0
+    - geos@3.14.1 %aocc@5.2.0
+    - openmpi@5.0.10 %aocc@5.2.0
     - openblas@0.3.33 %aocc@5.2.0
-    - netlib-lapack@3.12.1
-    - libaec@1.1.4
-    - proj@9.7.0 ^libtiff@4.7.1
-    - hdf5@1.14.6+cxx+fortran+hl+threadsafe~mpi ^libaec@1.1.4
-    - hdf5@1.14.6+threadsafe ^libaec@1.1.4
-    - netcdf-c+blosc+hdf4+mpi+parallel-netcdf+szip+zstd
-    - netcdf-cxx4
-    - netcdf-fortran
-    - libjpeg-turbo@3.1.3
-    - libtiff@4.7.1
-    - sqlite@3.53.1
-    - archivetar@0.18.2%aocc@5.2.0 ^python@3.13.13 ^openmpi@5.0.10 
-    - archivetar@1.1.0%aocc@5.2.0 ^python@3.13.13 ^openmpi@5.0.10 
-    - libsodium@1.0.22
-    - r@4.6.1 %c,cxx=aocc@5.2.0 %fortran=gcc@14.3.1 ^flexiblas/xs4rhnv # gcc flexiblas
-    - r@4.5.3 %c,cxx=aocc@5.2.0 %fortran=gcc@14.3.1 ^flexiblas/xs4rhnv # gcc flexiblas
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi
+    - netlib-lapack@3.12.1 %aocc@5.2.0
+    - libaec@1.1.4 %aocc@5.2.0
+    - proj@9.7.0 %aocc@5.2.0 ^libtiff@4.7.1
+    - hdf5@1.14.6+cxx+fortran+hl+threadsafe~mpi %aocc@5.2.0 ^libaec@1.1.4
+    - hdf5@1.14.6+threadsafe %aocc@5.2.0 ^libaec@1.1.4
+    - netcdf-c+blosc+hdf4+mpi+parallel-netcdf+szip+zstd %aocc@5.2.0
+    - netcdf-cxx4 %aocc@5.2.0
+    - netcdf-fortran %aocc@5.2.0
+    - libjpeg-turbo@3.1.3 %aocc@5.2.0
+    - libtiff@4.7.1 %aocc@5.2.0
+    - sqlite@3.53.1 %aocc@5.2.0
+    - archivetar@0.18.2%aocc@5.2.0 ^python@3.13.13 ^openmpi@5.0.10
+    - archivetar@1.1.0%aocc@5.2.0 ^python@3.13.13 ^openmpi@5.0.10
+    - libsodium@1.0.22 %aocc@5.2.0
+    - r@4.6.1 %c,cxx=aocc@5.2.0 %fortran=gcc@14.4.0 ^flexiblas/o6j2v35 # gcc flexiblas
+    - r@4.5.3 %c,cxx=aocc@5.2.0 %fortran=gcc@14.4.0 ^flexiblas/o6j2v35 # gcc flexiblas
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi %aocc@5.2.0
+    - mumps +complex+double+float+metis~parmetis+scotch~mpi ^scotch~mpi %c,fortran=aocc@5.2.0
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
     - fftw+mpi %aocc@5.2.0
-    - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %aocc@5.2.0 ^ffmpeg/avaqiff
+    #- lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %aocc@5.2.0 ^ffmpeg/avaqiff
     #- gromacs+cuda+mpi %aocc@5.2.0
-    - quantum-espresso %aocc@5.2.0 ^fftw/o2447w4
-    - paraview@6.1.1 ^perl/uap4 ^hwloc/s6nl ^openmpi/oupaoka ^boost/se5l5sw
+    #- quantum-espresso %aocc@5.2.0 ^fftw/o2447w4
+    #- paraview@6.1.1 ^perl/uap4 ^hwloc/s6nl ^openmpi/oupaoka ^boost/se5l5sw
     override:
       packages:
         c:
@@ -105,11 +106,11 @@ spack:
         'llvm %aocc':
           template: llvm-stacked.lua
         core_specs:
-        - gcc@14.3.1
-        - gcc-runtime@14.3.1
+        - gcc@14.4.0
+        - gcc-runtime@14.4.0
         - aocc@5.2.0
         exclude:
-        - gcc-runtime@14.3.1
+        - gcc-runtime@14.4.0
         - glibc
         - autoconf
         - compiler-wrapper

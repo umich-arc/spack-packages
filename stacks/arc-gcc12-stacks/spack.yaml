@@ -18,19 +18,18 @@ spack:
     - cmake
     - gmake
     - openmpi@5.0.10+arc
-    - octave
     override:
       packages:
         # Use the installed compiler binaries without importing their build DAG.
         gcc:
           externals:
           - spec: gcc@12.3.0 languages=c,c++,fortran
-            prefix: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.3.1-j5ra
+            prefix: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.4.0-ws7l
             extra_attributes:
               compilers:
-                c: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.3.1-j5ra/bin/gcc
-                cxx: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.3.1-j5ra/bin/g++
-                fortran: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.3.1-j5ra/bin/gfortran
+                c: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.4.0-ws7l/bin/gcc
+                cxx: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.4.0-ws7l/bin/g++
+                fortran: /sw/spack/opt/pkgs/gcc/12.3.0-gcc-14.4.0-ws7l/bin/gfortran
         c:
           require: [gcc@12.3.0]
         cxx:

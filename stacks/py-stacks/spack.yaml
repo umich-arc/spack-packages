@@ -24,11 +24,11 @@ spack:
     override:
       packages:
         c:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         cxx:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         fortran:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         python:
           require:
           - +arc
@@ -62,15 +62,15 @@ spack:
         hash_length: 0
         hide_implicits: true
         core_compilers:
-        - gcc@14.3.1
+        - gcc@14.4.0
         hierarchy:
         - r
         - mpi
         core_specs:
-        - gcc@14.3.1
-        - gcc-runtime@14.3.1
+        - gcc@14.4.0
+        - gcc-runtime@14.4.0
         exclude:
-        - gcc-runtime@14.3.1
+        - gcc-runtime@14.4.0
         - glibc
         - autoconf
         - compiler-wrapper

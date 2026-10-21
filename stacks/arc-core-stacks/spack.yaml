@@ -13,11 +13,10 @@ spack:
   ##########################################################################################
   #                                       Software                                         #
   ##########################################################################################
-
   - group: Base-GCC14-Compiler
     specs:
     - argtable cflags="-Wno-error=implicit-function-declaration"
-    - gcc@14.3.1
+    - gcc@14.4.0
     - python@3.14.7
     - python@3.13.13
     - python@3.11
@@ -36,12 +35,12 @@ spack:
     - libaec@1.1.4
     - libxcrypt+obsolete_api
     - proj@9.7.0 ^libtiff@4.7.1
-    - hdf5@1.14.6+cxx+fortran+hl+threadsafe~mpi ^libaec@1.1.4
-    - hdf5@1.14.6+cxx+fortran+hl+threadsafe+mpi ^libaec@1.1.4
-    - hdf5@2.1+cxx+fortran+hl+threadsafe~mpi ^libaec@1.1.4
-    - netcdf-c+blosc+hdf4+mpi+parallel-netcdf+szip+zstd+jna ^hdf5@1.14.6+cxx+fortran+hl+threadsafe+mpi ^libaec@1.1.4
-    - netcdf-cxx4 ^hdf5@1.14.6+cxx+fortran+hl+threadsafe+mpi ^libaec@1.1.4
-    - netcdf-fortran ^hdf5@1.14.6+cxx+fortran+hl+threadsafe+mpi ^libaec@1.1.4
+    - hdf5@1.14.6+cxx+fortran+hl+threadsafe~mpi+szip ^libaec@1.1.4
+    - hdf5@1.14.6+cxx+fortran+hl+threadsafe+mpi+szip ^libaec@1.1.4
+    - hdf5@2.1+cxx+fortran+hl+threadsafe~mpi+szip ^libaec@1.1.4
+    - netcdf-c+blosc+hdf4+mpi+parallel-netcdf+szip+zstd+jna ^hdf5@1.14.6+cxx+fortran+hl+threadsafe+mpi+szip ^libaec@1.1.4
+    - netcdf-cxx4 ^hdf5@1.14.6+cxx+fortran+hl+threadsafe+mpi+szip ^libaec@1.1.4
+    - netcdf-fortran ^hdf5@1.14.6+cxx+fortran+hl+threadsafe+mpi+szip ^libaec@1.1.4
     - libjpeg-turbo@3.1.3
     - libtiff@4.7.1
     - libtiff@4.0.10
@@ -54,33 +53,46 @@ spack:
     - r@4.3.1+X+arc
     - py-mpi4py ^python@3.13.13 ^openmpi@5.0.10
     - fiji@2026.03.07
-    - cuda@13
+    - cuda@13.3.0
     - fftw~mpi
     - fftw+mpi
     - fftw+mpi ^mvapich2
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi
+    - mumps +complex~double+float+metis~parmetis+scotch~mpi ^scotch~mpi ^openblas/ndsuya3
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi ^openblas/ndsuya3 # using glibc libm
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi ^mvapich2 ^openblas/ndsuya3
     - ruby
-    - julia cpu_target=znver5
-    - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %gcc@14.3.1 ^ffmpeg/ipusu3b
-    - gromacs+cuda+mpi %gcc@14.3.1
-    - quantum-espresso %gcc@14.3.1 ^fftw/q2kkuso
+    - julia@1.12.6 cpu_target=znver5
+    #
+    - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %gcc@14.4.0 ^ffmpeg/j47vi2f ^hdf5/a2j2m5f # force hdf5 from earlier spec to avoid hdf5@2.1
+    - gromacs+cuda+mpi %gcc@14.4.0
+    - quantum-espresso %gcc@14.4.0 ^fftw/m26yrbg
+    #
     - rclone
-    - jags
-    - nco ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
+    - jags ^openblas/ndsuya3
+    - nco ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi+szip@1.14.6
     - pgplot
-    - ncview ^libxaw@1.0.15 ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi@1.14.6
+    - ncview ^libxaw@1.0.15 ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi+szip@1.14.6
     - gh
     - nvtop
-    - gdal/wj3bifx
+    #- gdal/wj3bifx # comes from r-stacks
+    - maven
+    - amdlibm ^python
+    - mpifileutils@0.12
+    - cmake
+    - gmake
+    - nasm
+    - yasm
+    - pbzip2 ^bzip2/5wiopfv #os external
+    - llama-cpp@0.6.0 ^openblas/ndsuya3
     override:
       packages:
         c:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         cxx:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         fortran:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         python:
           require:
           - "+arc"
@@ -93,7 +105,7 @@ spack:
         hdf5:
           prefer:
           - "@2.1"
-          - "+cxx+fortran+hl+mpi"
+          - "+cxx+fortran+hl+mpi+szip"
         boost:
           prefer:
           - "~mpi"
@@ -103,19 +115,19 @@ spack:
     - intel-oneapi-mpi@2021.18.0
     - aocc@5.2.0 +license-agreed
     - nvhpc@26.5
-    - llvm/ganxupa ^python@3.10.19
     - gcc@10.3.0+binutils
     - gcc@12.3.0+binutils
-    - go ^gcc/o4xno4x
+    - go@1.26.5
     - rust
+    - cairo@1.18.2
     override:
       packages:
         c:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         cxx:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         fortran:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         python:
           require:
           - "+arc"
@@ -125,21 +137,27 @@ spack:
   - group: imaging
     specs:
     - freesurfer
-    - vtk/mby2353
-    - vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10
-    - vtk~mpi ^freetype@2.14.3 ^proj@8.1.0
-    - fsl@6.0.5.2+cuda cuda_arch=80 ^openblas@0.3.33
+    #- vtk/mby2353
+    #- vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10
+    #- vtk~mpi ^freetype@2.14.3 ^proj@8.1.0
+    - fsl@6.0.5.2+cuda cuda_arch=80 ^openblas@0.3.33 ^vtk~mpi
+    #
+    # MPI Paraview and Tomviz
+    - paraview@6.1.1+cuda+mpi+qt+raytracing+hdf5+python cuda_arch=80 ^ninja@1.13.2 ^python@3.13 ^glx/t7nnuka ^py-mpi4py/bmp5z4d
+    - tomviz@3.0.0 ^python@3.13 ^paraview/e2ybexo
+    #
+    # NO-MPI Paraview and Tomviz
+    - paraview@6.1.1~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^python@3.13 ^glx/t7nnuka
+    - paraview@5~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^python@3.13
+    - tomviz@3.0.0 ^python@3.13 ^paraview/r6lmfk5
     override:
       packages:
         c:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         cxx:
-          prefer: [gcc@14.3.1]
+          prefer: [gcc@14.4.0]
         fortran:
-          prefer: [gcc@14.3.1]
-  - group: paraview
-    specs:
-    - paraview@6.1.1+cuda+mpi+qt+raytracing+hdf5 cuda_arch=80 ^ninja@1.13.2 ^python/c3sfkjb ^meson@1.11.1
+          prefer: [gcc@14.4.0]
   concretizer:
     unify: false
     reuse: true
@@ -181,16 +199,16 @@ spack:
             'zlib-ng target=x86_64': x86_64
             'zstd target=x86_64': x86_64
         core_compilers:
-          - gcc@14.3.1
+          - gcc@14.4.0
         hierarchy:
           - r
           - mpi
         core_specs:
-        - gcc@14.3.1
-        - gcc-runtime@14.3.1
+        - gcc@14.4.0
+        - gcc-runtime@14.4.0
         - archivetar@1.1.0
         exclude:
-        - gcc-runtime@14.3.1
+        - gcc-runtime@14.4.0
         - glibc
         - autoconf
         - compiler-wrapper

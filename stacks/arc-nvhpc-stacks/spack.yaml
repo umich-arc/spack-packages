@@ -65,7 +65,7 @@ spack:
           gh: 'github-cli/{version}'
         hash_length: 0
         core_compilers:
-          - gcc@14.3.1
+          - gcc@14.4.0
         hierarchy:
           - r
           - mpi
@@ -75,12 +75,12 @@ spack:
         archivetar:
           autoload: none
         core_specs:
-        - gcc@14.3.1
-        - gcc-runtime@14.3.1
+        - gcc@14.4.0
+        - gcc-runtime@14.4.0
         - aocc@5.2.0
         - nvhpc@26.5
         exclude:
-        - gcc-runtime@14.3.1
+        - gcc-runtime@14.4.0
         - glibc
         - autoconf
         - compiler-wrapper
