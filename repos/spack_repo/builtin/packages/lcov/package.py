@@ -22,7 +22,6 @@ class Lcov(MakefilePackage):
     license("GPL-2.0-or-later")
 
     version("master", branch="master")
-    version("2.6", sha256="67a45db99b8ef0260c3fac9a2e3749fd8fa350a15e235dd3c29b356d97755c75")
     version("2.5", sha256="7e5e5a154bd5f3557659c328cab376764e7abd238bb403c424472c296b175126")
     version("2.4", sha256="3457825c6b2fe4ef77c782b82a23875c84a3c955243823f05d8f2dec0d455820")
     version("2.3.2", sha256="6fed6cf48757d5083202be3356dfa6d64afa12d96d691745fad7e4c9ebe90bfa")

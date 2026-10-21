@@ -47,6 +47,7 @@ spack:
           paraview~mpi~cuda: 'paraview/{version}-nompicuda'
           ninja: 'ninja/{version}-py{^python.version.up_to_2}'
         hash_length: 0
+        hide_implicits: true
         all:
           suffixes:
             # Keep distinct builds from overwriting modules owned by earlier stacks.
