@@ -60,6 +60,10 @@ class Proj(CMakePackage, AutotoolsPackage):
     version("4.9.2", sha256="60bf9ad1ed1c18158e652dfff97865ba6fb2b67f1511bc8dceae4b3c7e657796")
     version("4.9.1", sha256="fca0388f3f8bc5a1a803d2f6ff30017532367992b30cf144f2d39be88f36c319")
 
+    variant("tiff", default=True, when="@7:", description="Enable TIFF support")
+    variant("shared", default=True, description="Enable shared libraries")
+    variant("pic", default=False, description="Enable position-independent code (PIC)")
+
     patch(
         "https://github.com/OSGeo/PROJ/commit/3f38a67a354a3a1e5cca97793b9a43860c380d95.patch?full_index=1",
         sha256="dc620ff1bbcc0ef4130d53a40a8693a1e2e72ebf83bd6289f1139d0f1aad2a40",
@@ -99,6 +103,9 @@ class Proj(CMakePackage, AutotoolsPackage):
         # CURL_LIBRARIES, patch to correct that useage
         # fixed in upstream proj as of 9
         patch("proj_8_curl_libraries.patch", when="@8")
+
+        # PROJ 9.7.0 enables a warning flag that GCC 8.5.0 does not support.
+        patch("proj-9.7.0-gcc-8.5.0.patch", when="@9.7.0 %gcc@8.5.0")
 
     with when("build_system=autotools"):
         depends_on("pkgconfig", when="@6:", type="build")
