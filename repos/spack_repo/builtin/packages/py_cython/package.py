@@ -54,7 +54,7 @@ class PyCython(PythonPackage):
 
     # Based on PyPI wheel availability
     with default_args(type=("build", "link", "run")):
-        depends_on("python@:3.14")
+        depends_on("python@:3.15")
         depends_on("python@:3.13", when="@:3.1.2")
         depends_on("python@:3.12", when="@:3.0.10")
         depends_on("python@:3.11", when="@:3.0.3")  # Cythonize still used distutils

@@ -58,20 +58,8 @@ class Python(Package):
     version("3.15.1", sha256="133d85e118dc32621cda1d9d1d7d9694fe0c5e82bc339a7d528c109fe8b36387")
     version("3.14.9", sha256="8b47e85ee67e93945e93620a051a8f44bfc1e9735ed67075d166f4a74b7a060b")
     version("3.13.17", sha256="9cb057caa588f122577a5054a22531cd9c23ab6706f1a19bc95a55380a895177")
-    version("3.12.15", sha256="de1a241a519e0a3374fea98988d0b52c886743f9d953f23be8269cc7b59c5fab")
-    version("3.11.17", sha256="53cdee63ac4bf12387b7b33a53d3b1f8f4941cad73807a7b4fe91bb001ef004a")
-    version("3.10.22", sha256="9448b34d16f8e3db0964ac3ed9fb283197747543c2c021f283ffd2c8b7287357")
-    version("3.13.15", sha256="c28d9d213c09b5b5ab2c29812950e12f746999e099b82894231be954b26baed9")
-    version("3.12.14", sha256="6c6df908d2c3fd24e6d76869e92542abd0f33aec9dfc18df8875f89660286d43")
-    version("3.11.16", sha256="6c0bd76ab0ec7d94ed400b1497f01ac6c7751c8822615ee0855a3eb2d893ea76")
-    version("3.10.21", sha256="f276987f06270ae6c1fb4da620bd105edf78c31368c2f7e85e6c1d51c560b04b")
-    version("3.14.7", sha256="62859805f6fdf25e2bcbf3fa3217801e1996887ca33e6a2af80674bdfa2dbe07")
-    version("3.14.5", sha256="9c22bfe9939a6c5418fc74b289a5f1cc41859ae82ac6b163016b5844bd0a86bc")
-    version("3.13.13", sha256="f9cde7b0e2ec8165d7326e2a0f59ea2686ce9d0c617dbbb3d66a7e54d31b74b9")
-    version("3.12.14", sha256="6c6df908d2c3fd24e6d76869e92542abd0f33aec9dfc18df8875f89660286d43")
-    version("3.11.15", sha256="f4de1b10bd6c70cbb9fa1cd71fc5038b832747a74ee59d599c69ce4846defb50")
-    version("3.10.20", sha256="4ff5fd4c5bab803b935019f3e31d7219cebd6f870d00389cea53b88bbe935d1a")
 
+    """
     # Deprecated because newer bug fix patch releases exist
     with default_args(deprecated=True):
         version(
@@ -95,6 +83,7 @@ class Python(Package):
         version(
             "3.14.0", sha256="88d2da4eed42fa9a5f42ff58a8bc8988881bd6c547e297e46682c2687638a851"
         )
+        version("3.13.15", sha256="c28d9d213c09b5b5ab2c29812950e12f746999e099b82894231be954b26baed9")
         version(
             "3.13.16", sha256="cfac63bddf956deafb1172ca131ae5dcaafd6f95056086e233fca205593ed427"
         )
@@ -134,6 +123,7 @@ class Python(Package):
         version(
             "3.13.0", sha256="12445c7b3db3126c41190bfdc1c8239c39c719404e844babbd015a1bc3fafcd4"
         )
+        version("3.12.14", sha256="6c6df908d2c3fd24e6d76869e92542abd0f33aec9dfc18df8875f89660286d43")
         version(
             "3.12.14", sha256="6c6df908d2c3fd24e6d76869e92542abd0f33aec9dfc18df8875f89660286d43"
         )
@@ -155,6 +145,14 @@ class Python(Package):
         version(
             "3.12.7", sha256="73ac8fe780227bf371add8373c3079f42a0dc62deff8d612cd15a618082ab623"
         )
+        version("3.11.16", sha256="6c0bd76ab0ec7d94ed400b1497f01ac6c7751c8822615ee0855a3eb2d893ea76")
+        version("3.10.21", sha256="f276987f06270ae6c1fb4da620bd105edf78c31368c2f7e85e6c1d51c560b04b")
+        version("3.14.7", sha256="62859805f6fdf25e2bcbf3fa3217801e1996887ca33e6a2af80674bdfa2dbe07")
+        version("3.14.5", sha256="9c22bfe9939a6c5418fc74b289a5f1cc41859ae82ac6b163016b5844bd0a86bc")
+        version("3.13.13", sha256="f9cde7b0e2ec8165d7326e2a0f59ea2686ce9d0c617dbbb3d66a7e54d31b74b9")
+        version("3.12.14", sha256="6c6df908d2c3fd24e6d76869e92542abd0f33aec9dfc18df8875f89660286d43")
+        version("3.11.15", sha256="f4de1b10bd6c70cbb9fa1cd71fc5038b832747a74ee59d599c69ce4846defb50")
+        version("3.10.20", sha256="4ff5fd4c5bab803b935019f3e31d7219cebd6f870d00389cea53b88bbe935d1a")
         version(
             "3.11.14", sha256="563d2a1b2a5ba5d5409b5ecd05a0e1bf9b028cf3e6a6f0c87a5dc8dc3f2d9182"
         )
@@ -164,6 +162,7 @@ class Python(Package):
         version(
             "3.11.11", sha256="883bddee3c92fcb91cf9c09c5343196953cbb9ced826213545849693970868ed"
         )
+
         version(
             "3.10.20", sha256="4ff5fd4c5bab803b935019f3e31d7219cebd6f870d00389cea53b88bbe935d1a"
         )
@@ -200,6 +199,7 @@ class Python(Package):
         version(
             "3.6.15", sha256="54570b7e339e2cfd72b29c7e2fdb47c0b7b18b7412e61de5b463fc087c13b043"
         )
+    """
 
     extendable = True
 

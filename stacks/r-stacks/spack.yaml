@@ -148,3 +148,5 @@ spack:
         - python-venv
         gcc-runtime:
           template: gcc-runtime.lua
+        python:
+          template: python.lua

@@ -14,8 +14,9 @@ spack:
 
   - group: Base-AOCC-Compiler
     specs:
-    - python@3.13.13 %aocc@5.2.0
-    - python@3.14.7 %aocc@5.2.0
+    - python@3.15.1 %aocc@5.2.0
+    - python@3.14.9 %aocc@5.2.0
+    - python@3.13.17 %aocc@5.2.0
     - armadillo ^flexiblas
     - flexiblas@3.4.2 %aocc@5.2.0
     - boost@1.90.0~mpi %aocc@5.2.0
@@ -33,8 +34,8 @@ spack:
     - libjpeg-turbo@3.1.3 %aocc@5.2.0
     - libtiff@4.7.1 %aocc@5.2.0
     - sqlite@3.53.1 %aocc@5.2.0
-    - archivetar@0.18.2%aocc@5.2.0 ^python@3.13.13 ^openmpi@5.0.10
-    - archivetar@1.1.0%aocc@5.2.0 ^python@3.13.13 ^openmpi@5.0.10
+    - archivetar@0.18.2%aocc@5.2.0 ^python@3.13.17 ^openmpi@5.0.10
+    - archivetar@1.1.0%aocc@5.2.0 ^python@3.13.17 ^openmpi@5.0.10
     - libsodium@1.0.22 %aocc@5.2.0
     - r@4.6.1 %c,cxx=aocc@5.2.0 %fortran=gcc@14.4.0 ^flexiblas/o6j2v35 # gcc flexiblas
     - r@4.5.3 %c,cxx=aocc@5.2.0 %fortran=gcc@14.4.0 ^flexiblas/o6j2v35 # gcc flexiblas
@@ -42,10 +43,10 @@ spack:
     - mumps +complex+double+float+metis~parmetis+scotch~mpi ^scotch~mpi %c,fortran=aocc@5.2.0
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
     - fftw+mpi %aocc@5.2.0
-    #- lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %aocc@5.2.0 ^ffmpeg/avaqiff
-    #- gromacs+cuda+mpi %aocc@5.2.0
-    #- quantum-espresso %aocc@5.2.0 ^fftw/o2447w4
-    #- paraview@6.1.1 ^perl/uap4 ^hwloc/s6nl ^openmpi/oupaoka ^boost/se5l5sw
+    - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %aocc@5.2.0 ^ffmpeg/b4dlutw
+    #- gromacs+cuda+mpi %aocc@5.2.0 # is failing to build with aocc 5.2.0, needs investigation
+    - quantum-espresso %aocc@5.2.0 ^fftw/ufb4n3h
+    - paraview@6.1.1
     override:
       packages:
         c:
@@ -105,6 +106,8 @@ spack:
         #  autoload: none
         'llvm %aocc':
           template: llvm-stacked.lua
+        python:
+          template: python.lua
         core_specs:
         - gcc@14.4.0
         - gcc-runtime@14.4.0
