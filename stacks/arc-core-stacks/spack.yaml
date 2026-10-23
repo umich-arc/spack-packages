@@ -17,11 +17,9 @@ spack:
     specs:
     - argtable cflags="-Wno-error=implicit-function-declaration"
     - gcc@14.4.0
-    - python@3.14.7
-    - python@3.13.13
-    - python@3.11
-    - python@3.9.24
-    - python@3.10.19
+    - python@3.15.1
+    - python@3.14.9
+    - python@3.13.17
     - miniforge3@26.3.2-3+notebook+pytorch pytorch-cuda=13
     - armadillo ^flexiblas
     - flexiblas@3.4.2
@@ -45,24 +43,24 @@ spack:
     - libtiff@4.7.1
     - libtiff@4.0.10
     - sqlite@3.53.1
-    - archivetar@1.1.0 ^python@3.13.13 ^openmpi@5.0.10
+    - archivetar@1.1.0 ^python@3.13.17 ^openmpi@5.0.10
     - libsodium@1.0.22
     - libgd@2.3.3
     - r@4.6.1
     - r@4.5.3
     - r@4.3.1+X+arc
-    - py-mpi4py ^python@3.13.13 ^openmpi@5.0.10
+    - py-mpi4py ^python@3.13.17 ^openmpi@5.0.10
     - fiji@2026.03.07
     - cuda@13.3.0
     - fftw~mpi
     - fftw+mpi
     - fftw+mpi ^mvapich2
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
-    - mumps +complex~double+float+metis~parmetis+scotch~mpi ^scotch~mpi ^openblas/ndsuya3
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi ^openblas/ndsuya3 # using glibc libm
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi ^mvapich2 ^openblas/ndsuya3
+    - mumps +complex~double+float+metis~parmetis+scotch~mpi ^scotch~mpi #^openblas/ndsuya3
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi #^openblas/ndsuya3 # using glibc libm
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi ^mvapich2 #^openblas/ndsuya3
     - ruby
-    - julia@1.12.6 cpu_target=znver5
+    - julia@1.12.6 cpu_target=znver5 ^python@3.13.17
     #
     - lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %gcc@14.4.0 ^ffmpeg/j47vi2f ^hdf5/a2j2m5f # force hdf5 from earlier spec to avoid hdf5@2.1
     - gromacs+cuda+mpi %gcc@14.4.0
@@ -77,7 +75,7 @@ spack:
     - nvtop
     #- gdal/wj3bifx # comes from r-stacks
     - maven
-    - amdlibm ^python
+    - amdlibm ^python/n2kczjv
     - mpifileutils@0.12
     - cmake
     - gmake
@@ -96,6 +94,7 @@ spack:
         python:
           require:
           - "+arc"
+          - one_of: ["@3.13.17", "@3.14.9", "@3.15.1"]
         openmpi:
           require:
           - "+arc"
@@ -118,7 +117,7 @@ spack:
     - gcc@10.3.0+binutils
     - gcc@12.3.0+binutils
     - go@1.26.5
-    - rust
+    - rust ^python@3.13.17
     - cairo@1.18.2
     override:
       packages:
@@ -131,25 +130,21 @@ spack:
         python:
           require:
           - "+arc"
+          - one_of: ["@3.13.17", "@3.14.9", "@3.15.1"]
         openmpi:
           require:
           - "+arc"
   - group: imaging
     specs:
     - freesurfer
-    #- vtk/mby2353
-    #- vtk@9.0.1+qt~versioned_install ^qt@5.15.2^libtiff@4.0.10
-    #- vtk~mpi ^freetype@2.14.3 ^proj@8.1.0
     - fsl@6.0.5.2+cuda cuda_arch=80 ^openblas@0.3.33 ^vtk~mpi
     #
-    # MPI Paraview and Tomviz
-    - paraview@6.1.1+cuda+mpi+qt+raytracing+hdf5+python cuda_arch=80 ^ninja@1.13.2 ^python@3.13 ^glx/t7nnuka ^py-mpi4py/bmp5z4d
-    - tomviz@3.0.0 ^python@3.13 ^paraview/e2ybexo
+    # MPI Paraview and Tomviz, need to use a single glx hash
+    - tomviz@3.0.0 ^python@3.13.17 ^paraview@6.1.1+cuda+mpi+qt+raytracing+hdf5+python cuda_arch=80 ^ninja@1.13.2 ^glx/t7nnuka ^python@3.13.17
     #
-    # NO-MPI Paraview and Tomviz
-    - paraview@6.1.1~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^python@3.13 ^glx/t7nnuka
-    - paraview@5~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^python@3.13
-    - tomviz@3.0.0 ^python@3.13 ^paraview/r6lmfk5
+    # NO-MPI Paraview and Tomviz, need to use a single glx hash
+    - paraview@5~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^python@3.13.17 ^glx/t7nnuka
+    - tomviz@3.0.0 ^python@3.13.17 ^paraview@6.1.1~cuda~mpi+qt+raytracing+hdf5+python ^ninja@1.13.2 ^glx/t7nnuka ^python@3.13.17
     override:
       packages:
         c:
@@ -208,6 +203,10 @@ spack:
         - gcc-runtime@14.4.0
         - archivetar@1.1.0
         exclude:
+        #- glew
+        #- mesa
+        #- glx
+        #- mesa-glu
         - gcc-runtime@14.4.0
         - glibc
         - autoconf
@@ -220,6 +219,8 @@ spack:
         - python-venv
         gcc-runtime:
           template: gcc-runtime.lua
+        python:
+          template: python.lua
         miniforge3:
           environment:
             set:

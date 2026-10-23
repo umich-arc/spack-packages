@@ -19,7 +19,7 @@ spack:
   - group: Python stacks
     specs:
     - py-globus-cli
-    - py-uv
+    - py-uv@0.13.4
     - awscli
     override:
       packages:
@@ -79,3 +79,5 @@ spack:
         - python-venv
         gcc-runtime:
           template: gcc-runtime.lua
+        python:
+          template: python.lua
