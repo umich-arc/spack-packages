@@ -59,7 +59,6 @@ class Python(Package):
     version("3.14.9", sha256="8b47e85ee67e93945e93620a051a8f44bfc1e9735ed67075d166f4a74b7a060b")
     version("3.13.17", sha256="9cb057caa588f122577a5054a22531cd9c23ab6706f1a19bc95a55380a895177")
 
-    """
     # Deprecated because newer bug fix patch releases exist
     with default_args(deprecated=True):
         version(
@@ -199,8 +198,6 @@ class Python(Package):
         version(
             "3.6.15", sha256="54570b7e339e2cfd72b29c7e2fdb47c0b7b18b7412e61de5b463fc087c13b043"
         )
-    """
-
     extendable = True
 
     variant(
@@ -260,6 +257,17 @@ class Python(Package):
     depends_on("cmake", type="build")
     depends_on("gmake", type="build")
     depends_on("pkgconfig", type="build")
+
+    resource(
+        name="pip-bootstrap",
+        url="https://files.pythonhosted.org/packages/py3/p/pip/pip-26.2.2-py3-none-any.whl",
+        checksum="fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70",
+        when="@3.10:3.12",
+        placement={
+            "pip-26.2.2-py3-none-any.whl": "Lib/ensurepip/_bundled/pip-26.2.2-py3-none-any.whl"
+        },
+        expand=False,
+    )
 
     conflicts("platform=windows", when="+arc", msg="+arc uses the Unix configure/make build")
     requires("+shared", when="+arc", msg="+arc passes --enable-shared")
@@ -456,6 +464,12 @@ class Python(Package):
         return url.format(re.split("[a-z]", str(version))[0], version)
 
     def patch(self):
+        if self.spec.satisfies("@3.10:3.12"):
+            FileFilter("Lib/ensurepip/__init__.py").filter(
+                r'^_PIP_VERSION = "[^"]+"$',
+                '_PIP_VERSION = "26.2.2"',
+            )
+
         # NOTE: Python's default installation procedure makes it possible for a
         # user's local configurations to change the Spack installation.  In
         # order to prevent this behavior for a full installation, we must

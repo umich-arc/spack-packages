@@ -16,15 +16,21 @@ class Rtidyverse(RCollectivePackage):
     step."""
 
     has_code = False
-    metalist = {
-        "2.0.0_R4.6.1": [("r", "4.6.1"), ("r-tidyverse", "2.0.0")],
-        "2.0.0_R4.5.3": [("r", "4.5.3"), ("r-tidyverse", "2.0.0")],
-    }
-
-    for key in metalist:
-        version(key)
-        for pairing in metalist[key]:
-            depends_on(f"{pairing[0]}@{pairing[1]}", when=f"@{key}", type="run")
+    version("2.0.0_R4.6.1")
+    version("2.0.0_R4.5.3")
+    r_dependencies = ("tidyverse",)
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
+
+    depends_on("r@4.6.1", when="@2.0.0_R4.6.1", type=("build", "run"))
+    depends_on("r@4.5.3", when="@2.0.0_R4.5.3", type=("build", "run"))
+    depends_on("libpng", type=("build", "link", "run"))
+    depends_on("libtiff", type=("build", "link", "run"))
+    depends_on("jpeg", type=("build", "link", "run"))
+    depends_on("pkgconfig", type="build")
+
+    #def setup_build_environment(self, env: EnvironmentModifications) -> None:
+    #    for name in ("libpng", "libtiff", "jpeg"):
+    #        for directory in reversed(self.spec[name].libs.directories):
+   #             env.prepend_path("LD_LIBRARY_PATH", directory)

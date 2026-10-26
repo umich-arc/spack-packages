@@ -12,12 +12,10 @@ class Rchipenrich(RCollectivePackage):
 
     license("MIT")
     has_code = False
-    metalist = {"2.36.0_R4.6.1": [("r", "4.6.1"), ("r-chipenrich", "2.36.0")]}
-
-    for key, value in metalist.items():
-        version(key)
-        for pairing in value:
-            depends_on(f"{pairing[0]}@{pairing[1]}", when=f"@{key}", type="run")
+    version("2.36.0_R4.6.1")
+    r_dependencies = ("chipenrich",)
+    bioc_version = "3.23"
+    depends_on("r@4.6.1", when="@2.36.0_R4.6.1", type=("build", "run"))
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")

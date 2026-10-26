@@ -19,7 +19,9 @@ class Rdeseq2(RCollectivePackage):
 
     license("LGPL-3.0-or-later")
 
-    version("1.52.0", sha256="8c91699286336350e66eec132ce6fdf5bb4af78e2a4d015a5a61224f62a95984")
+    version("1.52.0")
+    r_dependencies = ("DESeq2",)
+    bioc_version = "3.23"
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")

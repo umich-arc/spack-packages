@@ -248,3 +248,11 @@ spack:
           environment:
             prepend_path:
               MODULEPATH: /sw/spack/opt/Compilers/gcc/12.3.0/modules/linux-rhel10-x86_64/Core
+        gcc@14.4.0:
+          environment:
+            prepend_path:
+              PATH: /sw/spack/base-gcc/opt/gcc/14.4.0-gcc-14.3.1-oy7l/bin
+              LD_LIBRARY_PATH: /sw/spack/base-gcc/opt/gcc/14.4.0-gcc-14.3.1-oy7l/lib64
+              MANPATH: /sw/spack/base-gcc/opt/gcc/14.4.0-gcc-14.3.1-oy7l/share/man
+              ACLOCAL_PATH: /sw/spack/base-gcc/opt/gcc/14.4.0-gcc-14.3.1-oy7l/share/aclocal
+              PKG_CONFIG_PATH: /sw/spack/base-gcc/opt/gcc/14.4.0-gcc-14.3.1-oy7l/lib/pkgconfig

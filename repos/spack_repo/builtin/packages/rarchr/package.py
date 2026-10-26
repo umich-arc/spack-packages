@@ -11,14 +11,15 @@ class Rarchr(RCollectivePackage):
     """Easily install the ArchR environment"""
 
     has_code = False
-    metalist = {
-        "1.0.3_R4.6.1": [("r", "4.6.1"), ("r-archr", "1.0.3"), ("gsl", "2.8"), ("py-macs2", "2.2.8")]
-    }
+    version("1.0.3_R4.6.1")
 
-    for key, value in metalist.items():
-        version(key)
-        for pairing in value:
-            depends_on(f"{pairing[0]}@{pairing[1]}", when=f"@{key}", type="run")
+    r_github_dependencies = {"ArchR": "GreenleafLab/ArchR@v1.0.3"}
+    depends_on("r@4.6.1", when="@1.0.3_R4.6.1", type=("build", "run"))
+    depends_on("gsl@2.8", when="@1.0.3_R4.6.1", type=("build", "run"))
+    depends_on("py-macs2@2.2.8", when="@1.0.3_R4.6.1", type="run")
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
+
+    def setup_build_environment(self, env: EnvironmentModifications) -> None:
+        env.prepend_path("LD_LIBRARY_PATH", self.spec["gsl"].prefix.lib)
