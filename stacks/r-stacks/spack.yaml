@@ -7,16 +7,6 @@ spack:
     install_tree:
       root: /sw/spack/opt/pkgs
   view: false
-  packages:
-    r:
-      externals::
-      - spec: r@4.3.1
-        prefix: /sw/spack/opt/pkgs/r/4.3.1-gcc-14.4.0-hgr2
-      - spec: r@4.5.3
-        prefix: /sw/spack/opt/pkgs/r/4.5.3-gcc-14.4.0-vz5n
-      - spec: r@4.6.1
-        prefix: /sw/spack/opt/pkgs/r/4.6.1-gcc-14.4.0-syb3
-      buildable: false
   specs:
   ##########################################################################################
   #                                       Software                                         #
@@ -24,15 +14,15 @@ spack:
   - group: R stacks
     specs:
     - matrix:
-      - - rtidyverse@2.0.0_R4.6.1
-        - rgeospatial@1.5-18_R4.5.3 ^libtiff@4.7.1 ^gdal ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk
-        - rtidyverse@2.0.0_R4.6.1 
-        - rgeospatial@1.5-18_R4.6.1 ^libtiff@4.7.1 ^gdal ^poppler@21.09.0 ^proj@9.7.0 ^geos@3.14.1 ^netcdf-fortran@4.6.2 ^hdf5@1.14.6 ^openjdk 
-        - rseurat@5.5.1_R4.6.1 ^r-reticulate@1.46.0 ^r-dotcall64@1.2
-        - rmonocle3@1.4.27_R4.6.1 ^hdf+shared
+      - - rtidyverse@2.0.0_R4.6.1 ^r/syb3ml3
+        - rtidyverse@2.0.0_R4.5.3 ^r/vz5no6r
+        - rgeospatial@1.5-18_R4.5.3 ^r/vz5no6r 
+        - rgeospatial@1.5-18_R4.6.1 ^r/syb3ml3
+        - rseurat@5.5.1_R4.6.1 #^r-reticulate@1.46.0 ^r-dotcall64@1.2
+        #- rmonocle3@1.4.27_R4.6.1 ^hdf+shared
         - rglmgampoi@1.24.0_R4.6.1 
         - rchipenrich@2.36.0_R4.6.1 
-        #- rarchr@1.0.3_R4.6.1 ^r@4.6.1/hsmq64i
+        - rarchr@1.0.3_R4.6.1 ^r/syb3ml3 ^py-macs2@2.2.8
       - - '%c,cxx=gcc@14.4.0'
     override:
       packages:
@@ -50,31 +40,7 @@ spack:
           - +arc
         r:
           require:
-          - +arc
-        r-proxy:
-          require: ['@0.4-29']
-        r-rpart:
-          require: ['@4.1.27']
-        r-geometries:
-          require: ['@0.2.5']
-        r-zoo:
-          require: ['@1.8-15']
-        r-igraph:
-          require: ['@2.3.3']
-        r-spatstat-random:
-          require: ['@3.5-1']
-        r-maps:
-          require: ['@3.4.3']
-        r-jsonify:
-          require: ['@1.2.3']
-        r-s2:
-          require: ['@1.1.12']
-        r-rcpp:
-          require: ['@1.1.0:']
-        r-rapidjsonr:
-          require: ['@1.2.1:']
-        r-cpp11:
-          require: ['@0.5.0:']
+          - one_of: ['@4.3.1', '@4.5.3', '@4.6.1']
         gdal:
           require:
           - +blosc+arrow+hdf4+hdf5+liblzma+libxml2+poppler+parquet+libaec+zstd+webp+sfcgal+pcre2+lz4+deflate+avif+freexl+jxl+heif
@@ -95,15 +61,12 @@ spack:
         highway:
           prefer:
           - "@1.0.7"
-        meson:
+        boost:
           prefer:
-          - "/jtv2mgc"
-        curl:
+          - "/qvozv7c"
+        py-macs2:
           require:
-          - "/mlxgqdb"
-        compiler-wrapper:
-          prefer:
-          - "/ab637if"
+          - "^py-cython@0.29.36 ^python@3.11"
   concretizer:
     unify: false
     reuse: true
@@ -113,8 +76,8 @@ spack:
   modules:
     default:
       roots:
-        lmod: /sw/spack/opt/RStacks
-        tcl: /sw/spack/opt/RStacks
+        lmod: /sw/spack/opt/modules
+        tcl: /sw/spack/opt/modules
       lmod:
         projections:
           r: R/{version}

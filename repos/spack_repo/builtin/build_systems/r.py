@@ -1,7 +1,9 @@
 # Copyright Spack Project Developers. See COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
-from typing import List, Optional, Tuple
+import json
+import re
+from typing import Dict, List, Optional, Tuple
 
 import spack.llnl.util.tty as tty
 from spack.package import join_path
@@ -17,7 +19,6 @@ from spack.package import (
     Spec,
     Prefix,
     build_system,
-    variant,
     when,
     HeaderList,
     LibraryList,
@@ -134,138 +135,170 @@ class RPackage(Package):
 
 @register_builder("r_collective")
 class RCollectiveBuilder(BuilderWithDefaults):
-    """Create a unified R prefix from installed Spack packages."""
+    """Install R packages and their dependencies into one collective prefix."""
 
     phases = ("install",)
 
     def install(self, pkg, spec, prefix):
-        r_spec = pkg.r_spec
+        packages = tuple(pkg.r_dependencies)
+        github_dependencies = dict(pkg.r_github_dependencies)
 
-        tty.info(
-            "Creating R collective with {0}".format(r_spec.format("{name}@{version}/{hash:7}"))
-        )
+        if not packages and not github_dependencies:
+            legacy_packages = []
+            legacy_github_dependencies = {}
+            for dep in spec.dependencies(deptype=("build", "run")):
+                if not dep.name.startswith("r-"):
+                    continue
+                source = str(getattr(dep.package, "url", "") or "")
+                github = re.fullmatch(
+                    r"https?://github\.com/([^/]+)/([^/]+)/archive/refs/tags/([^/]+)\.tar\.gz",
+                    source,
+                )
+                if github:
+                    legacy_github_dependencies[dep.name[2:]] = (
+                        f"{github.group(1)}/{github.group(2)}@{github.group(3)}"
+                    )
+                else:
+                    legacy_packages.append(dep.name[2:])
 
-        mkdirp(prefix)
+            if legacy_packages or legacy_github_dependencies:
+                tty.warn(
+                    f"{pkg.name} still declares R packages as Spack dependencies; "
+                    "move them to r_dependencies to remove them from the Spack DAG"
+                )
+                packages = tuple(sorted(legacy_packages))
+                github_dependencies = legacy_github_dependencies
+            else:
+                raise ValueError(f"{pkg.name} must declare R packages in r_dependencies")
 
-        #
-        # Add R packages belonging to this R interpreter.
-        #
-        extensions = self._r_extensions(spec, r_spec)
+        if len(set(packages)) != len(packages):
+            raise ValueError(f"{pkg.name} has duplicate names in r_dependencies")
+        if any(not re.fullmatch(r"[A-Za-z][A-Za-z0-9.]*", name) for name in packages):
+            raise ValueError(f"{pkg.name} has an invalid R package name in r_dependencies")
+        if set(packages).intersection(github_dependencies):
+            raise ValueError(f"{pkg.name} declares the same package in both R dependency lists")
+        if any(
+            not re.fullmatch(r"[A-Za-z][A-Za-z0-9.]*", name) for name in github_dependencies
+        ):
+            raise ValueError(f"{pkg.name} has an invalid package name in r_github_dependencies")
+        if any(
+            not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:@[A-Za-z0-9._/-]+)?", repo)
+            for repo in github_dependencies.values()
+        ):
+            raise ValueError(f"{pkg.name} has an invalid GitHub package in r_github_dependencies")
 
-        for extension in extensions:
-            tty.info("Adding {0}".format(extension.format("{name}@{version}/{hash:7}")))
+        repositories = dict(pkg.r_repositories)
+        if pkg.bioc_version:
+            bioc = f"https://bioconductor.org/packages/{pkg.bioc_version}"
+            repositories = {
+                "BioCsoft": f"{bioc}/bioc",
+                "BioCann": f"{bioc}/data/annotation",
+                "BioCexp": f"{bioc}/data/experiment",
+                "BioCworkflows": f"{bioc}/workflows",
+                **repositories,
+            }
+        if not repositories:
+            raise ValueError(f"{pkg.name} must configure at least one R repository")
 
-        self._write_manifest(spec, prefix, r_spec, extensions)
-
-    def _r_extensions(self, root_spec: Spec, r_spec: Spec) -> List[Spec]:
-        """Return R extensions belonging to this collective's R."""
-
-        extensions = []
-
-        #
-        # traverse() includes transitive dependencies.
-        #
-        for dep in root_spec.traverse(root=False):
-            if dep.name == "r":
-                continue
-
-            #
-            # Only consider installed packages.
-            #
-            try:
-                dep_pkg = dep.package
-            except Exception:
-                continue
-
-            #
-            # Python packages are extensions. Determine whether this package
-            # extends Python.
-            #
-            try:
-                extendee_spec = dep_pkg.extendee_spec
-            except Exception:
-                extendee_spec = None
-
-            if extendee_spec is None:
-                continue
-
-            if extendee_spec.name != "r":
-                continue
-
-            #
-            # Make sure the extension belongs to the exact R instance
-            # used by this collective.
-            #
-            try:
-                extendee_r = dep["r"]
-            except KeyError:
-                continue
-
-            if extendee_r.dag_hash() != r_spec.dag_hash():
-                continue
-
-            extensions.append(dep)
-
-        return sorted(
-            extensions,
-            key=lambda x: (
-                x.name,
-                str(x.version),
-                x.dag_hash(),
-            ),
-        )
-
-    def _write_manifest(
-        self,
-        root_spec: Spec,
-        prefix: Prefix,
-        r_spec: Spec,
-        extensions: List[Spec],
-    ) -> None:
-        """Record the exact contents of the collective."""
-
+        library = pkg.module.r_lib_dir
         metadata = join_path(prefix, ".spack-r-collective")
+        manifest = join_path(metadata, "packages.tsv")
+        mkdirp(library)
         mkdirp(metadata)
 
-        manifest = join_path(metadata, "packages.txt")
-
-        with open(manifest, "w", encoding="utf-8") as f:
-            f.write("# Generated by RCollectiveBuilder\n")
-            f.write("# collective: " + root_spec.format("{name}@{version}/{hash}") + "\n\n")
-
-            f.write(r_spec.format("{name}@{version} /{hash} {prefix}") + "\n")
-
-            for dep in extensions:
-                f.write(dep.format("{name}@{version} /{hash} {prefix}") + "\n")
+        package_vector = ", ".join(json.dumps(name) for name in packages)
+        repository_vector = ", ".join(
+            f"{json.dumps(name)} = {json.dumps(url)}" for name, url in repositories.items()
+        )
+        install_script = ""
+        if packages:
+            install_script += f"""
+                install.packages(
+                    c({package_vector}),
+                    lib = library,
+                    repos = repos,
+                    dependencies = c("Depends", "Imports", "LinkingTo"),
+                    Ncpus = 1L
+                )
+            """
+        if github_dependencies:
+            github_vector = ", ".join(
+                json.dumps(repo) for repo in github_dependencies.values()
+            )
+            install_script += f"""
+                install.packages("BiocManager", lib = library, repos = repos)
+                repos <- c(BiocManager::repositories(), repos)
+                options(repos = repos)
+                install.packages("remotes", lib = library, repos = repos)
+                .libPaths(c(library, .libPaths()))
+                remotes::install_github(
+                    c({github_vector}),
+                    lib = library,
+                    dependencies = c("Depends", "Imports", "LinkingTo"),
+                    upgrade = "never",
+                    build_vignettes = FALSE
+                )
+            """
+        requested_vector = ", ".join(
+            [json.dumps(name) for name in packages]
+            + [json.dumps(name) for name in github_dependencies]
+        )
+        r_script = f"""
+            library <- {json.dumps(library)}
+            packages <- c({requested_vector})
+            repos <- c({repository_vector})
+            dir.create(library, recursive = TRUE, showWarnings = FALSE)
+            Sys.setenv(R_LIBS_USER = library)
+            .libPaths(c(library, .libPaths()))
+            options(repos = repos)
+            {install_script}
+            installed <- installed.packages(lib.loc = library)
+            missing <- setdiff(packages, installed[, "Package"])
+            if (length(missing)) {{
+                stop("failed to install requested R packages: ",
+                     paste(missing, collapse = ", "))
+            }}
+            write.table(
+                installed[, c("Package", "Version")],
+                file = {json.dumps(manifest)},
+                sep = "\\t",
+                quote = FALSE,
+                row.names = FALSE
+            )
+        """
+        tty.info(
+            f"Installing R packages {', '.join(packages + tuple(github_dependencies))} into {library}"
+        )
+        pkg.module.R("--vanilla", "--slave", "-e", r_script)
 
 
 class RCollectivePackage(RPackage):
-    """
-    RCollectivePackage does not build R modules itself. Instead,
-    it depends on normal Spack R packages and creates a unified prefix
-    containing Python and all R extensions in its dependency DAG.
+    """An R package environment with all R dependencies in one prefix.
 
-    Each dependency remains an independently installed Spack package.
+    Declare R package names in ``r_dependencies``. These packages and their
+    Depends, Imports, and LinkingTo dependencies are installed into a single
+    library in this package's prefix. Use ``depends_on`` only for the R
+    interpreter and non-R build or runtime dependencies. GitHub packages may
+    be declared as package-name-to-repository entries in
+    ``r_github_dependencies``.
     """
 
     build_system_class = "RCollectivePackage"
-
     default_buildsystem = "r_collective"
-
     build_system("r_collective")
 
-    variant(
-        "transitive",
-        default=True,
-        description="Include transitive R extension dependencies",
-    )
+    has_code = False
+    r_dependencies: Tuple[str, ...] = ()
+    r_github_dependencies: Dict[str, str] = {}
+    r_repositories: Dict[str, str] = {"CRAN": "https://cloud.r-project.org"}
+    bioc_version: Optional[str] = None
 
     with when("build_system=r_collective"):
         extends("r")
 
     @property
     def r_spec(self) -> Spec:
-        """R used by this collective."""
+        """R interpreter used by this collective."""
         r, *_ = self.spec.dependencies("r")
         return r
 
