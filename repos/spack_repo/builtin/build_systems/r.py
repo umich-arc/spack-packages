@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 import json
 import re
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import spack.llnl.util.tty as tty
 from spack.package import join_path
@@ -140,10 +140,22 @@ class RCollectiveBuilder(BuilderWithDefaults):
     phases = ("install",)
 
     def install(self, pkg, spec, prefix):
-        packages = tuple(pkg.r_dependencies)
+        declared_dependencies = pkg.r_dependencies
+        if isinstance(declared_dependencies, dict):
+            package_versions = dict(declared_dependencies)
+        elif isinstance(declared_dependencies, (tuple, list)):
+            if len(set(declared_dependencies)) != len(declared_dependencies):
+                raise ValueError(f"{pkg.name} has duplicate names in r_dependencies")
+            package_versions = {name: None for name in declared_dependencies}
+        else:
+            raise ValueError(
+                f"{pkg.name} r_dependencies must be a sequence of names or a "
+                "package-name-to-version mapping"
+            )
+
         github_dependencies = dict(pkg.r_github_dependencies)
 
-        if not packages and not github_dependencies:
+        if not package_versions and not github_dependencies:
             legacy_packages = []
             legacy_github_dependencies = {}
             for dep in spec.dependencies(deptype=("build", "run")):
@@ -166,15 +178,26 @@ class RCollectiveBuilder(BuilderWithDefaults):
                     f"{pkg.name} still declares R packages as Spack dependencies; "
                     "move them to r_dependencies to remove them from the Spack DAG"
                 )
-                packages = tuple(sorted(legacy_packages))
+                package_versions = {name: None for name in sorted(legacy_packages)}
                 github_dependencies = legacy_github_dependencies
             else:
                 raise ValueError(f"{pkg.name} must declare R packages in r_dependencies")
 
-        if len(set(packages)) != len(packages):
-            raise ValueError(f"{pkg.name} has duplicate names in r_dependencies")
+        packages = tuple(package_versions)
         if any(not re.fullmatch(r"[A-Za-z][A-Za-z0-9.]*", name) for name in packages):
             raise ValueError(f"{pkg.name} has an invalid R package name in r_dependencies")
+        if any(
+            version is not None
+            and (
+                not isinstance(version, str)
+                or not re.fullmatch(r"[0-9]+(?:[.-][0-9]+)*", version)
+            )
+            for version in package_versions.values()
+        ):
+            raise ValueError(
+                f"{pkg.name} has an invalid exact version in r_dependencies; "
+                "versions must contain only numeric components separated by '.' or '-'"
+            )
         if set(packages).intersection(github_dependencies):
             raise ValueError(f"{pkg.name} declares the same package in both R dependency lists")
         if any(
@@ -206,20 +229,50 @@ class RCollectiveBuilder(BuilderWithDefaults):
         mkdirp(library)
         mkdirp(metadata)
 
-        package_vector = ", ".join(json.dumps(name) for name in packages)
+        unpinned_packages = tuple(
+            name for name, version in package_versions.items() if version is None
+        )
+        unpinned_package_vector = ", ".join(json.dumps(name) for name in unpinned_packages)
+        pinned_package_versions = {
+            name: version for name, version in package_versions.items() if version is not None
+        }
+        pinned_package_vector = ", ".join(
+            f"{json.dumps(name)} = {json.dumps(version)}"
+            for name, version in pinned_package_versions.items()
+        )
         repository_vector = ", ".join(
             f"{json.dumps(name)} = {json.dumps(url)}" for name, url in repositories.items()
         )
         install_script = ""
-        if packages:
+        if unpinned_packages:
             install_script += f"""
                 install.packages(
-                    c({package_vector}),
+                    c({unpinned_package_vector}),
                     lib = library,
                     repos = repos,
                     dependencies = c("Depends", "Imports", "LinkingTo"),
                     Ncpus = 1L
                 )
+            """
+        if pinned_package_versions or github_dependencies:
+            install_script += """
+                install.packages("remotes", lib = library, repos = repos)
+                .libPaths(c(library, .libPaths()))
+            """
+        if pinned_package_versions:
+            install_script += f"""
+                pinned_packages <- c({pinned_package_vector})
+                for (package in names(pinned_packages)) {{
+                    remotes::install_version(
+                        package = package,
+                        version = unname(pinned_packages[[package]]),
+                        lib = library,
+                        repos = repos,
+                        dependencies = c("Depends", "Imports", "LinkingTo"),
+                        upgrade = "never",
+                        build_vignettes = FALSE
+                    )
+                }}
             """
         if github_dependencies:
             github_vector = ", ".join(
@@ -229,7 +282,6 @@ class RCollectiveBuilder(BuilderWithDefaults):
                 install.packages("BiocManager", lib = library, repos = repos)
                 repos <- c(BiocManager::repositories(), repos)
                 options(repos = repos)
-                install.packages("remotes", lib = library, repos = repos)
                 .libPaths(c(library, .libPaths()))
                 remotes::install_github(
                     c({github_vector}),
@@ -246,6 +298,7 @@ class RCollectiveBuilder(BuilderWithDefaults):
         r_script = f"""
             library <- {json.dumps(library)}
             packages <- c({requested_vector})
+            pinned_packages <- c({pinned_package_vector})
             repos <- c({repository_vector})
             dir.create(library, recursive = TRUE, showWarnings = FALSE)
             Sys.setenv(R_LIBS_USER = library)
@@ -257,6 +310,18 @@ class RCollectiveBuilder(BuilderWithDefaults):
             if (length(missing)) {{
                 stop("failed to install requested R packages: ",
                      paste(missing, collapse = ", "))
+            }}
+            installed_versions <- setNames(installed[, "Version"], installed[, "Package"])
+            mismatched <- names(pinned_packages)[
+                installed_versions[names(pinned_packages)] != pinned_packages
+            ]
+            if (length(mismatched)) {{
+                stop("installed R package version does not match the requested version: ",
+                     paste(
+                         paste0(mismatched, " (requested ", pinned_packages[mismatched],
+                                ", installed ", installed_versions[mismatched], ")"),
+                         collapse = ", "
+                     ))
             }}
             write.table(
                 installed[, c("Package", "Version")],
@@ -275,7 +340,9 @@ class RCollectiveBuilder(BuilderWithDefaults):
 class RCollectivePackage(RPackage):
     """An R package environment with all R dependencies in one prefix.
 
-    Declare R package names in ``r_dependencies``. These packages and their
+    Declare R package names in ``r_dependencies`` as a sequence, or use a
+    package-name-to-exact-version mapping to pin selected versions, for example
+    ``{"GenomicRanges": "1.42.0", "ggplot2": "3.5.2"}``. These packages and their
     Depends, Imports, and LinkingTo dependencies are installed into a single
     library in this package's prefix. Use ``depends_on`` only for the R
     interpreter and non-R build or runtime dependencies. GitHub packages may
@@ -288,7 +355,7 @@ class RCollectivePackage(RPackage):
     build_system("r_collective")
 
     has_code = False
-    r_dependencies: Tuple[str, ...] = ()
+    r_dependencies: Union[Tuple[str, ...], Dict[str, Optional[str]]] = ()
     r_github_dependencies: Dict[str, str] = {}
     r_repositories: Dict[str, str] = {"CRAN": "https://cloud.r-project.org"}
     bioc_version: Optional[str] = None

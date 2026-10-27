@@ -38,6 +38,24 @@ spack:
         r:
           require:
           - +arc
+  - group: Scientific Python
+    specs:
+    - py-ipython
+    - py-matplotlib
+    - py-networkx
+    - py-numpy
+    - py-scikit-image
+    - py-scikit-learn
+    - py-scipy
+    - py-xarray
+    override:
+      packages:
+        c:
+          prefer: [gcc@14.4.0]
+        cxx:
+          prefer: [gcc@14.4.0]
+        fortran:
+          prefer: [gcc@14.4.0]
   concretizer:
     unify: when_possible
     reuse: true
