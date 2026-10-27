@@ -18,11 +18,10 @@ spack:
         - rtidyverse@2.0.0_R4.5.3 ^r/vz5no6r
         - rgeospatial@1.5-18_R4.5.3 ^r/vz5no6r 
         - rgeospatial@1.5-18_R4.6.1 ^r/syb3ml3
-        - rseurat@5.5.1_R4.6.1 #^r-reticulate@1.46.0 ^r-dotcall64@1.2
-        #- rmonocle3@1.4.27_R4.6.1 ^hdf+shared
+        - rseurat@5.5.1_R4.6.1
+        - rmonocle3@1.4.27_R4.6.1 
         - rglmgampoi@1.24.0_R4.6.1 
         - rchipenrich@2.36.0_R4.6.1 
-        - rarchr@1.0.3_R4.6.1 ^r/syb3ml3 ^py-macs2@2.2.8
       - - '%c,cxx=gcc@14.4.0'
     override:
       packages:
@@ -67,6 +66,19 @@ spack:
         py-macs2:
           require:
           - "^py-cython@0.29.36 ^python@3.11"
+  - group: R archr
+    specs:
+    - matrix:
+      - - rarchr@1.0.3_R4.6.1 ^r/syb3ml3
+      - - '%c,cxx=gcc@14.4.0'
+    override:
+      packages:
+        c:
+          prefer: [gcc@14.4.0]
+        cxx:
+          prefer: [gcc@14.4.0]
+        fortran:
+          prefer: [gcc@14.4.0]
   concretizer:
     unify: false
     reuse: true
