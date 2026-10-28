@@ -221,6 +221,9 @@ spack:
           template: gcc-runtime.lua
         python:
           template: python.lua
+          environment:
+            prepend_path:
+              MODULEPATH: /sw/spack/scientific-python/opt/modules
         miniforge3:
           environment:
             set:
