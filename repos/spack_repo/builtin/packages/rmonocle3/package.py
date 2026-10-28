@@ -71,7 +71,6 @@ class Rmonocle3(RCollectivePackage):
         "Biobase",
         "SingleCellExperiment",
         "knitr",
-        #"bpcells",
     )
     bioc_version = "3.23"
 
@@ -79,8 +78,7 @@ class Rmonocle3(RCollectivePackage):
     depends_on("gdal")
     depends_on("geos")
     depends_on("proj")
-    depends_on("hdf5")
-    depends_on("mpi", when="^hdf5+mpi")
+    depends_on("hdf5~mpi")
     depends_on("pkgconfig", type="build")
     depends_on("c", type="build")
     depends_on("cxx", type="build")
@@ -90,8 +88,3 @@ class Rmonocle3(RCollectivePackage):
         env.prepend_path("LD_LIBRARY_PATH", self.spec["geos"].prefix.lib)
         env.prepend_path("LD_LIBRARY_PATH", self.spec["proj"].prefix.lib)
         env.prepend_path("LD_LIBRARY_PATH", self.spec["hdf5"].prefix.lib)
-        if "+mpi" in self.spec["hdf5"]:
-            # BPCells uses R's compiler directly. Parallel HDF5's pkg-config
-            # flags omit the MPI headers, so provide them to its configure
-            # checks and generated C++ Makevars through CFLAGS.
-            env.append_flags("CFLAGS", self.spec["mpi"].headers.cpp_flags)

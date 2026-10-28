@@ -21,6 +21,7 @@ spack:
     - py-globus-cli
     - py-uv@0.13.4
     - awscli
+    - reframe+analytics
     override:
       packages:
         c:
@@ -32,6 +33,7 @@ spack:
         python:
           require:
           - +arc
+          - one_of: ["@3.13.17", "@3.14.9", "@3.15.1"]
         openmpi:
           require:
           - +arc
@@ -43,10 +45,8 @@ spack:
     - py-ipython
     - py-matplotlib
     - py-networkx
-    - py-numpy
     - py-scikit-image
     - py-scikit-learn
-    - py-scipy
     - py-xarray
     override:
       packages:
@@ -56,6 +56,61 @@ spack:
           prefer: [gcc@14.4.0]
         fortran:
           prefer: [gcc@14.4.0]
+        python:
+          require:
+          - +arc
+          - one_of: ["@3.13.17", "@3.14.9", "@3.15.1"]
+      config:
+        install_tree:
+          root: /sw/spack/scientific-python/opt/pkgs
+      concretizer:
+        reuse:
+          roots: true
+          exclude:
+          - python
+          - ^python
+      modules:
+        default:
+          roots:
+            lmod: /sw/spack/scientific-python/opt/modules
+            tcl: /sw/spack/scientific-python/opt/modules
+          lmod:
+            projections:
+              py-ipython: ipython/{version}
+              py-matplotlib: matplotlib/{version}
+              py-networkx: networkx/{version}
+              py-numpy: numpy/{version}
+              py-scikit-image: scikit-image/{version}
+              py-scikit-learn: scikit-learn/{version}
+              py-scipy: scipy/{version}
+              py-xarray: xarray/{version}
+              r: R/{version}
+              hdf5~threadsafe: hdf5/{version}-nonatomic
+              intel-oneapi-compilers-classic: intel/{version}
+              miniforge3: mamba/{version}
+              py-mpi4py: mpi4py/{version}
+            hash_length: 0
+            hide_implicits: true
+            core_compilers:
+            - gcc@14.4.0
+            hierarchy::
+            - python
+            - mpi
+            core_specs:
+            - gcc@14.4.0
+            - gcc-runtime@14.4.0
+            exclude:
+            - gcc-runtime@14.4.0
+            - glibc
+            - autoconf
+            - compiler-wrapper
+            - util-macros
+            - poppler-data
+            - python-venv
+            gcc-runtime:
+              template: gcc-runtime.lua
+            python:
+              template: python.lua
   concretizer:
     unify: when_possible
     reuse: true
