@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-from spack_repo.builtin.build_systems.r import RCollectivePackage
+from spack_repo.builtin.build_systems.pak import PakPackage
 
 from spack.package import *
 
 
-class Rtidyverse(RCollectivePackage):
+class Rtidyverse(PakPackage):
     """Easily Install and Load the Tidyverse.
 
     The tidyverse is a set of packages that work in harmony because they share
@@ -18,7 +18,7 @@ class Rtidyverse(RCollectivePackage):
     has_code = False
     version("2.0.0_R4.6.1")
     version("2.0.0_R4.5.3")
-    r_dependencies = ("tidyverse",)
+    r_dependencies = {"tidyverse": "2.0.0"}
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
