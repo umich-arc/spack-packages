@@ -16,6 +16,7 @@ class Libraqm(MesonPackage):
 
     license("MIT")
 
+    version("0.11.0", sha256="3d0add115f7d4a9410d3377462ed3c05e86342193ef984183e4380e3787b2d4c")
     version("0.10.5", sha256="563053e724892a7b037913110ea2daef50ad575d4fa9f7c368ae1e4515f5e856")
     version("0.9.0", sha256="9ed6fdf41da6391fc9bf7038662cbe412c330aa6eb22b19704af2258e448107c")
 

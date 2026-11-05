@@ -175,6 +175,15 @@ spack:
           intel-oneapi-mpi: 'impi/{version}'
           gh: 'github-cli/{version}'
           hdf5+mpi: 'phdf5/{version}'
+          py-globus-cli: globus-cli/{version}
+          py-uv: uv/{version}
+          py-ipython: ipython/{version}-py{^python.version}
+          py-matplotlib: matplotlib/{version}-py{^python.version}
+          py-networkx: networkx/{version}-py{^python.version}
+          py-numpy: numpy/{version}-py{^python.version}
+          py-scikit-image: scikit-image/{version}-py{^python.version}
+          py-scikit-learn: scikit-learn/{version}-py{^python.version}
+          py-scipy: scipy/{version}-py{^python.version}
         glew:
           suffixes:
             '^glx': glx
