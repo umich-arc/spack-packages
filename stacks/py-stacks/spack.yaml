@@ -23,7 +23,7 @@ spack:
     - awscli
     - reframe+analytics
     - py-ipython
-    - py-matplotlib
+    - py-matplotlib ^libraqm@0.11.0
     - py-networkx
     - py-scikit-image
     - py-scikit-learn
