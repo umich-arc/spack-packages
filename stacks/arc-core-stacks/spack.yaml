@@ -73,6 +73,8 @@ spack:
     - ncview ^libxaw@1.0.15 ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi+szip@1.14.6
     - gh
     - nvtop
+    - petsc~mpi+openmp
+    - petsc+mpi+hdf5+openmp+fftw ^hdf5/ye3d2pj # <- hdf5@1.14.6+mpi
     #- gdal/wj3bifx # comes from r-stacks
     - maven
     - amdlibm ^python/n2kczjv
@@ -153,6 +155,24 @@ spack:
           prefer: [gcc@14.4.0]
         fortran:
           prefer: [gcc@14.4.0]
+  - group: workflows
+    specs:
+    - nextflow
+    override:
+      packages:
+        c:
+          prefer: [gcc@14.4.0]
+        cxx:
+          prefer: [gcc@14.4.0]
+        fortran:
+          prefer: [gcc@14.4.0]
+        python:
+          require:
+          - "+arc"
+          - one_of: ["@3.13.17", "@3.14.9", "@3.15.1"]
+        openmpi:
+          require:
+          - "+arc"
   concretizer:
     unify: false
     reuse: true

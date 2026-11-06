@@ -18,6 +18,7 @@ spack:
   ##########################################################################################
   - group: bioinformatics
     specs:
+    - entap+eggnog_diamond+eggnog_sql+entap_db+ipo
     - bamtools
     - homer
     - bcftools
@@ -125,3 +126,5 @@ spack:
         - python-venv
         gcc-runtime:
           template: gcc-runtime.lua
+        entap:
+          template: entap.lua
