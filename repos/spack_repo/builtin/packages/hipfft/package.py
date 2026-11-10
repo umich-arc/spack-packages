@@ -116,6 +116,7 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage):
         "7.13.0",
         "7.14.0",
         "10.0.0",
+    ]:
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
         # for tgt in itertools.chain(["auto"], amdgpu_targets):
         #    depends_on(

@@ -78,7 +78,7 @@ spack:
     #- gdal/wj3bifx # comes from r-stacks
     - maven
     - amdlibm ^python/n2kczjv
-    - mpifileutils@0.12
+    - mpifileutils@0.12~daos~experimental~gpfs~ipo~lustre+xattr
     - cmake
     - gmake
     - nasm
