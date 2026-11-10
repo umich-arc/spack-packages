@@ -4,12 +4,13 @@
 
 import shutil
 
-from spack_repo.builtin.build_systems.generic import Package
+from spack_repo.builtin.build_systems import generic
+from spack_repo.builtin.build_systems.uv import UvPackage
 
 from spack.package import *
 
 
-class Reframe(Package):
+class Reframe(UvPackage):
     """ReFrame is a framework for writing regression tests for HPC systems.
     The goal of this framework is to abstract away the complexity of the
     interactions with the system, separating the logic of a regression test
@@ -21,13 +22,28 @@ class Reframe(Package):
     url = "https://github.com/reframe-hpc/reframe/archive/v2.21.tar.gz"
     git = "https://github.com/reframe-hpc/reframe.git"
 
+    build_system("generic", "uv", default="generic")
+    default_buildsystem = "generic"
+
     # notify when the package is updated.
     maintainers("victorusu", "vkarak")
 
     license("BSD-3-Clause")
 
     version("develop", branch="develop")
-    version("4.10.4", sha256="6494aa8ff7cbb2bc35145ecdf14e978330a57527eaabb299bf7c4eff1d3cddec")
+    version("4.10.4")
+    conflicts(
+        "@4.10.4", when="build_system=generic",
+        msg="ReFrame 4.10.4 has no source checksum; select build_system=uv",
+    )
+    conflicts(
+        "@develop", when="build_system=uv",
+        msg="The uv build requires a released PyPI version",
+    )
+    conflicts(
+        "+docs", when="build_system=uv",
+        msg="Building documentation requires build_system=generic",
+    )
     version("4.10.3", sha256="275d5fa6eb04878bb327e197003ac0dec63096457a214048c47fd38b7f58d844")
     version("4.10.2", sha256="878836391021884d13599d0e0976a3071a9374ac2a78ef3cfaed6d976ffb3e67")
     version("4.10.1", sha256="6af76c3dd2e100d18cbfb45721dd69115f54643e493f58707953841a1f0b51b3")
@@ -133,80 +149,110 @@ class Reframe(Package):
     variant("gelf", default=False, description="Add graylog handler support")
     variant("analytics", default=False, description="Add analytics support")
 
-    depends_on("c", type="build")  # generated
-    depends_on("cxx", type="build")  # generated
+    with when("build_system=generic"):
+        depends_on("c", type="build")  # generated
+        depends_on("cxx", type="build")  # generated
 
-    # ReFrame requires git up to version 3.1, see:
-    # https://github.com/reframe-hpc/reframe/issues/1464
-    depends_on("git", when="@2.0:3.1", type="run")
+        # ReFrame requires git up to version 3.1, see:
+        # https://github.com/reframe-hpc/reframe/issues/1464
+        depends_on("git", when="@2.0:3.1", type="run")
 
-    # supported python versions
-    depends_on("python@3.5:", when="@2.0:2", type="run")
-    depends_on("python@3.6:", when="@3.0:", type="run")
+        # supported python versions
+        depends_on("python@3.5:", when="@2.0:2", type="run")
+        depends_on("python@3.6:", when="@3.0:", type="run")
 
-    # build dependencies
-    depends_on("py-setuptools", when="@:4.9", type="build")
-    depends_on("py-hatchling@1.29:", when="@4.10:", type="build")
+        # build dependencies
+        depends_on("py-setuptools", when="@:4.9", type="build")
+        depends_on("py-hatchling@1.29:", when="@4.10:", type="build")
 
-    # runtime dependencies
-    depends_on("py-archspec", when="@3.7.0:", type="run")
-    depends_on("py-argcomplete", when="@3.4.1:", type="run")
-    depends_on("py-clustershell", when="@4.8.1:", type="run")
-    depends_on("py-fasteners", when="@4.8.3:", type="run")
-    depends_on("py-filelock", when="@4.7.0:4.8.2", type="run")
-    depends_on("py-importlib-metadata", when="^python@:3.7", type="run")
-    depends_on("py-jinja2", when="@4.8.0:", type="run")
-    depends_on("py-jsonschema", type="run")
-    depends_on("py-lxml", when="@3.6.0:", type="run")
-    depends_on("py-polars", when="@4.10.0", type="run")
-    depends_on("py-pyyaml", when="@3.4.1:", type="run")
-    depends_on("py-requests", when="@3.4.1:", type="run")
-    depends_on("py-semver", when="@3.4.2:", type="run")
-    depends_on("py-tabulate", when="@4.7:", type="run")
+        # runtime dependencies
+        depends_on("py-archspec", when="@3.7.0:", type="run")
+        depends_on("py-argcomplete", when="@3.4.1:", type="run")
+        depends_on("py-clustershell", when="@4.8.1:", type="run")
+        depends_on("py-fasteners", when="@4.8.3:", type="run")
+        depends_on("py-filelock", when="@4.7.0:4.8.2", type="run")
+        depends_on("py-importlib-metadata", when="^python@:3.7", type="run")
+        depends_on("py-jinja2", when="@4.8.0:", type="run")
+        depends_on("py-jsonschema", type="run")
+        depends_on("py-lxml", when="@3.6.0:", type="run")
+        depends_on("py-polars", when="@4.10.0", type="run")
+        depends_on("py-pyyaml", when="@3.4.1:", type="run")
+        depends_on("py-requests", when="@3.4.1:", type="run")
+        depends_on("py-semver", when="@3.4.2:", type="run")
+        depends_on("py-tabulate", when="@4.7:", type="run")
 
-    # extension dependencies
-    depends_on("py-pygelf", when="+gelf", type="run")
-    depends_on("py-polars", when="@4.10.1: +analytics", type="run")
+        # extension dependencies
+        depends_on("py-pygelf", when="+gelf", type="run")
+        depends_on("py-polars", when="@4.10.1: +analytics", type="run")
 
-    # documentation dependencies
-    depends_on("py-sphinx", when="+docs", type="build")
-    depends_on("py-sphinx-rtd-theme", when="+docs", type="build")
-    depends_on("gmake", type="build")
+        # documentation dependencies
+        depends_on("py-sphinx", when="+docs", type="build")
+        depends_on("py-sphinx-rtd-theme", when="+docs", type="build")
+        depends_on("gmake", type="build")
 
-    # sanity check
-    sanity_check_is_file = ["reframe/__init__.py"]
-    sanity_check_is_dir = ["docs", "reframe", "unittests"]
+    @property
+    def has_code(self):
+        return self.spec.satisfies("build_system=generic")
 
-    # check if we can run reframe
+    @property
+    def python_dependencies(self):
+        roots = {"reframe-hpc": str(self.version)}
+        if "+gelf" in self.spec:
+            roots["pygelf"] = None
+        if "+analytics" in self.spec and self.spec.satisfies("@4.10.1:"):
+            roots["polars"] = None
+        return roots
+
+    @property
+    def sanity_check_is_file(self):
+        if self.spec.satisfies("build_system=generic"):
+            return ["reframe/__init__.py"]
+        return ["bin/reframe"]
+
+    @property
+    def sanity_check_is_dir(self):
+        if self.spec.satisfies("build_system=generic"):
+            return ["docs", "reframe", "unittests"]
+        return []
+
+    def setup_run_environment(self, env: EnvironmentModifications) -> None:
+        if self.spec.satisfies("build_system=generic"):
+            env.prepend_path("PYTHONPATH", self.prefix)
+            if self.spec.satisfies("@3.0: +docs"):
+                env.prepend_path("MANPATH", self.prefix.docs.man)
+        else:
+            for path in dict.fromkeys(
+                (self.spec["python"].package.purelib, self.spec["python"].package.platlib)
+            ):
+                env.prepend_path("PYTHONPATH", join_path(self.prefix, path))
+
+
+class GenericBuilder(generic.GenericBuilder):
     @run_after("install")
-    @on_package_attributes(run_tests=True)
     def check_list(self):
-        with working_dir(self.stage.source_path):
-            reframe = Executable(self.prefix + "/bin/reframe")
+        if not self.pkg.run_tests:
+            return
+        with working_dir(self.pkg.stage.source_path):
+            reframe = Executable(join_path(self.pkg.prefix.bin, "reframe"))
             reframe("-l")
 
     @run_after("install")
-    @on_package_attributes(run_tests=True)
     def check_hpctestlib(self):
+        if not self.pkg.run_tests:
+            return
         if self.spec.satisfies("@3.9.0:"):
-            if not can_access("hpctestlib"):
-                tty.warn("the test library was not installed")
+            with working_dir(self.pkg.stage.source_path):
+                if not can_access("hpctestlib"):
+                    tty.warn("the test library was not installed")
 
-    def install(self, spec, prefix):
-        if spec.satisfies("@3.0:"):
-            if "+docs" in spec:
-                with working_dir("docs"):
-                    make("man")
-                    make("html")
-                    with working_dir("man"):
-                        mkdir("man1")
-                        shutil.move("reframe.1", "man1")
-                        mkdir("man8")
-                        shutil.move("reframe.settings.8", "man8")
-        install_tree(self.stage.source_path, self.prefix)
-
-    def setup_run_environment(self, env: EnvironmentModifications) -> None:
-        env.prepend_path("PYTHONPATH", self.prefix)
-        if self.spec.satisfies("@3.0:"):
-            if "+docs" in self.spec:
-                env.prepend_path("MANPATH", self.prefix.docs.man)
+    def install(self, pkg, spec, prefix):
+        if spec.satisfies("@3.0: +docs"):
+            with working_dir("docs"):
+                make("man")
+                make("html")
+                with working_dir("man"):
+                    mkdir("man1")
+                    shutil.move("reframe.1", "man1")
+                    mkdir("man8")
+                    shutil.move("reframe.settings.8", "man8")
+        install_tree(pkg.stage.source_path, prefix)
