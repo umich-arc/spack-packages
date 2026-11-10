@@ -126,7 +126,7 @@ class Kokkos(CMakePackage, CudaPackage):
         "openmptarget": [False, "@:5.0", "Whether to build the OpenMPTarget backend"],
     }
     requires(
-        "+serial", when="~hpx ~openmp ~threads", msg="Kokkos requires at least one host backend"
+        "+serial", when="~openmp ~threads", msg="Kokkos requires at least one host backend"
     )
     #requires("~cuda~rocm~sycl", when="+openacc", msg="Can not mix other GPU backends with OpenACC")
     requires("~cuda~sycl", when="+openacc", msg="Can not mix other GPU backends with OpenACC")
@@ -134,7 +134,7 @@ class Kokkos(CMakePackage, CudaPackage):
     requires("%cxx=nvhpc", when="+openacc")
 
     tpls_variants = {
-        "hpx": [False, None, "Whether to enable the HPX library"],
+        #"hpx": [False, None, "Whether to enable the HPX library"],
         "hwloc": [False, None, "Whether to enable the HWLOC library"],
         "numactl": [False, "@:4", "Whether to enable the LIBNUMA library"],
         "memkind": [False, "@:4", "Whether to enable the MEMKIND library"],
@@ -145,7 +145,7 @@ class Kokkos(CMakePackage, CudaPackage):
         "aggressive_vectorization": [False, None, "Aggressively vectorize loops"],
         "atomics_bypass": [
             False,
-            "@4.6: +serial~threads~cuda~hpx~openmp~sycl~openmptarget",
+            "@4.6: +serial~threads~cuda~openmp~sycl~openmptarget",
             "Make atomics non-atomic for non-threaded MPI-only use cases",
         ],
         "compiler_warnings": [False, "@:4", "Print all compiler warnings"],
@@ -161,7 +161,7 @@ class Kokkos(CMakePackage, CudaPackage):
         "debug_bounds_check": [False, None, "Use bounds checking - will increase runtime"],
         "debug_dualview_modify_check": [False, "@:4", "Debug check on dual views"],
         "deprecated_code": [False, "@:4", "Whether to enable deprecated code"],
-        "hpx_async_dispatch": [False, "@:4", "Whether HPX supports asynchronous dispath"],
+        #"hpx_async_dispatch": [False, "@:4", "Whether HPX supports asynchronous dispath"],
         "tuning": [False, None, "Create bindings for tuning tools"],
         "tests": [False, None, "Build for tests"],
     }
@@ -375,11 +375,11 @@ class Kokkos(CMakePackage, CudaPackage):
 
     # TODO new major: add new standard version here
     # HPX should use the same C++ standard
-    for cxxstd in ["14", "17", "20", "23"]:
-        depends_on(f"hpx cxxstd={cxxstd}", when=f"+hpx cxxstd={cxxstd}")
+    #for cxxstd in ["14", "17", "20", "23"]:
+    #    depends_on(f"hpx cxxstd={cxxstd}", when=f"+hpx cxxstd={cxxstd}")
 
     # HPX version constraints
-    depends_on("hpx@1.7:", when="+hpx")
+    #depends_on("hpx@1.7:", when="+hpx")
 
     # TODO deprecation of some versions in 4: remove
     # Patches
@@ -436,15 +436,15 @@ class Kokkos(CMakePackage, CudaPackage):
             return None
         return microarch
 
-    def append_args(self, cmake_prefix, cmake_options, spack_options):
-        # variant_to_cmake_option = {"rocm": "hip"}
-        for variant_name in cmake_options:
-            opt = variant_to_cmake_option.get(variant_name, variant_name)
-            optname = f"Kokkos_{cmake_prefix}_{opt.upper()}"
-            # Explicitly enable or disable
-            option = self.define_from_variant(optname, variant_name)
-            if option:
-                spack_options.append(option)
+    #def append_args(self, cmake_prefix, cmake_options, spack_options):
+    #    variant_to_cmake_option = {"rocm": "hip"}
+    #    for variant_name in cmake_options:
+    #        opt = variant_to_cmake_option.get(variant_name, variant_name)
+    #        optname = f"Kokkos_{cmake_prefix}_{opt.upper()}"
+    #        # Explicitly enable or disable
+    #        option = self.define_from_variant(optname, variant_name)
+    #        if option:
+    #            spack_options.append(option)
 
     @property
     def kokkos_cxx(self) -> str:
@@ -519,9 +519,9 @@ class Kokkos(CMakePackage, CudaPackage):
         for arch in spack_microarches:
             options.append(self.define("Kokkos_ARCH_" + arch.upper(), True))
 
-        self.append_args("ENABLE", self.devices_variants.keys(), options)
-        self.append_args("ENABLE", self.options_variants.keys(), options)
-        self.append_args("ENABLE", self.tpls_variants.keys(), options)
+        #self.append_args("ENABLE", self.devices_variants.keys(), options)
+        #self.append_args("ENABLE", self.options_variants.keys(), options)
+        #self.append_args("ENABLE", self.tpls_variants.keys(), options)
 
         for tpl in self.tpls_variants:
             if spec.satisfies(f"+{tpl}"):
