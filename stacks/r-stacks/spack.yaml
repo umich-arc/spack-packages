@@ -79,11 +79,14 @@ spack:
           prefer: [gcc@14.4.0]
         fortran:
           prefer: [gcc@14.4.0]
+        boost:
+          prefer:
+          - "/qvozv7c"
   - group: R non-mpi
     specs:
     - matrix:
-      - - rmonocle3@1.4.27_R4.6.1
-        - gdal/cahpfny
+      - - rmonocle3@1.4.27_R4.6.1 ^r/syb3ml3
+        - gdal/cxxmf2n
       - - '%c,cxx=gcc@14.4.0'
     override:
       packages:
@@ -99,9 +102,11 @@ spack:
           prefer: [gcc@14.4.0]
         fortran:
           prefer: [gcc@14.4.0]
-      
+        boost:
+          prefer:
+          - "/qvozv7c"
   concretizer:
-    unify: when_possible
+    unify: false
     reuse: true
     ##########################################################################################
     #                                         Modules                                        #
@@ -125,7 +130,7 @@ spack:
           suffixes:
             '^openmpi@:5.0.9,5.0.11:': 'ompi{^openmpi.version}'
         hash_length: 0
-        #hide_implicits: true
+        hide_implicits: true
         core_compilers:
         - gcc@14.4.0
         hierarchy:

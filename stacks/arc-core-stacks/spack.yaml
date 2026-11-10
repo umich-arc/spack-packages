@@ -66,7 +66,7 @@ spack:
     - gromacs+cuda+mpi %gcc@14.4.0
     - quantum-espresso %gcc@14.4.0 ^fftw/m26yrbg
     #
-    - rclone
+    - rclone 
     - jags ^openblas/ndsuya3
     - nco ^netcdf-c~mpi~parallel-netcdf ^hdf5~mpi+szip@1.14.6
     - pgplot
@@ -78,13 +78,14 @@ spack:
     #- gdal/wj3bifx # comes from r-stacks
     - maven
     - amdlibm ^python/n2kczjv
-    - mpifileutils@0.12~daos~experimental~gpfs~ipo~lustre+xattr
+    - mpifileutils@0.12
     - cmake
     - gmake
     - nasm
     - yasm
     - pbzip2 ^bzip2/5wiopfv #os external
     - llama-cpp@0.6.0 ^openblas/ndsuya3
+    - trilinos+boost ^kokkos
     override:
       packages:
         c:
@@ -136,7 +137,7 @@ spack:
         openmpi:
           require:
           - "+arc"
-  - group: imaging
+  - group: imaging 
     specs:
     - freesurfer
     - fsl@6.0.5.2+cuda cuda_arch=80 ^openblas@0.3.33 ^vtk~mpi
@@ -158,6 +159,7 @@ spack:
   - group: workflows
     specs:
     - nextflow
+    - snakemake
     override:
       packages:
         c:
@@ -204,6 +206,7 @@ spack:
           py-scikit-image: scikit-image/{version}-py{^python.version}
           py-scikit-learn: scikit-learn/{version}-py{^python.version}
           py-scipy: scipy/{version}-py{^python.version}
+          boost/zfacc: 'boost/{version}-trilinos'
         glew:
           suffixes:
             '^glx': glx
