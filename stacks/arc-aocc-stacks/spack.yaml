@@ -96,7 +96,6 @@ spack:
     - libsodium@1.0.22 %aocc@6.0.0
     - r@4.6.1 %c,cxx=aocc@6.0.0 %fortran=gcc@14.4.0 ^flexiblas/o6j2v35 # gcc flexiblas
     - r@4.5.3 %c,cxx=aocc@6.0.0 %fortran=gcc@14.4.0 ^flexiblas/o6j2v35 # gcc flexiblas
-    - mumps +complex+double+float+metis+parmetis+scotch+mpi %aocc@6.0.0
     - mumps +complex+double+float+metis~parmetis+scotch~mpi ^scotch~mpi %c,fortran=aocc@6.0.0
     - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
     - fftw+mpi %aocc@6.0.0
