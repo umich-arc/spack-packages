@@ -11,7 +11,6 @@ spack:
   ##########################################################################################
   #                                       Software                                         #
   ##########################################################################################
-
   - group: Base-AOCC-Compiler
     specs:
     - python@3.15.1 %aocc@5.2.0
@@ -70,6 +69,63 @@ spack:
         boost:
           prefer:
           - "~mpi"
+  - group: Base-AOCC6-Compiler
+    specs:
+    - python@3.15.1 %aocc@6.0.0
+    - python@3.14.9 %aocc@6.0.0
+    - python@3.13.17 %aocc@6.0.0
+    #- armadillo ^flexiblas
+    - flexiblas@3.4.2 %aocc@6.0.0
+    - boost@1.90.0~mpi %aocc@6.0.0
+    - geos@3.14.1 %aocc@6.0.0
+    - openmpi@5.0.10 %aocc@6.0.0
+    - openblas@0.3.33 %aocc@6.0.0
+    - netlib-lapack@3.12.1 %aocc@6.0.0
+    - libaec@1.1.4 %aocc@6.0.0
+    - proj@9.7.0 %aocc@6.0.0 ^libtiff@4.7.1
+    - hdf5@1.14.6+cxx+fortran+hl+threadsafe~mpi %aocc@6.0.0 ^libaec@1.1.4
+    - hdf5@1.14.6+threadsafe %aocc@6.0.0 ^libaec@1.1.4
+    - netcdf-c+blosc+hdf4+mpi+parallel-netcdf+szip+zstd %aocc@6.0.0
+    - netcdf-cxx4 %aocc@6.0.0
+    - netcdf-fortran %aocc@6.0.0
+    - libjpeg-turbo@3.1.3 %aocc@6.0.0
+    - libtiff@4.7.1 %aocc@6.0.0
+    - sqlite@3.53.1 %aocc@6.0.0
+    - archivetar@0.18.2%aocc@6.0.0 ^python@3.13.17 ^openmpi@5.0.10
+    - archivetar@1.1.0%aocc@6.0.0 ^python@3.13.17 ^openmpi@5.0.10
+    - libsodium@1.0.22 %aocc@6.0.0
+    - r@4.6.1 %c,cxx=aocc@6.0.0 %fortran=gcc@14.4.0 ^flexiblas/o6j2v35 # gcc flexiblas
+    - r@4.5.3 %c,cxx=aocc@6.0.0 %fortran=gcc@14.4.0 ^flexiblas/o6j2v35 # gcc flexiblas
+    - mumps +complex+double+float+metis+parmetis+scotch+mpi %aocc@6.0.0
+    - mumps +complex+double+float+metis~parmetis+scotch~mpi ^scotch~mpi %c,fortran=aocc@6.0.0
+    - ffmpeg@8.1+X+bzlib~doc+drawtext+gpl+libaom+libmp3lame+libopenjpeg~libopus~libsnappy~libspeex~libssh~libvorbis~libvpx+libwebp~libx264+libxml2+libzmq+lzma~nonfree~openssl~sdl2+shared+version3
+    - fftw+mpi %aocc@6.0.0
+    #- lammps+mpi+lib+jpeg+png+ffmpeg+openmp+opencl+kspace~kokkos+h5md+spin %aocc@6.0.0 ^ffmpeg/b4dlutw
+    #- quantum-espresso %aocc@6.0.0 ^fftw/ufb4n3h
+    #- paraview@6.1.1
+    override:
+      packages:
+        c:
+          prefer: [aocc@6.0.0]
+        cxx:
+          prefer: [aocc@6.0.0]
+        fortran:
+          prefer: [aocc@6.0.0]
+        python:
+          require:
+          - "+arc"
+        openmpi:
+          require:
+          - "+arc"
+        r:
+          require:
+          - "+arc+X"
+        hdf5:
+          prefer:
+          - "+cxx+fortran+hl+mpi"
+        boost:
+          prefer:
+          - "~mpi"
   concretizer:
     unify: false
     reuse: true
@@ -112,6 +168,7 @@ spack:
         - gcc@14.4.0
         - gcc-runtime@14.4.0
         - aocc@5.2.0
+        - aocc@6.0.0
         exclude:
         - gcc-runtime@14.4.0
         - glibc
