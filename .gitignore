@@ -496,3 +496,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+stacks/test/spack.lock
+stacks/test/spack.yaml

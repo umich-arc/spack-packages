@@ -116,6 +116,7 @@ spack:
     - intel-oneapi-compilers-classic@2021.13.1
     - intel-oneapi-mpi@2021.18.0
     - aocc@5.2.0 +license-agreed
+    - aocc@6.0.0 +license-agreed
     - nvhpc@26.5
     - gcc@10.3.0+binutils
     - gcc@12.3.0+binutils

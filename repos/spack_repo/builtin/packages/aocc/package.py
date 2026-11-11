@@ -39,6 +39,11 @@ class Aocc(Package, LlvmDetection, CompilerPackage):
     license("LicenseRef-AMD-Proprietary", checked_by="tgamblin")
 
     version(
+        ver="6.0.0",
+        sha256="28b97b6c5d8ea6b3ea08a5e52b2c784d41dddb655e2251bdddd6932ef1888d92",
+        url="https://download.amd.com/developer/eula/aocc/aocc-6-0/aocc-compiler-6.0.0.tar",
+    )
+    version(
         ver="5.2.0",
         sha256="f98af7e2ae8801dd4ba443520653acb739536a86c2a1caf096310c3cfd554ca0",
         url="https://download.amd.com/developer/eula/aocc/aocc-5-2/aocc-compiler-5.2.0.tar",
