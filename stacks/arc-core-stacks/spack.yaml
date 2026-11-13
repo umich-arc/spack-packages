@@ -27,6 +27,7 @@ spack:
     - boost@1.89.0~mpi
     - geos@3.14.1
     - openmpi@5.0.10
+    - openmpi@5.0.10+arc+cuda
     - mvapich2
     - openblas@0.3.33
     - netlib-lapack@3.12.1
@@ -86,6 +87,7 @@ spack:
     - pbzip2 ^bzip2/5wiopfv #os external
     - llama-cpp@0.6.0 ^openblas/ndsuya3
     - trilinos+boost ^kokkos
+    - patchelf
     override:
       packages:
         c:
@@ -193,7 +195,7 @@ spack:
           hdf5~threadsafe+mpi: 'phdf5/{version}-nonatomic'
           hdf5~threadsafe: 'hdf5/{version}-nonatomic'
           intel-oneapi-compilers-classic: 'intel/{version}'
-          miniforge3: 'mamba/{version}'
+          miniforge3@26.3.2-3: 'mamba/py3.13'
           py-mpi4py: 'mpi4py/{version}'
           intel-oneapi-mpi: 'impi/{version}'
           gh: 'github-cli/{version}'
@@ -208,6 +210,7 @@ spack:
           py-scikit-learn: scikit-learn/{version}-py{^python.version}
           py-scipy: scipy/{version}-py{^python.version}
           boost/zfacc: 'boost/{version}-trilinos'
+          openmpi+cuda: 'openmpi/{version}-cuda'
         glew:
           suffixes:
             '^glx': glx
@@ -262,7 +265,7 @@ spack:
             set:
               CONDA_ENVS_PATH: "~/.conda/envs"
               CONDA_PKGS_DIRS: "~/.conda/pkgs"
-        openmpi@5.0.10+arc:
+        openmpi@5.0.10:
           environment:
             set:
               UCX_LOG_LEVEL: error

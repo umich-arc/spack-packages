@@ -181,7 +181,7 @@ spack:
         - python-venv
         gcc-runtime:
           template: gcc-runtime.lua
-        openmpi@5.0.10+arc:
+        openmpi@5.0.10:
           environment:
             set:
               UCX_LOG_LEVEL: error
