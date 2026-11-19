@@ -27,8 +27,8 @@ spack:
     - boost@1.89.0~mpi
     - geos@3.14.1
     - openmpi@5.0.10
-    - openmpi@5.0.10+arc+cuda
     - mvapich2
+    - openmpi@5.0.10 +cuda ^cuda@13.3.0 ^ucx+rc+ud+dc+cuda+gdrcopy+verbs+mlx5_dv ^gdrcopy+cuda cuda_arch=80,90,120
     - openblas@0.3.33
     - netlib-lapack@3.12.1
     - libaec@1.1.4
@@ -269,6 +269,10 @@ spack:
           environment:
             set:
               UCX_LOG_LEVEL: error
+        ucx:
+          environment:
+            set:
+              UCX_IB_GPU_DIRECT_RDMA: no
         intel-oneapi-mpi@2021.18.0:
           environment:
             set:

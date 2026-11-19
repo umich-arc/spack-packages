@@ -258,7 +258,7 @@ class Openmpi(AutotoolsPackage, CudaPackage):
     variant(
         "arc",
         default=False,
-        when="@5:",
+        when="@4:",
         description="Use the ARC OpenMPI configuration with system PMIx, Slurm, UCX, and verbs",
     )
     variant("sqlite3", default=False, when="@1.7.3:1", description="Build SQLite3 support")
@@ -447,7 +447,7 @@ with '-Wl,-commons,use_dylibs' and without
     # May be able to get working for LLVM 18/19 using FC=flang-new
     conflicts("%fortran=clang %llvm@:19")
 
-    requires("@5:", when="+arc", msg="ARC's OpenMPI configuration is based on OpenMPI 5")
+    requires("@4:", when="+arc", msg="ARC's OpenMPI configuration is based on OpenMPI 5")
 
     filter_compiler_wrappers("openmpi/*-wrapper-data*", relative_root="share")
 
