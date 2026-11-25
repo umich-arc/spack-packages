@@ -28,6 +28,17 @@ class Flexiblas(CMakePackage):
     depends_on("cxx", type="build")  # generated
     depends_on("fortran", type="build")  # generated
 
+    variant("arc", default = False, description = "Link spack-built backends for ARC stacks")
+    depends_on("openblas threads=none", when = "+arc")
+    depends_on("openblas-pthread", when = "+arc")
+    depends_on("openblas-openmp", when = "+arc")
+    depends_on("blis threads=openmp", when = "+arc")
+    depends_on("mkl", when = "+arc")
+    #depends_on("amdblis", when = "+arc")
+    #depends_on("amdlibflame", when = "+arc")
+    #depends_on("nvblas", when = "+arc")
+
+
     # virtual dependency
     provides("blas")
     provides("lapack")
