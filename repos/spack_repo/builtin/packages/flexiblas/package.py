@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
+import os
+
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 
 from spack.package import *
@@ -38,8 +40,11 @@ class Flexiblas(CMakePackage):
     depends_on("mkl", when = "+arc")
     #depends_on("amdblis", when = "+arc")
     #depends_on("amdlibflame", when = "+arc")
-    #depends_on("nvblas", when = "+arc")
+    depends_on("cuda", when = "+arc")
 
+    patch("0001-macroify-fortran-mangling.patch", when="+arc")
+    patch("0002-split-netlib-blas-level-3-file-set.patch", when="+arc")
+    patch("0003-add-nvblas-wrapper-build-support.patch", when="+arc")
 
     # virtual dependency
     provides("blas")
@@ -47,3 +52,8 @@ class Flexiblas(CMakePackage):
 
     def cmake_args(self):
         return [self.define("SYSCONFDIR", self.prefix.etc)]
+
+    @when("+arc")
+    def cmake_args(self):
+        return [self.define("SYSCONFDIR", self.prefix.etc),
+        self.define("nvBLAS13_LIBRARY", os.path.join(self.spec['cuda'].prefix, "lib64/libnvblas.so"))]

@@ -1,0 +1,177 @@
+From b5af8a4dd467380991c8b301947cb75d31a2ffe9 Mon Sep 17 00:00:00 2001
+From: Andrew Robbins <andrew@robbinsa.me>
+Date: Tue, 12 May 2026 13:41:28 -0400
+Subject: [PATCH 3/4] add nvblas wrapper build support
+
+---
+ src/CMakeLists.txt                   | 43 +++++++++++++++++++++++--
+ tools/backend_builder/CMakeLists.txt | 48 ++++++++++++++++++++++++++--
+ 2 files changed, 87 insertions(+), 4 deletions(-)
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 7e191d40..7d60e95c 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -366,6 +366,39 @@ MACRO(BuildNVPL)
+     ENDIF()
+ ENDMACRO()
+ 
++MACRO(CheckNvBlas BLAS_LIBS BLAS_LD_FLAGS INT8)
++    SET(__CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
++    SET(__CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS})
++    SET(__CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
++    SET(__CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
++    UNSET(LIBNVBLAS CACHE)
++
++    IF(NOT INT8)
++
++    SET(CMAKE_REQUIRED_LIBRARIES ${BLAS_LIBS})
++    SET(CMAKE_REQUIRED_FLAGS ${BLAS_LD_FLAGS})
++    CHECK_C_SOURCE_RUNS(
++    "
++    #include <stdio.h>
++
++    extern void* cublasGetVersion(int* version);
++
++    int main(void) {
++    int ver;
++    int* verp = &ver;
++    cublasGetVersion(verp);
++    printf(\"%u\n\", ver);
++    return 0;
++    }"
++    IS_CUDA)
++    SET(LIBNVBLAS BOOL IS_CUDA)
++    SET(CMAKE_REQUIRED_FLAGS ${__CMAKE_REQUIRED_FLAGS})
++    SET(CMAKE_REQUIRED_DEFINITIONS ${__CMAKE_REQUIRED_DEFINITIONS})
++    SET(CMAKE_REQUIRED_INCLUDES ${__CMAKE_REQUIRED_INCLUDES})
++    SET(CMAKE_REQUIRED_LIBRARIES ${__CMAKE_REQUIRED_LIBRARIES})
++    ENDIF()
++ENDMACRO()
++
+ MACRO(BuildBackendBlas VENDOR BACKEND_CODE)
+     MESSAGE(STATUS "Build additional BLAS interface: ${VENDOR}")
+     MESSAGE(STATUS "-- Libs: ${${VENDOR}_LIBRARY}")
+@@ -375,6 +408,7 @@ MACRO(BuildBackendBlas VENDOR BACKEND_CODE)
+     # Configure the found backend
+     #
+     CheckBlasZdotcMKL("${${VENDOR}_LIBRARY}" "" ${FLEXIBLAS_INTEGER8})
++    CheckNvBlas("${${VENDOR}_LIBRARY}" "" ${FLEXIBLAS_INTEGER8})
+     SET(__CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
+     SET(CMAKE_REQUIRED_LIBRARIES ${${VENDOR}_LIBRARY})
+ 
+@@ -397,7 +431,7 @@ MACRO(BuildBackendBlas VENDOR BACKEND_CODE)
+     SET(CMAKE_REQUIRED_LIBRARIES ${__CMAKE_REQUIRED_LIBRARIES})
+ 
+     SET(_BUILD 1)
+-    IF(NOT DAXPY)
++    IF(NOT LIBNVBLAS AND NOT DAXPY)
+         MESSAGE(WARNING "${VENDOR} library does not contain a BLAS implementation or does not link. If TBB is involved please check if the C++ ABI is compatible TBB")
+         SET(_BUILD 0)
+     ENDIF()
+@@ -415,7 +449,11 @@ MACRO(BuildBackendBlas VENDOR BACKEND_CODE)
+         #
+         # Create the wrapper
+         #
+-        ADD_LIBRARY(flexiblas_${ivendor} SHARED ${BACKEND_CODE})
++        IF(LIBNVBLAS)
++                ADD_LIBRARY(flexiblas_${ivendor} SHARED ${BACKEND_CODE} $<TARGET_OBJECTS:flexiblas_netlib_minus3>)
++        ELSE()
++                ADD_LIBRARY(flexiblas_${ivendor} SHARED ${BACKEND_CODE})
++        ENDIF()
+         IF (FLEXIBLAS_INTEGER8 OR BLAS_INTERFACE64)
+             SET(EXTRA_FLAGS "-DBACKEND_INTEGER8")
+         ELSE ()
+@@ -534,6 +572,7 @@ MACRO(Build_Extra_BLAS VENDOR BACKEND_CODE)
+         Check_Fortran_Function_Exists(MKL_DOMATCOPY MKL_OMATCOPY)
+         Check_Function_Exists(cblas_daxpy  CBLAS_DAXPY)
+         SET(CMAKE_REQUIRED_LIBRARIES ${__CMAKE_REQUIRED_LIBRARIES})
++
+         IF(NOT DAXPY)
+             MESSAGE(FATAL_ERROR "Provided BLAS library does not contain a BLAS implementation or does not link.")
+         ENDIF()
+diff --git a/tools/backend_builder/CMakeLists.txt b/tools/backend_builder/CMakeLists.txt
+index cb044aea..4d671438 100644
+--- a/tools/backend_builder/CMakeLists.txt
++++ b/tools/backend_builder/CMakeLists.txt
+@@ -5,6 +5,7 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+ INCLUDE(CheckCSourceRuns)
+ INCLUDE(CheckFortranFunctionExists)
+ INCLUDE(CheckFunctionExists)
++SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
+ 
+ 
+ MACRO(CheckBlasZdotcMKL BLAS_LIBS BLAS_LD_FLAGS INT8)
+@@ -48,6 +49,39 @@ MACRO(CheckBlasZdotcMKL BLAS_LIBS BLAS_LD_FLAGS INT8)
+ 
+ ENDMACRO()
+ 
++MACRO(CheckNvBlas BLAS_LIBS BLAS_LD_FLAGS INT8)
++    SET(__CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
++    SET(__CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS})
++    SET(__CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
++    SET(__CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
++    UNSET(LIBNVBLAS CACHE)
++
++    IF(NOT INT8)
++
++    SET(CMAKE_REQUIRED_LIBRARIES ${BLAS_LIBS})
++    SET(CMAKE_REQUIRED_FLAGS ${BLAS_LD_FLAGS})
++    CHECK_C_SOURCE_RUNS(
++        "
++        #include <stdio.h>
++
++        extern void* cublasGetVersion(int* version);
++
++        int main(void) {
++        int ver;
++        int* verp = &ver;
++        cublasGetVersion(verp);
++        printf(\"%u\n\", ver);
++        return 0;
++        },"
++        IS_CUDA)
++    SET(LIBNVBLAS BOOL IS_CUDA)
++    SET(CMAKE_REQUIRED_FLAGS ${__CMAKE_REQUIRED_FLAGS})
++    SET(CMAKE_REQUIRED_DEFINITIONS ${__CMAKE_REQUIRED_DEFINITIONS})
++    SET(CMAKE_REQUIRED_INCLUDES ${__CMAKE_REQUIRED_INCLUDES})
++    SET(CMAKE_REQUIRED_LIBRARIES ${__CMAKE_REQUIRED_LIBRARIES})
++    ENDIF()
++ENDMACRO()
++
+ MACRO(BuildBackendBlas VENDOR)
+     string(TOLOWER ${VENDOR} ivendor)
+ 
+@@ -63,8 +97,11 @@ MACRO(BuildBackendBlas VENDOR)
+     # Configure the found backend
+     #
+     CheckBlasZdotcMKL("${${VENDOR}_LIBRARY}" "" ${INTEGER8})
++    CheckNvBlas("${${VENDOR}_LIBRARY}" "" ${INTEGER8})
+     SET(__CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
+     SET(CMAKE_REQUIRED_LIBRARIES ${${VENDOR}_LIBRARY})
++    SET(__CMAKE_REQUIRED_LINK_OPTIONS ${CMAKE_REQUIRED_LINK_OPTIONS})
++    SET(CMAKE_REQUIRED_LINK_OPTIONS ${${VENDOR}_LINKER_FLAGS})
+ 
+     UNSET(ISFLEXIBLAS CACHE)
+     UNSET(DAXPY CACHE)
+@@ -86,8 +123,15 @@ MACRO(BuildBackendBlas VENDOR)
+     ENDIF()
+ 
+     SET(CMAKE_REQUIRED_LIBRARIES ${__CMAKE_REQUIRED_LIBRARIES})
+-
+-    IF(NOT DAXPY)
++    SET(CMAKE_REQUIRED_LINK_OPTIONS ${__CMAKE_REQUIRED_LINK_OPTIONS})
++
++    IF(LIBNVBLAS)
++        add_subdirectory(contributed/netlib-blas)
++        add_subdirectory(contributed/cblas)
++        include(NameMangling)
++        f2c_name_manging()
++        SET(BACKEND_CODE ${BACKEND_CODE} $<TARGET_OBJECTS:flexiblas_netlib_minus3> $<TARGET_OBJECTS:cblas_obj>)
++    ELSEIF(NOT DAXPY)
+         MESSAGE(FATAL_ERROR "${VENDOR} library does not contain a BLAS implementation or does not link.")
+     ENDIF()
+ 
+-- 
+2.47.3
+

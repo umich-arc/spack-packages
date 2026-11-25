@@ -1,0 +1,87 @@
+From 09309506862c5bf37c7ee7608dde96e68a51e615 Mon Sep 17 00:00:00 2001
+From: Andrew Robbins <andrew@robbinsa.me>
+Date: Tue, 12 May 2026 12:13:13 -0400
+Subject: [PATCH 1/4] macroify fortran mangling
+
+---
+ CMakeLists.txt           | 28 ++--------------------------
+ cmake/NameMangling.cmake | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 26 deletions(-)
+ create mode 100755 cmake/NameMangling.cmake
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8b9af188..9165db34 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -284,32 +284,8 @@ ELSE ()
+     set(abi "gnu")
+ ENDIF()
+ 
+-# Name Mangling
+-include(FortranCInterface)
+-FortranCInterface_HEADER(${PROJECT_BINARY_DIR}/fc.h
+-    MACRO_NAMESPACE "FC_"
+-    SYMBOL_NAMESPACE "FC_")
+-FortranCInterface_VERIFY()
+-
+-MESSAGE(STATUS "Fortran - C - Interface -- FortranCInterface_GLOBAL_SUFFIX = ${FortranCInterface_GLOBAL_SUFFIX}")
+-MESSAGE(STATUS "Fortran - C - Interface -- FortranCInterface_GLOBAL_CASE = ${FortranCInterface_GLOBAL_CASE}")
+-
+-IF ( FortranCInterface_GLOBAL_SUFFIX STREQUAL "_" AND FortranCInterface_GLOBAL_CASE STREQUAL "LOWER")
+-    SET(FLEXIBLAS_MANGLE_DEFAULT 1)
+-    SET(FLEXIBLAS_MANGLE_NO_UNDERSCORE 0)
+-    SET(FLEXIBLAS_MANGLE_UPPERCASE 0)
+-    MESSAGE(STATUS "Use default Fortran name mangling.")
+-ELSEIF(FortranCInterface_GLOBAL_SUFFIX STREQUAL "" AND FortranCInterface_GLOBAL_CASE STREQUAL "LOWER")
+-    SET(FLEXIBLAS_MANGLE_DEFAULT 0)
+-    SET(FLEXIBLAS_MANGLE_NO_UNDERSCORE 1)
+-    SET(FLEXIBLAS_MANGLE_UPPERCASE 0)
+-    MESSAGE(STATUS "Use Windows-like Fortran name mangling.")
+-ELSEIF(FortranCInterface_GLOBAL_SUFFIX STREQUAL "" AND FortranCInterface_GLOBAL_CASE STREQUAL "UPPER")
+-    SET(FLEXIBLAS_MANGLE_DEFAULT 0)
+-    SET(FLEXIBLAS_MANGLE_NO_UNDERSCORE 0)
+-    SET(FLEXIBLAS_MANGLE_UPPERCASE 1)
+-    MESSAGE(STATUS "Use upper-case Fortran name mangling.")
+-ENDIF()
++include(NameMangling)
++f2c_name_manging()
+ 
+ 
+ 
+diff --git a/cmake/NameMangling.cmake b/cmake/NameMangling.cmake
+new file mode 100755
+index 00000000..67e20212
+--- /dev/null
++++ b/cmake/NameMangling.cmake
+@@ -0,0 +1,28 @@
++# Name Mangling
++macro(f2c_name_manging)
++include(FortranCInterface)
++FortranCInterface_HEADER(${PROJECT_BINARY_DIR}/fc.h
++    MACRO_NAMESPACE "FC_"
++    SYMBOL_NAMESPACE "FC_")
++FortranCInterface_VERIFY()
++
++MESSAGE(STATUS "Fortran - C - Interface -- FortranCInterface_GLOBAL_SUFFIX = ${FortranCInterface_GLOBAL_SUFFIX}")
++MESSAGE(STATUS "Fortran - C - Interface -- FortranCInterface_GLOBAL_CASE = ${FortranCInterface_GLOBAL_CASE}")
++
++IF(FortranCInterface_GLOBAL_SUFFIX STREQUAL "_" AND FortranCInterface_GLOBAL_CASE STREQUAL "LOWER")
++    SET(FLEXIBLAS_MANGLE_DEFAULT 1)
++    SET(FLEXIBLAS_MANGLE_NO_UNDERSCORE 0)
++    SET(FLEXIBLAS_MANGLE_UPPERCASE 0)
++    MESSAGE(STATUS "Use default Fortran name mangling.")
++ELSEIF(FortranCInterface_GLOBAL_SUFFIX STREQUAL "" AND FortranCInterface_GLOBAL_CASE STREQUAL "LOWER")
++    SET(FLEXIBLAS_MANGLE_DEFAULT 0)
++    SET(FLEXIBLAS_MANGLE_NO_UNDERSCORE 1)
++    SET(FLEXIBLAS_MANGLE_UPPERCASE 0)
++    MESSAGE(STATUS "Use Windows-like Fortran name mangling.")
++ELSEIF(FortranCInterface_GLOBAL_SUFFIX STREQUAL "" AND FortranCInterface_GLOBAL_CASE STREQUAL "UPPER")
++    SET(FLEXIBLAS_MANGLE_DEFAULT 0)
++    SET(FLEXIBLAS_MANGLE_NO_UNDERSCORE 0)
++    SET(FLEXIBLAS_MANGLE_UPPERCASE 1)
++    MESSAGE(STATUS "Use upper-case Fortran name mangling.")
++ENDIF()
++endmacro(f2c_name_manging)
+-- 
+2.47.3
+

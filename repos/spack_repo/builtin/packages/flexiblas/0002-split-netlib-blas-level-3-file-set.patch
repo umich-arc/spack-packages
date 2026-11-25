@@ -1,0 +1,204 @@
+From 3e552d63fef28b5b177cc7e03e15af7354eef080 Mon Sep 17 00:00:00 2001
+From: Andrew Robbins <andrew@robbinsa.me>
+Date: Tue, 12 May 2026 12:44:29 -0400
+Subject: [PATCH 2/4] split netlib blas level 3 file set
+
+---
+ contributed/netlib-blas/CMakeLists.txt | 77 +++++++++++++++-----------
+ 1 file changed, 44 insertions(+), 33 deletions(-)
+
+diff --git a/contributed/netlib-blas/CMakeLists.txt b/contributed/netlib-blas/CMakeLists.txt
+index cbe969b7..5794090e 100644
+--- a/contributed/netlib-blas/CMakeLists.txt
++++ b/contributed/netlib-blas/CMakeLists.txt
+@@ -30,8 +30,40 @@ ELSE ()
+         )
+ ENDIF()
+ 
++SET(NETLIBLVL3
++    cgemm.f
++    chemm.f
++    cherk.f
++    cher2k.f
++    csymm.f
++    csyr2k.f
++    csyrk.f
++    ctrmm.f
++    ctrsm.f
++    dgemm.f
++    dsymm.f
++    dsyr2k.f
++    dsyrk.f
++    dtrmm.f
++    dtrsm.f
++    sgemm.f
++    ssymm.f
++    ssyr2k.f
++    ssyrk.f
++    strmm.f
++    strsm.f
++    zgemm.f
++    zhemm.f
++    zher2k.f
++    zherk.f
++    zsymm.f
++    zsyr2k.f
++    zsyrk.f
++    ztrmm.f
++    ztrsm.f
++)
+ 
+-SET (NETLIBSRC
++SET(NETLIBLVL12
+     ${ROTG}
+     ${NRM}
+     caxpy.f
+@@ -39,17 +71,13 @@ SET (NETLIBSRC
+     cdotc.f
+     cdotu.f
+     cgbmv.f
+-    cgemm.f
+     cgemv.f
+     cgerc.f
+     cgeru.f
+     chbmv.f
+-    chemm.f
+     chemv.f
+     cher2.f
+-    cher2k.f
+     cher.f
+-    cherk.f
+     chpmv.f
+     chpr2.f
+     chpr.f
+@@ -57,16 +85,11 @@ SET (NETLIBSRC
+     csrot.f
+     csscal.f
+     cswap.f
+-    csymm.f
+-    csyr2k.f
+-    csyrk.f
+     ctbmv.f
+     ctbsv.f
+     ctpmv.f
+     ctpsv.f
+-    ctrmm.f
+     ctrmv.f
+-    ctrsm.f
+     ctrsv.f
+     dasum.f
+     daxpy.f
+@@ -74,7 +97,6 @@ SET (NETLIBSRC
+     dcopy.f
+     ddot.f
+     dgbmv.f
+-    dgemm.f
+     dgemv.f
+     dger.f
+     drot.f
+@@ -87,19 +109,14 @@ SET (NETLIBSRC
+     dspr2.f
+     dspr.f
+     dswap.f
+-    dsymm.f
+     dsymv.f
+     dsyr2.f
+-    dsyr2k.f
+     dsyr.f
+-    dsyrk.f
+     dtbmv.f
+     dtbsv.f
+     dtpmv.f
+     dtpsv.f
+-    dtrmm.f
+     dtrmv.f
+-    dtrsm.f
+     dtrsv.f
+     dzasum.f
+     icamax.f
+@@ -115,7 +132,6 @@ SET (NETLIBSRC
+     sdot.f
+     sdsdot.f
+     sgbmv.f
+-    sgemm.f
+     sgemv.f
+     sger.f
+     srot.f
+@@ -127,19 +143,14 @@ SET (NETLIBSRC
+     sspr2.f
+     sspr.f
+     sswap.f
+-    ssymm.f
+     ssymv.f
+     ssyr2.f
+-    ssyr2k.f
+     ssyr.f
+-    ssyrk.f
+     stbmv.f
+     stbsv.f
+     stpmv.f
+     stpsv.f
+-    strmm.f
+     strmv.f
+-    strsm.f
+     strsv.f
+     xerbla_array.f
+     xerbla.f
+@@ -150,35 +161,31 @@ SET (NETLIBSRC
+     zdrot.f
+     zdscal.f
+     zgbmv.f
+-    zgemm.f
+     zgemv.f
+     zgerc.f
+     zgeru.f
+     zhbmv.f
+-    zhemm.f
+     zhemv.f
+     zher2.f
+-    zher2k.f
+     zher.f
+-    zherk.f
+     zhpmv.f
+     zhpr2.f
+     zhpr.f
+     zscal.f
+     zswap.f
+-    zsymm.f
+-    zsyr2k.f
+-    zsyrk.f
+     ztbmv.f
+     ztbsv.f
+     ztpmv.f
+     ztpsv.f
+-    ztrmm.f
+     ztrmv.f
+-    ztrsm.f
+     ztrsv.f
+     )
+ 
++SET (NETLIBSRC
++    ${NETLIBLVL3}
++    ${NETLIBLVL12}
++    )
++
+ message(STATUS "AGGREGATE_FILES: ${AGGREGATE_FILES}")
+ 
+ if (AGGREGATE_FILES)
+@@ -221,7 +228,11 @@ if ( CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" )
+ 	SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -ffloat-store -Wno-conversion -Wno-maybe-uninitialized")
+ endif()
+ 
+-INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
++if (FLEXIBLAS_INCLUDE_DIR)
++    INCLUDE_DIRECTORIES(${FLEXIBLAS_INCLUDE_DIR})
++else ()
++    INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
++endif ()
+ add_library (flexiblas_netlib_objs OBJECT ${NETLIBSRC})
+-
++add_library (flexiblas_netlib_minus3 OBJECT ${NETLIBLVL12})
+ 
+-- 
+2.47.3
+
